@@ -1,0 +1,60 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* styles/globals.css */
+@layer utilities {
+  .border-gradient {
+    border-width: 2px;
+    border-image-source: linear-gradient(90deg, #775ADA, #1E95BB);
+    border-image-slice: 1;
+   
+  }
+
+
+/* Hide scrollbar by default */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hide {
+  scrollbar-width: none; /* Firefox */
+}
+
+/* Show scrollbar on hover */
+.scrollbar-show:hover::-webkit-scrollbar {
+  display: block;
+}
+
+.scrollbar-show::-webkit-scrollbar {
+  width: 8px;
+}
+
+.scrollbar-show::-webkit-scrollbar-thumb {
+  background-color: #999; /* Scrollbar thumb color */
+  border-radius: 8px; /* Rounded scrollbar */
+}
+
+.scrollbar-show::-webkit-scrollbar-track {
+  background-color: #f1f1f1; /* Scrollbar track color */
+}
+
+}
