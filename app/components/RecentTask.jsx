@@ -25,18 +25,18 @@ function RecentTask() {
   const renderTasks = (taskList) =>
     taskList.map((task, index) => (
       <div key={index} className="flex justify-between w-full">
-        <div className="flex w-[50%] space-x-5">
-          <p className="truncate">{task.title}</p>
+        <div className="flex w-[50%] space-x-1">
+          <p className="truncate w-[60%] font-medium">{task.title}</p>
           <p
-            className="font-medium w-fit px-4 py-1 rounded-lg"
+            className="font-semibold w-fit px-4 py-1 rounded-lg"
             style={{ color: task.priorityColor, backgroundColor: task.priorityBg }}
           >
             {task.priority}
           </p>
         </div>
-        <div className="flex w-[50%] justify-end space-x-5">
+        <div className="flex w-[50%] justify-end space-x-1">
         <FlagIcon
-          className={`w-9 h-9 ${
+          className={`w-5 h-5 ${
             task.priority === "H"
               ? "text-[#FF304F]" // High priority - Red
               : task.priority === "L"
@@ -50,20 +50,20 @@ function RecentTask() {
     ));
 
   return (
-    <div className="h-auto w-full bg-[#FFFFFF] rounded-xl mt-6 space-y-8 pb-12">
+    <div className="h-auto w-full bg-[#FFFFFF] rounded-xl mt-4 space-y-5 pb-8">
       {/* Header Section */}
-      <div className="flex justify-between px-7 pt-7">
-        <div className="flex space-x-2 items-center">
+      <div className="flex justify-between px-7 pt-5">
+        <div className="flex space-x-3 items-center">
           <Image
-            className="w-6 h-6"
+            className="w-5 h-5"
             src="/images/taskbar.png"
             alt="Dashboard Icon"
             height={40}
             width={40}
           />
-          <p className="font-light text-2xl text-[#001C3D]">Recently tasks</p>
+          <p className="font-light text-lg text-[#001C3D]">Recently tasks</p>
         </div>
-        <p className="text-xl text-[#775ADA] cursor-pointer hover:underline">
+        <p className="text-base text-[#775ADA] cursor-pointer hover:underline">
           View all
         </p>
       </div>
@@ -72,43 +72,43 @@ function RecentTask() {
       <div className="border-t-4 w-full border-[#EDEDED]" />
 
       {/* To Do Section */}
-      <div className="px-7 text-2xl">
+      <div className="px-4 text-sm">
         <div className="flex justify-between">
-          <div className="flex space-x-3">
-            <div className="mt-2 w-5 h-5 rounded-full bg-[#FF304F]" />
-            <p>To do</p>
+          <div className="flex space-x-2 justify-center items-center">
+            <div className="mt-2 w-3 h-3 rounded-full bg-[#FF304F]" />
+            <p className="pt-2 font-semibold">To do</p>
           </div>
-          <PlusIcon className="w-9 h-9 text-[#262626]" />
+          <PlusIcon className="w-5 h-5 text-[#262626]" />
         </div>
-        <div className="mt-9 space-y-7">{renderTasks(tasks.todo)}</div>
+        <div className="mt-6 space-y-3">{renderTasks(tasks.todo)}</div>
       </div>
 
       <div className="border-t-4 w-full border-[#EDEDED]" />
 
       {/* In Progress Section */}
-      <div className="px-7 text-2xl">
+      <div className="px-4 text-sm">
         <div className="flex justify-between">
-          <div className="flex space-x-3">
-            <div className="mt-2 w-5 h-5 rounded-full bg-[#D89E07]" />
-            <p>In progress</p>
+          <div className="flex space-x-2 justify-center items-center">
+            <div className="mt-2 w-3 h-3 rounded-full bg-[#D89E07]" />
+            <p className="pt-2 font-semibold">In progress</p>
           </div>
-          <PlusIcon className="w-9 h-9 text-[#262626]" />
+          <PlusIcon className="w-5 h-5 text-[#262626]" />
         </div>
-        <div className="mt-9 space-y-7">{renderTasks(tasks.inProgress)}</div>
+        <div className="mt-6 space-y-3">{renderTasks(tasks.inProgress)}</div>
       </div>
 
       <div className="border-t-4 w-full border-[#EDEDED]" />
 
       {/* Completed Section */}
-      <div className="px-7 text-2xl">
+      <div className="px-4 text-sm">
         <div className="flex justify-between">
-          <div className="flex space-x-3">
-            <div className="mt-2 w-5 h-5 rounded-full bg-[#03A12F]" />
-            <p>Completed</p>
+          <div className="flex space-x-2 justify-center items-center">
+            <div className="mt-2 w-3 h-3 rounded-full bg-[#03A12F]" />
+            <p className="pt-2 font-semibold">Completed</p>
           </div>
-          <PlusIcon className="w-9 h-9 text-[#262626]" />
+          <PlusIcon className="w-5 h-5 text-[#262626]" />
         </div>
-        <div className="mt-9 space-y-7">{renderTasks(tasks.completed)}</div>
+        <div className="mt-6 space-y-3">{renderTasks(tasks.completed)}</div>
       </div>
     </div>
   );

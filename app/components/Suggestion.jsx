@@ -14,30 +14,30 @@ const Suggestion = () => {
   ];
 
   return (
-    <div className="h-auto w-full bg-[#FFFFFF] rounded-xl mt-6 space-y-8 pb-8">
-      <div className="flex space-x-2 px-6 pt-7 items-center">
-        <LightBulbIcon className="w-7 h-7 text-[#737373] " />
-        <p className="font-light text-2xl text-[#001C3D]">Smart suggestions</p>
+    <div className="h-auto w-full bg-[#FFFFFF] rounded-xl mt-6 space-y-5 pb-6">
+      <div className="flex space-x-2 px-6 pt-5 items-center">
+        <LightBulbIcon className="w-5 h-5 text-[#737373] " />
+        <p className="font-light text-lg text-[#001C3D]">Smart suggestions</p>
       </div>
 
       {/* Divider */}
       <div className="border-t-4 w-full border-[#EDEDED]" />
 
-      <p className="text-[#8093A8] px-6 text-xl">
+      <p className="text-[#8093A8] px-6 text-base">
         Smart suggestions are based on your recent activities
       </p>
 
       {/** Suggestions */}
-      <div className="space-y-7 text-2xl px-6 text-[#4D4D4D] font-normal ">
+      <div className="space-y-3 text-sm px-6 text-[#4D4D4D] font-normal ">
         {suggestions.map((suggestion, index) => (
           <div
             key={index}
-            className="flex space-x-3 p-5 rounded-xl items-center bg-[#EDEDED] 
+            className="flex space-x-3 p-3 rounded-xl items-center bg-[#EDEDED] 
             hover:bg-[#775ADA] hover:text-white transition duration-300 ease-in-out cursor-pointer"
           >
             <Image
               src="/images/magic.png"
-              className="w-6 h-6"
+              className="w-5 h-5"
               alt="magic-wand"
               height={30}
               width={30}
@@ -47,9 +47,9 @@ const Suggestion = () => {
         ))}
 
         {/* Update Suggestions Button */}
-        <div className="flex items-center space-x-3 justify-end pt-4 ">
-          <ArrowPathIcon className="h-6 w-6 text-[#775ADA] hover:underline" />
-          <p className="text-xl text-[#775ADA] hover:underline">Update suggestions</p>
+        <div className="flex items-center space-x-3 justify-end pt-2 ">
+          <ArrowPathIcon className="h-5 w-5 text-[#775ADA] hover:underline" />
+          <p className="text-sm text-[#775ADA] hover:underline">Update suggestions</p>
         </div>
       </div>
     </div>

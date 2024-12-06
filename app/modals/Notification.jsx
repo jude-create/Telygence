@@ -43,22 +43,22 @@ const Notification = ({ notificationModal, handleNotificationModal }) => {
     <div
       className={`${
         notificationModal ? "opacity-100" : "hidden opacity-0"
-      } fixed top-24 right-2 w-[20%] h-[90vh] flex z-[1000]`}
+      } fixed top-14 right-6 w-[20%] h-[90vh] flex z-[1000]`}
     >
       {/* Modal content */}
       <div
         ref={modalRef}
-        className="bg-white w-full h-full overflow-y-auto scroll-smooth cursor-pointer px-7 py-7 rounded-xl shadow-md shadow-black space-y-12"
+        className="bg-white w-full h-full   overflow-y-auto scrollbar-hide scrollbar-show  cursor-pointer px-6 py-7 rounded-xl shadow-sm shadow-black space-y-7"
       >
         {notifications.map((notification) => (
-          <div key={notification.id} className="space-y-3">
+          <div key={notification.id} className="space-y-2   ">
             <div className="flex justify-between">
-              <p className="text-xl text-[#737373]">{notification.time}</p>
+              <p className="text-sm text-[#737373]">{notification.time}</p>
               {isToday(notification.time) && (
-                <div className="border-2 bg-[#FF304F] w-5 h-5 rounded-full"></div>
+                <div className="border-2 bg-[#FF304F] w-3 h-3 rounded-full"></div>
               )}
             </div>
-            <div className="text-2xl">{notification.message}</div>
+            <div className="text-sm">{notification.message}</div>
           </div>
         ))}
       </div>

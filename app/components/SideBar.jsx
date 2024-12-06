@@ -11,9 +11,9 @@ const SideBar = () => {
       {/* Top Section */}
       <div>
         {/* Logo Section */}
-        <div className="p-10">
+        <div className="px-7 p-6">
           <Image
-            className="w-40 h-9"
+            className="w-32 h-7"
             src="/images/light.png"
             alt="Logo"
             width={120}
@@ -22,21 +22,21 @@ const SideBar = () => {
         </div>
 
         {/* Main Navigation Links */}
-        <nav className="mt-8">
-          <ul className="space-y-4">
+        <nav className="mt-2">
+          <ul className="space-y-2">
             {/* Dashboard Link */}
             <li>
               <Link
                 href="/"
-                className={`flex items-center px-10 py-6 text-xl rounded-md text-[#DDD6F6] transition-all duration-500 ease-in-out ${
+                className={`flex items-center px-10 py-3  text-sm rounded-md text-[#DDD6F6] transition-all duration-500 ease-in-out ${
                   pathname === "/"
                     ? "bg-[#3B2D6D] text-white font-bold"
                     : "hover:bg-[#3B2D6D] hover:text-white"
                 }`}
               >
-                <span className="mr-3">
+                <span className="mr-2">
                   <Image
-                    className="w-9 h-9"
+                    className="w-7 h-7"
                     src="/images/dashboard.png"
                     alt="Dashboard Icon"
                     height={40}
@@ -51,16 +51,16 @@ const SideBar = () => {
             <li>
               <Link
                 href="/templates"
-                className={`flex items-center px-10 py-6 text-xl rounded-md text-[#DDD6F6] transition-all duration-500 ease-in-out ${
+                className={`flex items-center  px-10 py-3 text-sm rounded-md text-[#DDD6F6] transition-all duration-500 ease-in-out ${
                   pathname === "/templates"
                     ? "bg-[#3B2D6D] text-white font-bold"
                     : "hover:bg-[#3B2D6D] hover:text-white"
                 }`}
               >
-                <span className="mr-4">
+                <span className="mr-2">
                   <Image
                     src="/images/template.png"
-                    className="w-8 h-8"
+                    className="w-5 h-5"
                     alt="Templates Icon"
                     height={40}
                     width={40}
@@ -74,16 +74,16 @@ const SideBar = () => {
             <li>
               <Link
                 href="/drafts"
-                className={`flex items-center px-10 py-6 text-xl rounded-md text-[#DDD6F6] transition-all duration-500 ease-in-out ${
+                className={`flex items-center  px-10 py-3 text-sm rounded-md text-[#DDD6F6] transition-all duration-500 ease-in-out ${
                   pathname === "/drafts"
                     ? "bg-[#3B2D6D] text-white font-bold"
                     : "hover:bg-[#3B2D6D] hover:text-white"
                 }`}
               >
-                <span className="mr-4">
+                <span className="mr-2">
                   <Image
                     src="/images/draft.png"
-                    className="w-8 h-8"
+                    className="w-6 h-6"
                     alt="Drafts Icon"
                     height={40}
                     width={40}
@@ -97,16 +97,16 @@ const SideBar = () => {
             <li>
               <Link
                 href="/tasks"
-                className={`flex items-center px-10 py-6 text-xl rounded-md text-[#DDD6F6] transition-all duration-500 ease-in-out ${
+                className={`flex items-center px-10 py-3 text-sm rounded-md text-[#DDD6F6] transition-all duration-500 ease-in-out ${
                   pathname === "/tasks"
                     ? "bg-[#3B2D6D] text-white font-bold"
                     : "hover:bg-[#3B2D6D] hover:text-white"
                 }`}
               >
-                <span className="mr-4">
+                <span className="mr-2">
                   <Image
                     src="/images/task.png"
-                    className="w-8 h-8"
+                    className="w-6 h-6"
                     alt="Tasks Icon"
                     height={40}
                     width={40}
@@ -124,19 +124,19 @@ const SideBar = () => {
 
       {/* Bottom Section */}
       <nav>
-        <ul className="space-y-4 pb-24">
+        <ul className="space-y-2 pb-4">
           {/* Extension Link */}
           <li>
             <a
               href="https://example.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center px-10 py-6 text-xl rounded-md text-[#DDD6F6] transition-all duration-500 ease-in-out hover:bg-[#3B2D6D] hover:text-white hover:font-bold"
+              className="flex items-center px-10 py-3 text-sm rounded-md text-[#DDD6F6] transition-all duration-500 ease-in-out hover:bg-[#3B2D6D] hover:text-white hover:font-bold"
             >
-              <span className="mr-4">
+              <span className="mr-2">
                 <Image
                   src="/images/extension.png"
-                  className="w-9 h-9"
+                  className="w-6 h-6"
                   alt="Extension Icon"
                   height={40}
                   width={40}
@@ -152,12 +152,12 @@ const SideBar = () => {
               href="https://example.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center px-10 py-6 text-xl rounded-md text-[#DDD6F6] transition-all duration-500 ease-in-out hover:bg-[#3B2D6D] hover:text-white hover:font-bold"
+              className="flex items-center  px-10 py-3 text-sm rounded-md text-[#DDD6F6] transition-all duration-500 ease-in-out hover:bg-[#3B2D6D] hover:text-white hover:font-bold"
             >
-              <span className="mr-4">
+              <span className="mr-2">
                 <Image
                   src="/images/support.png"
-                  className="w-8 h-8"
+                  className="w-6 h-6"
                   alt="Support Icon"
                   height={40}
                   width={40}
@@ -171,16 +171,16 @@ const SideBar = () => {
           <li>
             <Link
               href="/account"
-              className={`flex items-center px-10 py-6 text-xl rounded-md text-[#DDD6F6] transition-all duration-500 ease-in-out ${
+              className={`flex items-center  px-10 py-3 text-sm rounded-md text-[#DDD6F6] transition-all duration-500 ease-in-out ${
                 pathname === "/account"
                   ? "bg-[#3B2D6D] text-white font-bold"
                   : "hover:bg-[#3B2D6D] hover:text-white"
               }`}
             >
-              <span className="mr-4">
+              <span className="mr-2">
                 <Image
                   src="/images/Group.png"
-                  className="w-8 h-8"
+                  className="w-6 h-6"
                   alt="Account Icon"
                   height={40}
                   width={40}
@@ -194,16 +194,16 @@ const SideBar = () => {
           <li>
             <Link
               href="/logout"
-              className={`flex items-center px-10 py-6 text-xl rounded-md text-[#DDD6F6] transition-all duration-500 ease-in-out ${
+              className={`flex items-center px-10 py-3 text-sm rounded-md text-[#DDD6F6] transition-all duration-500 ease-in-out ${
                 pathname === "/logout"
                   ? "bg-[#3B2D6D] text-white font-bold"
                   : "hover:bg-[#3B2D6D] hover:text-white"
               }`}
             >
-              <span className="mr-4">
+              <span className="mr-2">
                 <Image
                   src="/images/logout.png"
-                  className="w-8 h-8"
+                  className="w-6 h-6"
                   alt="Logout Icon"
                   height={40}
                   width={40}
