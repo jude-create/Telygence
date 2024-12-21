@@ -1,6 +1,9 @@
+"use client"
 import { FlagIcon, PlusIcon } from "@heroicons/react/24/solid";
 import Image from "next/image";
-import React from "react";
+import React, { useState } from "react";
+import TaskModal from "../modals/TaskModal";
+import Link from "next/link";
 
 function RecentTask() {
   const tasks = {
@@ -21,6 +24,14 @@ function RecentTask() {
      
     ],
   };
+    
+  const [taskModal, setTaskModal] = useState(false);
+
+   // Function to handle the "Create Template" modal
+   const handleTaskModal = () => {
+    setTaskModal(!taskModal);
+  };
+ 
 
   const renderTasks = (taskList) =>
     taskList.map((task, index) => (
@@ -50,6 +61,7 @@ function RecentTask() {
     ));
 
   return (
+    <>
     <div className="h-auto w-full bg-[#FFFFFF] rounded-xl mt-4 space-y-5 pb-8">
       {/* Header Section */}
       <div className="flex justify-between px-7 pt-5">
@@ -63,9 +75,12 @@ function RecentTask() {
           />
           <p className="font-light text-lg text-[#001C3D]">Recently tasks</p>
         </div>
+        <Link href="/tasks">
         <p className="text-base text-[#775ADA] cursor-pointer hover:underline">
           View all
         </p>
+        </Link>
+       
       </div>
 
       {/* Divider */}
@@ -78,7 +93,9 @@ function RecentTask() {
             <div className="mt-2 w-3 h-3 rounded-full bg-[#FF304F]" />
             <p className="pt-2 font-semibold">To do</p>
           </div>
-          <PlusIcon className="w-5 h-5 text-[#262626]" />
+          <PlusIcon
+          onClick={handleTaskModal}
+           className="w-5 h-5 text-[#262626] cursor-pointer" />
         </div>
         <div className="mt-6 space-y-3">{renderTasks(tasks.todo)}</div>
       </div>
@@ -92,7 +109,9 @@ function RecentTask() {
             <div className="mt-2 w-3 h-3 rounded-full bg-[#D89E07]" />
             <p className="pt-2 font-semibold">In progress</p>
           </div>
-          <PlusIcon className="w-5 h-5 text-[#262626]" />
+          <PlusIcon
+          onClick={handleTaskModal}
+           className="w-5 h-5 text-[#262626] cursor-pointer" />
         </div>
         <div className="mt-6 space-y-3">{renderTasks(tasks.inProgress)}</div>
       </div>
@@ -106,11 +125,16 @@ function RecentTask() {
             <div className="mt-2 w-3 h-3 rounded-full bg-[#03A12F]" />
             <p className="pt-2 font-semibold">Completed</p>
           </div>
-          <PlusIcon className="w-5 h-5 text-[#262626]" />
+          <PlusIcon 
+          onClick={handleTaskModal}
+          className="w-5 h-5 text-[#262626] cursor-pointer" />
         </div>
         <div className="mt-6 space-y-3">{renderTasks(tasks.completed)}</div>
       </div>
     </div>
+     {/* Template Modal */}
+     <TaskModal taskModal={taskModal} handleTaskModal={handleTaskModal} />
+     </>
   );
 }
 

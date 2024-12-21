@@ -86,7 +86,7 @@ const handleCopyToClipboard = () => {
     }, 2000);
     
     
-
+   
     
   })
  };
@@ -111,7 +111,7 @@ const handleCopyToClipboard = () => {
         
         <XMarkIcon
         onClick={handleTemplateModal}
-         className='h-6 w-6' />
+         className='h-6 w-6 cursor-pointer' />
       </div>
 
       {/* Divider */}
@@ -263,7 +263,7 @@ const handleCopyToClipboard = () => {
         onStyleSelect={handleStyleSelect} // Pass handler to capture selected style
       />
 
-       {/* Confirmation Modal */}
+       {/* Confirmation template Modal */}
        {showConfirmationModal && (
         <div
           className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-gray-800 bg-opacity-60 z-[1000]"

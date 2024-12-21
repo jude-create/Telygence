@@ -1,45 +1,40 @@
-"use client"
-import { XMarkIcon } from '@heroicons/react/24/solid';
-import Image from 'next/image';
-import React, { useEffect, useRef } from 'react'
-import { SocialIcon } from 'react-social-icons';
+"use client";
 
-export default function Share({ shareModal, handleShareModal }) {
+import { XMarkIcon } from "@heroicons/react/24/solid";
+import Image from "next/image";
+import React, { useEffect, useRef } from "react";
 
-    const modalRef = useRef(null);
+const ShareModal = ({ isOpen, onClose }) => {
+  const modalRef = useRef(null);
 
+  // Close the modal when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (modalRef.current && !modalRef.current.contains(event.target)) {
-        handleShareModal();
+        onClose();
       }
     };
 
-    if (shareModal) {
+    if (isOpen) {
       document.addEventListener("mousedown", handleClickOutside);
     }
 
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [shareModal, handleShareModal]);
+  }, [isOpen, onClose]);
+
+  if (!isOpen) return null; // Don't render the modal if not open
 
   return (
-    <div
-      className={`${
-        shareModal == false ? "hidden opacity-0 " : " opacity-100"
-      } fixed  top-64 left-96 w-[26%] h-[45vh] bg-gray-800 bg-opacity-60  flex z-[1000] transition-all ease-in-out duration-500`}
-    >
-      {/* Modal content */}
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 h-auto">
       <div
         ref={modalRef}
-        className="bg-white w-full h-full overflow-y-auto scrollbar-hide cursor-pointer   rounded-xl shadow-lg shadow-[#00000033]"
+        className="bg-white rounded-lg shadow-lg w-[90%] sm:w-[350px]"
       >
-        {/* Tags grid */}
-        <div>
-        
-      {/* Centered Share Text */}
-      <div className='flex justify-between p-2'>
+        {/* Modal Header */}
+        {/* Centered Share Text */}
+      <div className='flex justify-between p-3'>
       <div className="flex-grow flex justify-center">
          <p className="font-semibold text-base">Share</p>
      </div>
@@ -47,97 +42,89 @@ export default function Share({ shareModal, handleShareModal }) {
         {/* Close Icon */}
        <div className="flex justify-end">
        <XMarkIcon
-       onClick={handleShareModal}
+       onClick={onClose}
         className="w-5 h-5 cursor-pointer" />
       </div>
       
       </div>
 
-      <div className="border-t w-full border-[#737373] " />
-     
-     <div className='py-5 px-8'>
-      <div className='bg-[#775ADA] rounded-full p-2 text-center text-[#FFFFFF] '>
-      Share as link
-      </div>
+        <div className="border-t w-full border-[#737373] mb-2" />
+        
+        <div className='py-5 px-8'>
+        {/* Share Link Button */}
+        <button className="w-full bg-[#775ADA] text-white py-2 rounded-lg mb-4">
+          Share as link
+        </button>
 
-      <div className='grid grid-cols-4 gap-6 mt-5'>
-        <div className='bg-[#FDECEB] w-fit rounded-full p-4'>
-            <Image 
-            src="/images/gmail.png" 
-            alt='Gmail'
-            width={25}
-            height={25}
-            />
-        </div>
-
-        <div className='bg-[#FDECEB] w-fit rounded-full p-4'>
-            <Image 
-            src="/images/slack.png" 
-            alt='Slack'
-            width={25}
-            height={25}
-            />
-        </div>
-
-        <div className='bg-[#CEE0F3] w-fit rounded-full p-4'>
-            <Image 
-            src="/images/linkedin.png" 
-            alt='Linkedin'
-            width={25}
-            height={25}
-            />
-        </div>
-
-        <div className='bg-[#FDECEB] w-fit rounded-full p-4'>
-            <Image 
-            src="/images/instagram.png" 
-            alt='instagram'
-            width={25}
-            height={25}
-            />
-        </div>
-
-        <div className='bg-[#CEE0F3] w-fit rounded-full p-4'>
-            <Image 
-            src="/images/facebook.png" 
-            alt='Facebook'
-            width={25}
-            height={25}
-            />
-        </div>
-
-        <div className='bg-[#CEE0F3] w-fit rounded-full p-4'>
-            <Image 
-            src="/images/whatsapp.png" 
-            alt='Whatsapp'
-            width={25}
-            height={25}
-            />
-        </div>
-
-        <div className='bg-[#CEE0F3] w-fit rounded-full p-4'>
-            <Image 
-            src="/images/messenger.png" 
-            alt='Messenger'
-            width={25}
-            height={25}
-            />
-        </div>
-
-        <div className='bg-[#EDEDED] w-fit rounded-full p-4 flex items-center justify-center'>
+        {/* Sharing Options */}
+        <div className="grid grid-cols-4 gap-6 mt-4">
+          {/* Gmail */}
+          <div className="bg-[#FDECEB] w-fit rounded-full p-3 flex items-center justify-center">
+            <Image src="/images/gmail.png" alt="Gmail" width={25} height={25} />
+          </div>
+          {/* Slack */}
+          <div className="bg-[#FDECEB] w-fit rounded-full p-3 flex items-center justify-center">
+            <Image src="/images/slack.png" alt="Slack" width={25} height={25} />
+          </div>
+          {/* LinkedIn */}
+          <div className="bg-[#CEE0F3] w-fit rounded-full p-3 flex items-center justify-center">
             <Image
-             src="/images/dot.png" 
-             alt='Three dot'
-             width={25}
-             height={25}
+              src="/images/linkedin.png"
+              alt="LinkedIn"
+              width={25}
+              height={25}
             />
+          </div>
+          {/* Instagram */}
+          <div className="bg-[#FDECEB] w-fit rounded-full p-3 flex items-center justify-center">
+            <Image
+              src="/images/instagram.png"
+              alt="Instagram"
+              width={25}
+              height={25}
+            />
+          </div>
+          {/* Facebook */}
+          <div className="bg-[#CEE0F3] w-fit rounded-full p-3 flex items-center justify-center">
+            <Image
+              src="/images/facebook.png"
+              alt="Facebook"
+              width={25}
+              height={25}
+            />
+          </div>
+          {/* WhatsApp */}
+          <div className="bg-[#CEE0F3] w-fit rounded-full p-3 flex items-center justify-center">
+            <Image
+              src="/images/whatsapp.png"
+              alt="WhatsApp"
+              width={25}
+              height={25}
+            />
+          </div>
+          {/* Messenger */}
+          <div className="bg-[#CEE0F3] w-fit rounded-full p-3 flex items-center justify-center">
+            <Image
+              src="/images/messenger.png"
+              alt="Messenger"
+              width={25}
+              height={25}
+            />
+          </div>
+          {/* More */}
+          <div className="bg-[#EDEDED] w-fit rounded-full p-3 flex items-center justify-center">
+            <Image
+              src="/images/dot.png"
+              alt="Three dots"
+              width={25}
+              height={25}
+            />
+          </div>
         </div>
-      </div>
-      </div>
-      </div>
-    
-
+        </div>
       </div>
     </div>
-  )
-}
+  );
+};
+
+export default ShareModal;

@@ -32,8 +32,8 @@ const Suggestion = () => {
         {suggestions.map((suggestion, index) => (
           <div
             key={index}
-            className="flex space-x-3 p-3 rounded-xl items-center bg-[#EDEDED] 
-            hover:bg-[#775ADA] hover:text-white transition duration-300 ease-in-out cursor-pointer"
+            className="hover:bg-[#775ADA] flex space-x-3 p-3 rounded-xl items-center bg-[#EDEDED] 
+             hover:text-white transition duration-300 ease-in-out cursor-pointer"
           >
             <Image
               src="/images/magic.png"

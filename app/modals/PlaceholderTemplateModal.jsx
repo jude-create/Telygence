@@ -2,7 +2,7 @@
 import { PencilSquareIcon } from '@heroicons/react/24/outline';
 import React, { useEffect, useRef } from 'react'
 
-export default function PlaceholderModal({ placeholderModal, handlePlaceholderModal }) {
+export default function PlaceholderModal({ placeholderTemplateModal, handlePlaceholderTemplateModal }) {
     const placeholders = [
         "First name",
         "Last name",
@@ -21,23 +21,23 @@ export default function PlaceholderModal({ placeholderModal, handlePlaceholderMo
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (modalRef.current && !modalRef.current.contains(event.target)) {
-        handlePlaceholderModal();
+        handlePlaceholderTemplateModal();
       }
     };
 
-    if (placeholderModal) {
+    if (placeholderTemplateModal) {
       document.addEventListener("mousedown", handleClickOutside);
     }
 
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [placeholderModal, handlePlaceholderModal]);
+  }, [placeholderTemplateModal, handlePlaceholderTemplateModal]);
 
   return (
     <div
     className={`${
-      placeholderModal ? "opacity-100" : "hidden opacity-0"
+      placeholderTemplateModal ? "opacity-100" : "hidden opacity-0"
     } fixed top-72 right-[350px] w-[26%] h-[42vh] flex z-[1000] `}
   >
     {/* Modal content */}

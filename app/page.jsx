@@ -73,7 +73,7 @@ export default function Home() {
 
         <div className="flex w-full md:space-x-4">
           <div className="w-[60%]">
-            <TemplateCard handleShareModal={handleShareModal} />
+            <TemplateCard  />
             <RecentDraft />
           </div>
 
@@ -87,14 +87,7 @@ export default function Home() {
       {/* Template Modal */}
       <Template templateModal={templateModal} handleTemplateModal={handleTemplateModal} />
 
-      {/* Share Modal */}
-      {shareModal && (
-        <Share
-          shareModal={shareModal}
-          handleShareModal={handleShareModal}
-          template={activeTemplate} // Pass active template data
-        />
-      )}
+     
     </>
   );
 }
