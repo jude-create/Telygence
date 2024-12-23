@@ -299,7 +299,7 @@ export default function Drafts()  {
       <div className="space-y-1">
         {drafts.map((draft) => (
           <div key={draft.id} className="flex justify-between px-4 text-base h-10 group">
-            <p className="truncate w-[30%] font-medium">{draft.title}</p>
+            <p className="truncate w-[30%] font-semibold">{draft.title}</p>
             <p className="font-extralight truncate w-[50%]">{draft.description}</p>
             <div className="w-[35%] flex justify-end font-medium transition-all ease-in-out duration-500">
               {/* Initially visible */}

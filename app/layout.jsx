@@ -32,7 +32,7 @@ export default function RootLayout({ children }) {
           
 
           {/* Page Content */}
-          <div className="flex-1 bg-[#EDEDED] h-auto">{children}</div>
+          <div className="flex-1 bg-[#EDEDED] h-full">{children}</div>
         </div>
       </body>
     </html>

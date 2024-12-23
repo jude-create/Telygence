@@ -28,7 +28,7 @@ export default function Home() {
 
   return (
     <>
-      <div className="h-auto p-6 md:p-7 mt-20">
+      <div className=" p-6 md:p-7 mt-20">
         <div className="flex flex-col space-y-4 md:flex-row md:space-y-0 md:space-x-5 w-full">
           {/* Welcome Section */}
           <div className="w-full md:w-[60%] flex flex-col md:flex-row justify-between px-4 md:px-8 items-center h-auto md:h-14 bg-white rounded-xl">

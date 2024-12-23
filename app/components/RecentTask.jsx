@@ -132,7 +132,7 @@ function RecentTask() {
         <div className="mt-6 space-y-3">{renderTasks(tasks.completed)}</div>
       </div>
     </div>
-     {/* Template Modal */}
+     {/* Task Modal */}
      <TaskModal taskModal={taskModal} handleTaskModal={handleTaskModal} />
      </>
   );
