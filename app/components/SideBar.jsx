@@ -2,11 +2,20 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useState } from "react";
 
 const SideBar = () => {
   const pathname = usePathname(); // Get the current path
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+
+  const handleLogout = () => {
+    console.log("User has logged out"); // Replace with your logout logic
+    setIsLogoutModalOpen(false); // Close the modal after logout
+  };
+
 
   return (
+    <>
     <div className="w-1/6 h-screen bg-[#1E1636] fixed shadow-md flex flex-col">
       {/* Top Section */}
       <div>
@@ -192,8 +201,8 @@ const SideBar = () => {
 
           {/* Logout Link */}
           <li>
-            <Link
-              href="/logout"
+            <div
+              onClick={() => setIsLogoutModalOpen(true)}
               className={`flex items-center px-10 py-3 text-sm rounded-md text-[#DDD6F6] transition-all duration-500 ease-in-out ${
                 pathname === "/logout"
                   ? "bg-[#3B2D6D] text-white font-bold"
@@ -210,11 +219,42 @@ const SideBar = () => {
                 />
               </span>
               Log out
-            </Link>
+            </div>
           </li>
         </ul>
       </nav>
     </div>
+    
+    {isLogoutModalOpen && (
+        <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-[#1E1636] rounded-lg space-y-4 w-[25%] h-[45%]">
+            <div className="px-6 pt-4">
+              <h2 className="text-base font-semibold text-center text-[#FFFFFF]">Log out of Telygence AI</h2>
+            </div>
+            <div className="border-t w-full border-[#737373] mb-5" />
+            <div className="px-6 pt-8 ">
+              <p className="text-base text-[#FFFFFF] text-center ">
+              Are you sure you want to log out of your account?
+              </p>
+            </div>
+            <div className="flex space-x-7 p-6 items-center justify-center">
+              <button
+                onClick={() => setIsLogoutModalOpen(false)}
+                className="px-6 py-2 bg-[#3B2D6D] rounded-md  hover:scale-125  text-[#DDD6F6] transition-all ease-in-out duration-300"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleLogout}
+                className="px-4 py-2 bg-[#775ADA] hover:scale-125  rounded-md text-[#FFFFFF] transition-all ease-in-out duration-300"
+              >
+                Yes, logout
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 };
 

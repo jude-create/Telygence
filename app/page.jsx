@@ -9,6 +9,7 @@ import { useState } from "react";
 import Template from "./modals/Template";
 import { PencilSquareIcon } from "@heroicons/react/24/outline";
 import Share from "./modals/Share";
+import Link from "next/link";
 
 export default function Home() {
   const [templateModal, setTemplateModal] = useState(false);
@@ -61,13 +62,19 @@ export default function Home() {
             </button>
 
             {/* Write Button */}
+            
+            <Link
+            className="md:w-[40%]"
+            href="/drafts"
+            >
             <button
-              className="flex justify-center items-center border-2 tracking-wider md:border-4 border-[#1E95BB] md:w-[50%] h-14 bg-[#C9F1FE80]
+              className="flex justify-center items-center border-2 tracking-wider md:border-4 border-[#1E95BB]  h-14 bg-[#C9F1FE80] p-4
              rounded-lg text-base md:text-lg font-bold text-[#1E95BB] transition-all ease-in-out duration-500 hover:text-white hover:bg-[#775ADA]"
             >
               Write
               <PencilSquareIcon className="w-7 h-7 ml-2" />
             </button>
+            </Link>
           </div>
         </div>
 

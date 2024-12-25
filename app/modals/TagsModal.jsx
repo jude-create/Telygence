@@ -2,7 +2,7 @@
 import { BookmarkIcon } from '@heroicons/react/24/outline';
 import React, { useEffect, useRef } from 'react';
 
-export default function TagsModal({ tagModal, handleTagModal }) {
+export default function TagsModal({ tagModal, handleTagModal,  onTagSelect }) {
   // Tag data
   const tags = [
     "Job hunt cold emails",
@@ -53,6 +53,7 @@ export default function TagsModal({ tagModal, handleTagModal }) {
   {tags.map((tag, index) => (
     <div
       key={index}
+      onClick={() => onTagSelect(tag)}
       className="flex items-center space-x-1 bg-[#DDD6F6] p-2 rounded-full  whitespace-nowrap w-max"
     >
       {/* Tag */}

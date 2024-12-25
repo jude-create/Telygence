@@ -16,26 +16,11 @@ const Template = ({templateModal, handleTemplateModal}) => {
     const [selectedStyle, setSelectedStyle] = useState(null); // Selected style state
     const [showConfirmationModal, setShowConfirmationModal] = useState(false); // State for confirmation modal
     const [showCopiedMessage, setShowCopiedMessage] = useState(false);
+    const [selectedTags, setSelectedTags] = useState([]); // State to store selected tags
+    const [selectedPlaceholders, setSelectedPlaceholders] = useState([]); // State to store selected tags
     
 
-    const modalRef = useRef(null);
-
-    useEffect(() => {
-      const handleClickOutside = (event) => {
-        if (modalRef.current && !modalRef.current.contains(event.target)) {
-          handleTemplateModal();
-        }
-      };
-  
-      if (templateModal) {
-        document.addEventListener("mousedown", handleClickOutside);
-      }
-  
-      return () => {
-        document.removeEventListener("mousedown", handleClickOutside);
-      };
-    }, [templateModal, handleTemplateModal]);
-
+   
 
     //Function to handle the add tag modal
     const handleTagModal = () => {
@@ -91,6 +76,29 @@ const handleCopyToClipboard = () => {
   })
  };
 
+ const handleTagSelect = (selectedTag) => {
+  // Add tag if not already selected
+  if (!selectedTags.includes(selectedTag)) {
+    setSelectedTags((prevTags) => [...prevTags, selectedTag]);
+  }
+};
+
+const removeTag = (tagToRemove) => {
+  // Remove the selected tag
+  setSelectedTags((prevTags) => prevTags.filter((tag) => tag !== tagToRemove));
+};
+
+const handlePlaceholderSelect = (selectedPlaceholder) => {
+  // Add tag if not already selected
+  if (!selectedPlaceholders.includes(selectedPlaceholder)) {
+    setSelectedPlaceholders((prevPlaceholders) => [...prevPlaceholders, selectedPlaceholder]);
+  }
+};
+
+const removePlaceholder = (placeholderToRemove) => {
+  // Remove the selected tag
+  setSelectedPlaceholders((prevPlaceholders) => prevPlaceholders.filter((placeholder) => placeholder!== placeholderToRemove));
+};
     return (
     <>
     {/* Modal for adding new address */}
@@ -102,7 +110,7 @@ const handleCopyToClipboard = () => {
     >
       {/* Modal content */}
       <div
-      ref={modalRef}
+      
        className="bg-white w-[60%] h-[98%] overflow-y-auto  rounded-2xl">
         {/* Modal header */}
         <div className="flex justify-between px-7 py-3">
@@ -119,57 +127,117 @@ const handleCopyToClipboard = () => {
         <div className='px-7 mt-6 '>
         {/* Template input field */}
         <div className='border-[#DEDEDE] bg-[#F5F5F5] border-2 w-full rounded-xl p-6 space-y-6 '>
-            <div className='space-y-2'>
-            <p className='text-sm text-[#000] font-medium'>Create a tag or add from previously created tags</p>
-            <div className='flex justify-between space-x-4'>
-                   <input 
-                     className="w-[93%] border border-[#BABABA] h-10 rounded-lg px-5 placeholder:text-sm placeholder:font-light text-base tracking-wider"
-                    placeholder="Enter tag name"
-                    type='text'
-                   value={tag}
-                  onChange={(e) => setTag(e.target.value)} 
+        <div className="space-y-2">
+        
+                <p className="text-sm text-[#000] font-medium">
+                  Create a tag or add from previously created tags
+                </p>
+                <div className='flex justify-between space-x-4'>
+  <div
+    className="flex items-center space-x-2 border bg-white border-[#BABABA] h-12 w-[93%] rounded-lg px-3 overflow-x-auto "
+    onClick={handleTagModal}
+  >
+    {/* Display selected tags as badges */}
+    {selectedTags.map((tag, index) => (
+      <span
+        key={index}
+        className="flex items-center space-x-1 text-[#5943A3] bg-[#DDD6F6] px-3 py-1 rounded-full text-xs font-medium"
+      >
+        {tag}
+        <XMarkIcon
+          className="h-4 w-4 cursor-pointer text-[#5943A3]"
+          onClick={(e) => {
+            e.stopPropagation(); // Prevent modal from toggling
+            removeTag(tag);
+          }}
+        />
+      </span>
+    ))}
 
-                   />
-        <div className="bg-[#DDD6F6] w-fit h-fit rounded-full p-2 cursor-pointer" onClick={handleTagModal}>
-        <div
-          className={`w-7 h-7 text-[#5943A3] transition-transform duration-300 ease-in-out ${
-            tagModal ? "rotate-180" : "rotate-0"
-          }`}
-        >
-          {tagModal ? <XMarkIcon /> : <PlusIcon />}
-        </div>
-      </div>
+    {/* Input field for adding new tags */}
+    <input
+      type="text"
+      placeholder="Enter tag name"
+      className="outline-none border-none text-sm text-gray-600"
+      onKeyDown={(e) => {
+        if (e.key === "Enter" && e.target.value.trim() !== "") {
+          const newTag = e.target.value.trim();
+          if (!selectedTags.includes(newTag)) {
+            setSelectedTags((prevTags) => [...prevTags, newTag]);
+          }
+          e.target.value = ""; // Clear input field
+        }
+      }}
+    />
+  </div>
+  <div
+    className="bg-[#DDD6F6] w-fit h-fit rounded-full p-2 cursor-pointer"
+    onClick={handleTagModal}
+  >
+    <div
+      className={`w-7 h-7 text-[#5943A3] transition-transform duration-300 ease-in-out ${
+        tagModal ? "rotate-180" : "rotate-0"
+      }`}
+    >
+      {tagModal ? <XMarkIcon /> : <PlusIcon />}
+    </div>
+  </div>
+</div>
+
                 </div>
-            </div>
+            
 
-            <div className='space-y-2'>
-            <p className='text-sm text-[#000] font-medium'>Write message content</p>
-            <div className='flex justify-between space-x-4'>
-                  
-                   <textarea
-                      className="w-[93%] border border-[#BABABA] h-56 rounded-lg p-4 placeholder:text-sm 
-                      placeholder:font-light text-base resize-none  "
-                    placeholder="Write content here, use the plus icon to add placeholders while writing"
-                    type='text'
-                   value={message}
-                  onChange={(e) => setMessage(e.target.value)} 
-
-                   />
-                   <div className="bg-[#DDD6F6] w-fit h-fit rounded-full p-2 cursor-pointer" onClick={handlePlaceholderModal}>
-        <div
-          className={`w-7 h-7 text-[#5943A3] transition-transform duration-300 ease-in-out ${
-            placeholderModal ? "rotate-180" : "rotate-0"
-          }`}
+                <div className="space-y-2 ">
+  <p className="text-sm text-[#000] font-medium">Write message content</p>
+  <div className='flex space-x-4'>
+  <div className="flex flex-col space-y-2 border bg-white border-[#BABABA] w-[93%] rounded-lg px-3 py-2 h-52 overflow-y-auto">
+    {/* Display selected placeholders */}
+    <div className="flex flex-wrap gap-2">
+      {selectedPlaceholders.map((placeholder, index) => (
+        <span
+          key={index}
+          className="flex items-center space-x-1 text-[#4D4D4D] bg-[#D9D9D9] px-3 py-1 rounded-full text-xs font-medium w-fit"
         >
-          {placeholderModal ? <XMarkIcon /> : <PlusIcon />}
-        </div>
-      </div>
-                </div>
-            </div>
+          {placeholder}
+          <XMarkIcon
+            className="h-4 w-4 cursor-pointer"
+            onClick={() => removePlaceholder(placeholder)}
+          />
+        </span>
+      ))}
+    </div>
 
-            <div>
+    {/* Textarea for adding new placeholders */}
+    <textarea
+      placeholder="Write content here, use the plus icon to add placeholders while writing"
+      className="outline-none border-none text-sm text-black w-full mt-2 focus:outline-none focus:ring-0 focus:text-black"
+      onKeyDown={(e) => {
+        if (e.key === "Enter" && e.target.value.trim() !== "") {
+          e.preventDefault(); // Prevent newline in textarea
+          const newPlaceholder = e.target.value.trim();
+          if (!selectedPlaceholders.includes(newPlaceholder)) {
+            setSelectedPlaceholders((prev) => [...prev, newPlaceholder]);
+          }
+          e.target.value = ""; // Clear textarea
+        }
+      }}
+    ></textarea>
+  </div>
+  <div
+    className="bg-[#DDD6F6] w-fit h-fit rounded-full p-2 cursor-pointer"
+    onClick={handlePlaceholderModal}
+  >
+    <div
+      className={`w-7 h-7 text-[#5943A3] transition-transform duration-300 ease-in-out ${
+        placeholderModal ? "rotate-180" : "rotate-0"
+      }`}
+    >
+      {placeholderModal ? <XMarkIcon /> : <PlusIcon />}
+    </div>
+  </div>
+  </div>
+</div>
 
-            </div>
 
             <div  className='flex justify-between text-[#737373]  md:w-[92%] '>
             <div className='flex space-x-4'>
@@ -244,15 +312,20 @@ const handleCopyToClipboard = () => {
 
       </div>
     </div>
-     {/* Add Tag modal */}
-     <TagsModal tagModal={tagModal} handleTagModal={handleTagModal}/>
+      {/* Add Tag modal */}
+      <TagsModal
+            tagModal={tagModal}
+            handleTagModal={handleTagModal}
+            onTagSelect={handleTagSelect}
+          />
 
-     {/**Add Placeholder modal */}
-     <PlaceholderModal 
-     placeholderModal={placeholderModal} 
-     handlePlaceholderModal={handlePlaceholderModal}
-
-     />
+{placeholderModal && (
+            <PlaceholderModal
+              placeholderModal={placeholderModal}
+              handlePlaceholderModal={handlePlaceholderModal}
+              onPlaceholderSelect={handlePlaceholderSelect}
+            />
+          )}
    
    
    
