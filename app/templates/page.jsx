@@ -12,6 +12,8 @@ import DeleteConfirmationModal from "../modals/DeleteConfirmationModal";
 import Tags from '../components/Tags';
 import Placeholder from '../components/Placeholder';
 import PlaceholderModal from '../modals/PlaceholderModal';
+import TagsModal from '../modals/TagsModal';
+
 
 export default function Templates() {
   const [templateModal, setTemplateModal] = useState(false);
@@ -25,7 +27,15 @@ export default function Templates() {
   const [selectedTemplates, setSelectedTemplates] = useState({});
   const [dropdownOpen, setDropdownOpen] = useState(false); // Manage dropdown visibility
   const [activePlaceholderModalId, setActivePlaceholderModalId] = useState(null);
-  const [editModeTemplateId, setEditModeTemplateId] = useState(null)
+  const [editModeTemplateId, setEditModeTemplateId] = useState(null); // For edit mode
+  const [editedTemplateMessage, setEditedTemplateMessage] = useState({}); // Store edited template messages
+  const [selectedPlaceholders, setSelectedPlaceholders] = useState(["First Name"]); // State to store selected placeholder
+  const [draggedTag, setDraggedTag] = useState(null); // Track dragged tag
+  const [tagModal, setTagModal] = useState(false)
+  const [activeTagModalId, setActiveTagModalId] = useState(null);
+  const [selectedTags, setSelectedTags] = useState(["Job hunt cold email"]); // State to store selected tags
+  
+  
 
 
  
@@ -40,26 +50,27 @@ export default function Templates() {
     {
       id: 1,
       tag: "Job hunt cold emails",
-      title: "Hi Joel",
-      message: `I sent you a message a few weeks back. To follow up, I'd love to connect to discuss Topic. 
+      message: ` Hi Joel 
+      I sent you a message a few weeks back. To follow up, I'd love to connect to discuss Topic. 
       Are you free sometime in the next couple of days for a quick chat? Let me know, thanks!`,
-      meta: { author: "David", date: "09/26/2024" },
+      
     },
     {
       id: 2,
       tag: "Networking ",
-      title: "Hello Alex",
-      message: `It was great meeting you at the conference. I'd love to stay in touch and learn more about 
+      message: ` Hello Alex 
+      It was great meeting you at the conference. I'd love to stay in touch and learn more about 
       your work. Are you available for a quick call this week?`,
-      meta: { author: "Sophia", date: "09/25/2024" },
+      
     },
     {
       id: 3,
       tag: "Networking ",
-      title: "Hello Alex",
-      message: `It was great meeting you at the conference. I'd love to stay in touch and learn more about 
+      message: `
+      Hello Alex
+      It was great meeting you at the conference. I'd love to stay in touch and learn more about 
       your work. Are you available for a quick call this week?`,
-      meta: { author: "Sophia", date: "09/25/2024" },
+      
     },
   ];
  
@@ -154,25 +165,81 @@ export default function Templates() {
   };
 
     // Function to handle the placeholder modal for a specific template
-  const handlePlaceholderModal = (templateId) => {
-    setActivePlaceholderModalId((prev) =>
-      prev === templateId ? null : templateId
-    );
-  };
+    const handlePlaceholderModal = (templateId) => {
+      if (editModeTemplateId === templateId) {
+        setPlaceholderModal((prev) => !prev); // Toggle the modal
+        setActivePlaceholderModalId((prev) =>
+          prev === templateId ? null : templateId
+        ); // Track active template for the modal
+      }
+    };
+
+     // Function to handle the tag modal for a specific template
+     const handleTagModal = (templateId) => {
+      if (editModeTemplateId === templateId) {
+        setTagModal((prev) => !prev); // Toggle the modal
+        setActiveTagModalId((prev) =>
+          prev === templateId ? null : templateId
+        ); // Track active template for the modal
+      }
+    };
+    
 
   
-   // Toggle template-specific edit mode
-   const handleEditTemplate = (id) => {
-    setEditModeTemplateId((currentId) => (currentId === id ? null : id));
+    // Function to handle edit mode
+  const handleEditTemplate = (id, message) => {
+    setEditModeTemplateId(id);
+    setEditedTemplateMessage({ [id]: message });
   };
 
-  // Save edited template (mock functionality)
-  const handleSaveTemplate = () => setEditModeTemplateId(null);
-
-  // Cancel editing
-  const handleCancelEdit = (id) => {
-    setEditModeTemplateId((currentId) => (currentId ===id ?  null : null))
+  const handleSaveTemplate = (id) => {
+    console.log("Template Saved:", editedTemplateMessage[id]);
+    setEditModeTemplateId(null);
   };
+
+  const handleCancelEdit = () => {
+    setEditModeTemplateId(null);
+    setEditedTemplateMessage({});
+  };
+
+  const handlePlaceholderSelect = (selectedPlaceholder) => {
+    // Only allow placeholder selection if we are in edit mode
+    if (editModeTemplateId !== null) {
+      if (!selectedPlaceholders.includes(selectedPlaceholder)) {
+        setSelectedPlaceholders((prevPlaceholders) => [
+          ...prevPlaceholders,
+          selectedPlaceholder,
+        ]);
+      }
+    }
+  };
+  
+  const removePlaceholder = (placeholderToRemove) => {
+    // Remove the selected tag
+    setSelectedPlaceholders((prevPlaceholders) => prevPlaceholders.filter((placeholder) => placeholder!== placeholderToRemove));
+  };
+
+  const handleTagSelect = (selectedTag) => {
+    // Only allow placeholder selection if we are in edit mode
+    if (editModeTemplateId !== null) {
+      if (!selectedTags.includes(selectedTag)) {
+        setSelectedTags((prevTags) => [
+          ...prevTags,
+          selectedTag,
+        ]);
+      }
+    }
+  };
+  
+  const removeTag = (TagToRemove) => {
+    // Remove the selected tag
+    setSelectedTags((prevTags) => prevTags.filter((tag) => tag!== TagToRemove));
+  };
+ 
+
+
+ 
+
   
 
   return (
@@ -241,101 +308,187 @@ export default function Templates() {
 
       <div className=' flex space-x-4'>
       <div className="  bg-[#FFFFFF] rounded-xl mt-6 w-[60%]  md:space-x-4 py-4">
+
+    <div className='space-y-4'>
+      {templates.map((template) => (
+  <div
+    key={template.id}
+    className="border border-[#BABABA] bg-[#EDEDED] px-4 mx-6 rounded-xl space-y-12 lg:space-y-8 pb-4"
+  >
+    {/* Tag */}
+    <div className="flex justify-between items-center mt-4">
+      {/** droppable area */}
+      {/* Meta Info */}
+    <div className="text-[#4D4D4D] flex capitalize text-sm space-x-4">
+      
+      <p
+      
         
-        {/* Template Items */}
-        <div className="space-y-7 ">
-          {templates.map((template) => (
-            <div
-              key={template.id}
-              onClick={() => handleEditTemplate(template.id)}
-              className="border border-[#BABABA] bg-[#EDEDED] px-4 mx-6 rounded-xl space-y-12 lg:space-y-6 pb-4"
-            >
-              {/* Tag */}
-               {/* Template Checkbox */}
-               <div className="flex justify-between items-center mt-4">
-                  
-               <div className='flex space-x-2 items-center'>
-                    <div className="flex space-x-2 bg-[#DDD6F6] py-2 px-4 rounded-full">
-                      <BookmarkIcon className="h-4 w-4 text-[#5943A3]" />
-                      <p className="text-[#5943A3] text-sm">{template.tag}</p>
-                    </div>
-                    <div className="text-xs text-[#999999] flex space-x-2 ">
-                     <span className="italic">i</span>
-                      <p>Drag tag to a template to add/change</p>
-                    </div>
-                    </div>
-                    {editModeTemplateId !== template.id && (
-                   <input
-                   type="checkbox"
-                  className="w-4 h-4 cursor-pointer"
-                  checked={selectedTemplates[template.id] || false}
-                 onChange={() => handleTemplateCheckbox(template.id)}
+        className="w-fit  rounded-full p-2 cursor-pointer transition-transform duration-300 ease-in-out"
+      >
+       {/* Display selected placeholders */}
+       <div className="flex flex-wrap gap-2">
+  {selectedTags.map((tag, index) => (
+    <span
+      key={index}
+      className="flex items-center space-x-1 text-[#5943A3] bg-[#DDD6F6] px-3 py-1 rounded-full text-xs font-medium"
+    >
+    <div className='flex justify-between space-x-2 '>
+    <BookmarkIcon className="h-4 w-4 text-[#5943A3]" />
+      <p>{tag}</p>
+    </div>
+      {editModeTemplateId === template.id &&   (
+        <XMarkIcon
+          className="h-4 w-4 cursor-pointer"
+          onClick={() => removeTag(tag)}
+        />
+      )}
+    </span>
+  ))}
+  <div className='w-fit  p-1 rounded-full text-[#5943A3] bg-[#DDD6F6] cursor-pointer  hover:text-[#000000]'>
+  {activeTagModalId === template.id ? (
+    <XMarkIcon
+      className="w-5 h-5  "
+      onClick={() => handleTagModal(template.id)}
+    />
+  ) : (
+    <PlusIcon
+      className="w-5 h-5   "
+      onClick={() => handleTagModal(template.id)}
     />
   )}
+  </div>
+</div>
 
-                  </div>
 
-              {/* Message */}
-              <div className="font-normal text-base text-[#4D4D4D]">{template.title}</div>
-              <div className="text-base text-[#4D4D4D] font-normal">
-                <p>{template.message}</p>
-              </div>
+ 
+      </p>
+      <div className="text-xs text-[#999999] flex space-x-2 pt-3 ">
+          <span className="italic">i</span>
+          <p>Tap on the label to insert/add tag</p>
+        </div>
+     
+    </div>
+      {/** droppable area */}
 
-              {/* Meta Info */}
-              <div className="text-[#4D4D4D] flex capitalize text-sm space-x-4">
-                <p className="w-fit bg-[#D9D9D9] rounded-full px-6 py-2">{template.meta.author}</p>
-                <p
-                
-                onClick={() => handlePlaceholderModal(template.id)}
-                 className="w-fit bg-[#D9D9D9] rounded-full p-2 cursor-pointer transition-transform duration-300 ease-in-out">
-                 
-                  
+      {editModeTemplateId !== template.id && (
+        <input
+          type="checkbox"
+          className="w-4 h-4 cursor-pointer"
+          checked={selectedTemplates[template.id] || false}
+          onChange={() => handleTemplateCheckbox(template.id)}
+        />
+      )}
+    </div>
+
+    {/* Message */}
+    {editModeTemplateId === template.id ? (
+  <textarea
+    value={editedTemplateMessage[template.id] || template.message}
+    onChange={(e) =>
+      setEditedTemplateMessage({
+        ...editedTemplateMessage,
+        [template.id]: e.target.value,
+      })
+    }
+    className="w-full p-4 border border-gray-300 rounded-lg h-48 bg-white"
+  />
+) : (
+  <div className="text-base text-[#4D4D4D] font-normal">
+    
+    {/* Render new lines properly */}
+    <p>{template.message.split('\n').map((line, index) => (
+      <span key={index}>
+        {line}
+        <br />
+      </span>
+    ))}</p>
+  </div>
+)}
+
+
+    {/* Meta Info */}
+    <div className="text-[#4D4D4D] flex capitalize text-sm space-x-4">
+      
+      <p
+      
         
-           {activePlaceholderModalId === template.id ? (
-                <XMarkIcon className="w-5 h-5 " />
-              ) : (
-                <PlusIcon className="w-5 h-5 " />
-              )}
-        
-                </p>
-              </div>
+        className="w-fit  rounded-full p-2 cursor-pointer transition-transform duration-300 ease-in-out"
+      >
+       {/* Display selected placeholders */}
+       <div className="flex flex-wrap gap-2">
+  {selectedPlaceholders.map((placeholder, index) => (
+    <span
+      key={index}
+      className="flex items-center space-x-1 text-[#4D4D4D] bg-[#D9D9D9] px-3 py-1 rounded-full text-xs font-medium"
+    >
+      {placeholder}
+      {editModeTemplateId === template.id &&   (
+        <XMarkIcon
+          className="h-4 w-4 cursor-pointer"
+          onClick={() => removePlaceholder(placeholder)}
+        />
+      )}
+    </span>
+  ))}
+  <div className='w-fit  p-1 rounded-full text-[#737373] cursor-pointer bg-[#D9D9D9] hover:text-[#000000]'>
+  {activePlaceholderModalId === template.id ? (
+    <XMarkIcon
+      className="w-5 h-5  "
+      onClick={() => handlePlaceholderModal(template.id)}
+    />
+  ) : (
+    <PlusIcon
+      className="w-5 h-5   "
+      onClick={() => handlePlaceholderModal(template.id)}
+    />
+  )}
+  </div>
+</div>
 
-              {/* Footer */}
-              <div className="flex justify-between items-center">
-                <p className="text-[#4D4D4D] text-base font-normal">Cheers</p>
-                <div className="flex space-x-8 relative">
-                  {/* Share Icon */}
-                  <ShareIcon
-                    onClick={() => handleShareModal(template.id)} // Open modal for specific template
-                    className="w-6 h-6 text-[#737373] cursor-pointer hover:text-[#000000]
-                   transition-transform duration-300 ease-in-out hover:scale-110"
-                  />
 
-                  {/* Copy to Clipboard Icon */}
-                  <Square2StackIcon
-                    onClick={() => handleCopyToClipboard(template.id)}
-                    className="w-6 h-6 text-[#737373] cursor-pointer hover:text-[#000000]
-                   transition-transform duration-300 ease-in-out hover:scale-110"
-                  />
+ 
+      </p>
+      <div className="text-xs text-[#999999] flex space-x-2 pt-3 ">
+          <span className="italic">i</span>
+          <p>Tap on the label to insert/add placeholder</p>
+        </div>
+     
+    </div>
 
-                  {/* Delete Icon */}
-                  <TrashIcon
-                    onClick={() => handleDeleteTemplate(template.id)}
-                    className="w-6 h-6 text-[#737373] cursor-pointer hover:text-[#000000] 
-                  transition-transform duration-300 ease-in-out hover:scale-110"
-                  />
+    {/* Footer */}
+    <div className="flex justify-between items-center">
+      <p className="text-[#4D4D4D] text-base font-normal">Cheers</p>
+      <div className="flex space-x-8 relative">
+        {/* Share Icon */}
+        <ShareIcon
+          onClick={() => handleShareModal(template.id)} // Open modal for specific template
+          className="w-6 h-6 text-[#737373] cursor-pointer hover:text-[#000000]
+           transition-transform duration-300 ease-in-out hover:scale-110"
+        />
 
-                  {/* Copied to Clipboard Message */}
-                  {copiedTemplateId === template.id && (
-                    <div className="absolute -top-10 right-0 bg-[#1E95BB] text-[#FFFFFF] text-sm w-max px-4 py-2 rounded-md shadow-md">
-                      Copied to clipboard!
-                    </div>
-                  )}
-                </div>
-              </div>
+        {/* Copy to Clipboard Icon */}
+        <Square2StackIcon
+          onClick={() => handleCopyToClipboard(template.id)}
+          className="w-6 h-6 text-[#737373] cursor-pointer hover:text-[#000000]
+           transition-transform duration-300 ease-in-out hover:scale-110"
+        />
 
-              
-              {activeShareModalId === template.id && (
+        {/* Delete Icon */}
+        <TrashIcon
+          onClick={() => handleDeleteTemplate(template.id)}
+          className="w-6 h-6 text-[#737373] cursor-pointer hover:text-[#000000] 
+          transition-transform duration-300 ease-in-out hover:scale-110"
+        />
+
+        {/* Copied to Clipboard Message */}
+        {copiedTemplateId === template.id && (
+          <div className="absolute -top-10 right-0 bg-[#1E95BB] text-[#FFFFFF] text-sm w-max px-4 py-2 rounded-md shadow-md">
+            Copied to clipboard!
+          </div>
+        )}
+
+        {activeShareModalId === template.id && (
              <Share
              isOpen={true} // Modal is open for this template
               onClose={() => handleShareModal(null)} // Close modal
@@ -350,49 +503,69 @@ export default function Templates() {
         itemLabel="template"
       />
 
-       {/* Placeholder Modal */}
-       {activePlaceholderModalId === template.id && (
-            <PlaceholderModal
-              placeholderModal={true}
-              handlePlaceholderModal={() => handlePlaceholderModal(template.id)}
-            />
-          )}
+ {/* Add Tag modal */}
+ {tagModal && activeTagModalId === template.id && (
+ <TagsModal
+            tagModal={tagModal}
+            handleTagModal={handleTagModal}
+            onTagSelect={handleTagSelect}
+          />
+      )}
 
-           {/* Edit Mode: Icons and Save/Cancel */}
-  {editModeTemplateId === template.id && (
-    <div className="flex justify-between items-center text-[#737373] pt-3">
-      <div className="flex space-x-4">
-        <BoldIcon className="w-5 h-5 cursor-pointer hover:text-[#000000] transition-transform duration-300 ease-in-out hover:scale-110" />
-        <ItalicIcon className="w-5 h-5 cursor-pointer hover:text-[#000000] transition-transform duration-300 ease-in-out hover:scale-110" />
-        <UnderlineIcon className="w-5 h-5 cursor-pointer hover:text-[#000000] transition-transform duration-300 ease-in-out hover:scale-110" />
-        <div className="border-l-2 h-7 border-[#737373]" />
-        <ListBulletIcon className="w-5 h-5 cursor-pointer hover:text-[#000000] transition-transform duration-300 ease-in-out hover:scale-110" />
-        <NumberedListIcon className="w-5 h-5 cursor-pointer hover:text-[#000000] transition-transform duration-300 ease-in-out hover:scale-110" />
-        <div className="border-l-2 h-7 border-[#737373]" />
-        <LinkIcon className="w-5 h-5 cursor-pointer hover:text-[#000000] transition-transform duration-300 ease-in-out hover:scale-110" />
-        <FaceSmileIcon className="w-5 h-5 cursor-pointer hover:text-[#000000] transition-transform duration-300 ease-in-out hover:scale-110" />
-      </div>
-      <div className="space-x-4">
-        <button
-          onClick={() => handleCancelEdit}
-          className="w-fit py-2 px-5 bg-[#DDD6F6] text-[#1E1636] rounded-lg text-base transition-transform duration-300 ease-in-out hover:bg-[#BEB6E5] hover:scale-105 hover:shadow-md"
-        >
-          Cancel
-        </button>
-        <button
-          onClick={() => handleSaveTemplate}
-          className="w-fit py-2 px-5 bg-[#775ADA] text-base text-[#FFFFFF] rounded-lg transition-transform duration-300 ease-in-out hover:bg-[#5F48C2] hover:scale-105 hover:shadow-md"
-        >
-          Save
-        </button>
-      </div>
-    </div>
-  )}
+  {/**Placeholder Modal */}
+  {placeholderModal && activePlaceholderModalId === template.id && (
+  <PlaceholderModal
+    placeholderModal={placeholderModal}
+    handlePlaceholderModal={handlePlaceholderModal}
+    onPlaceholderSelect={handlePlaceholderSelect}
+  />
+)}
 
-            </div>
-          ))}
-          
+
+ </div>
+</div>
+    
+
+    {/* Edit Mode: Save/Cancel and Icons */}
+    {editModeTemplateId === template.id ? (
+      <div className="flex justify-between items-center text-[#737373] pt-3">
+        <div className="flex space-x-4">
+          <BoldIcon className="w-5 h-5 cursor-pointer hover:text-[#000000] transition-transform duration-300 ease-in-out hover:scale-110" />
+          <ItalicIcon className="w-5 h-5 cursor-pointer hover:text-[#000000] transition-transform duration-300 ease-in-out hover:scale-110" />
+          <UnderlineIcon className="w-5 h-5 cursor-pointer hover:text-[#000000] transition-transform duration-300 ease-in-out hover:scale-110" />
+          <div className="border-l-2 h-7 border-[#737373]" />
+          <ListBulletIcon className="w-5 h-5 cursor-pointer hover:text-[#000000] transition-transform duration-300 ease-in-out hover:scale-110" />
+          <NumberedListIcon className="w-5 h-5 cursor-pointer hover:text-[#000000] transition-transform duration-300 ease-in-out hover:scale-110" />
+          <div className="border-l-2 h-7 border-[#737373]" />
+          <LinkIcon className="w-5 h-5 cursor-pointer hover:text-[#000000] transition-transform duration-300 ease-in-out hover:scale-110" />
+          <FaceSmileIcon className="w-5 h-5 cursor-pointer hover:text-[#000000] transition-transform duration-300 ease-in-out hover:scale-110" />
         </div>
+        <div className="space-x-4">
+          <button
+            onClick={() => setEditModeTemplateId(null)}
+            className="w-fit py-2 px-5 bg-[#DDD6F6] text-[#1E1636] rounded-lg text-base transition-transform duration-300 ease-in-out hover:bg-[#BEB6E5] hover:scale-105 hover:shadow-md"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={() => handleSaveTemplate(template.id)}
+            className="w-fit py-2 px-5 bg-[#775ADA] text-base text-[#FFFFFF] rounded-lg transition-transform duration-300 ease-in-out hover:bg-[#5F48C2] hover:scale-105 hover:shadow-md"
+          >
+            Save
+          </button>
+        </div>
+      </div>
+    ) : (
+      <button
+        onClick={() => handleEditTemplate(template.id)}
+          className="w-fit py-1 px-3 bg-[#775ADA] text-base text-[#FFFFFF] rounded-lg transition-transform duration-300 ease-in-out hover:bg-[#5F48C2] hover:scale-105 hover:shadow-md"
+      >
+        Edit
+      </button>
+    )}
+  </div>
+))}
+</div> 
 
        
       </div>
@@ -410,4 +583,4 @@ export default function Templates() {
       
       </>
   )
-}
+} 

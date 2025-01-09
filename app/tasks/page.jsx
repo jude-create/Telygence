@@ -54,7 +54,7 @@ export default function Tasks() {
         priority: "High",
         dueDate: "Fri, Oct 4th 2024",
         time: "09:30 AM",
-        imageSrc: "",
+        imageSrc: "/images/Rectangle.png",
         flagColor: "#BABABA",
         isDropdownVisible: false,
       },

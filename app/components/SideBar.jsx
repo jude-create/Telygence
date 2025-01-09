@@ -203,7 +203,7 @@ const SideBar = () => {
           <li>
             <div
               onClick={() => setIsLogoutModalOpen(true)}
-              className={`flex items-center px-10 py-3 text-sm rounded-md text-[#DDD6F6] transition-all duration-500 ease-in-out ${
+              className={`flex items-center px-10 py-3 text-sm rounded-md text-[#DDD6F6] transition-all duration-500 ease-in-out cursor-pointer ${
                 pathname === "/logout"
                   ? "bg-[#3B2D6D] text-white font-bold"
                   : "hover:bg-[#3B2D6D] hover:text-white"

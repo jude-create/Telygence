@@ -13,7 +13,7 @@ export default function PlaceholderModal({ placeholderTemplateModal, handlePlace
         "DD/MM/YYYY",
         "Day, Month Date, Year",
         "Month Date, Year, Time",
-        "Time",
+        "T",
       ];
 
     const modalRef = useRef(null);

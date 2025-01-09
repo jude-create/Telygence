@@ -33,7 +33,7 @@ const Suggestion = () => {
           <div
             key={index}
             className="hover:bg-[#775ADA] flex space-x-3 p-3 rounded-xl items-center bg-[#EDEDED] 
-             hover:text-white transition duration-300 ease-in-out cursor-pointer"
+             hover:text-white transition duration-300 ease-in-out cursor-pointer "
           >
             <Image
               src="/images/magic.png"
@@ -42,7 +42,7 @@ const Suggestion = () => {
               height={30}
               width={30}
             />
-            <p className="truncate w-full">{suggestion}</p>
+            <p className="truncate w-full hover:whitespace-normal hover:break-words transition duration-300 ease-in-out">{suggestion}</p>
           </div>
         ))}
 

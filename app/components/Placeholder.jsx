@@ -79,7 +79,7 @@ export default function Placeholder() {
 
       <div className='p-4 text-sm text-[#999999] flex space-x-2'>
     <span className='italic'>i</span>
-    <p>  Drag placeholder to the portion on template to add/change</p>
+    <p>  Available Placeholders</p>
       </div>
   
       {/* Tags grid */}

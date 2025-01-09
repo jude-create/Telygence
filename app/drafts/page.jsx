@@ -125,7 +125,7 @@ export default function Drafts()  {
         </div>
       </div>
       
-      <div className='p-5 border bg-white w-full  mt-4 rounded-lg'>
+      <div className='p-5 border bg-white w-full  mt-4 rounded-lg h-full'>
        <div className=' flex space-x-7 items-center '>
           <div>
             <input 

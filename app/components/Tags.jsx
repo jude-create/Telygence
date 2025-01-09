@@ -3,7 +3,7 @@ import { BookmarkIcon } from "@heroicons/react/24/outline";
 import { EllipsisVerticalIcon } from "@heroicons/react/24/solid";
 import React, { useState, useRef, useEffect } from "react";
 
-export default function Tags() {
+export default function Tags({ onDragStart }) {
   const tags = [
     "Job hunt cold emails",
     "Recruiting",
@@ -53,7 +53,7 @@ export default function Tags() {
   };
 
   return (
-    <div className="bg-[#FFFFFF] w-full h-auto cursor-pointer rounded-xl mt-6">
+    <div className="bg-[#FFFFFF] w-full h-auto cursor-pointer rounded-xl mt-6 ">
       {/* Header */}
       <div className="flex justify-between p-4">
         <p className="font-light">Tags</p>
@@ -87,7 +87,7 @@ export default function Tags() {
       {/* Info Section */}
       <div className="p-4 text-sm text-[#999999] flex space-x-2">
         <span className="italic">i</span>
-        <p>Drag tag to a template to add/change</p>
+        <p>Available Tags</p>
       </div>
 
       {/* Tags Flex Layout */}

@@ -78,7 +78,7 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="flex w-full md:space-x-4">
+        <div className="flex w-full md:space-x-4 h-full">
           <div className="w-[60%]">
             <TemplateCard  />
             <RecentDraft />
