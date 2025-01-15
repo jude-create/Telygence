@@ -90,11 +90,11 @@ export default function Tags() {
       )}
 
       {/* Tags Flex Layout */}
-      <div className="flex flex-wrap gap-5 px-4 pb-8">
+      <div className="flex flex-wrap gap-4 px-3  pb-8">
         {tags.map((tag, index) => (
           <div
             key={index}
-            className="flex items-center space-x-1 bg-[#EEEBFB] py-2 px-4 rounded-full "
+            className="flex items-center space-x-1 bg-[#EEEBFB] py-2 px-1 rounded-full basis-[15%] whitespace-nowrap w-fit"
           >
             {/* Tag Icon */}
             <BookmarkIcon className="h-4 w-4 text-[#5943A3]" />

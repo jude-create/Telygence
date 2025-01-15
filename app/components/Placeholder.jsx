@@ -6,13 +6,15 @@ import { EllipsisVerticalIcon, PencilIcon, TrashIcon } from "@heroicons/react/24
 export default function Placeholder() {
   const [placeholders, setPlaceholders] = useState([
     "First name",
-    "Last name",
-    "Middle name",
-    "Email address",
-    "Company name",
-    "Month Date, Year",
-    "DD/MM/YYYY",
-    "Time",
+        "Last name",
+        "Middle name",
+        "Email address",
+        "Company name",
+        "Month Date, Year",
+        "DD/MM/YYYY",
+        "Day, Month Date, Year",
+        "Month Date, Year, Time",
+        "Time",
   ]);
 
   const [editIndex, setEditIndex] = useState(null); // Track index of placeholder being edited
@@ -77,11 +79,11 @@ export default function Placeholder() {
       )}
 
       {/* Placeholders Grid */}
-      <div className="flex flex-wrap gap-8 px-8 pb-8">
+      <div className="flex flex-wrap gap-5 px-4 pb-8">
         {placeholders.map((placeholder, index) => (
           <div
             key={index}
-            className="flex items-center space-x-1 bg-[#EDEDED] py-2 px-4 rounded-full basis-[25%] whitespace-nowrap w-fit relative"
+            className="flex items-center space-x-1 bg-[#EDEDED] py-2 px-2 rounded-full  basis-[20%] whitespace-nowrap w-fit"
           >
             {editIndex === index ? (
               <input
@@ -101,7 +103,7 @@ export default function Placeholder() {
             {/* Dropdown */}
             <div className="relative" ref={(el) => (dropdownRefs.current[index] = el)}>
               <EllipsisVerticalIcon
-                className="w-5 h-5 text-[#775ADA] cursor-pointer"
+                className="w-5 h-5 text-[#4D4D4D]  cursor-pointer"
                 onClick={() => handleDropdownToggle(index)}
               />
               {dropdownOpen === index && (
