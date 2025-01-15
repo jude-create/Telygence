@@ -308,7 +308,9 @@ export default function Templates() {
 
       <div className=' flex space-x-4'>
       <div className="  bg-[#FFFFFF] rounded-xl mt-6 w-[60%]  md:space-x-4 py-4">
-
+    
+     {/* Conditional Rendering for Templates */}
+      {templates.length > 0 ? (
     <div className='space-y-4'>
       {templates.map((template) => (
   <div
@@ -566,6 +568,20 @@ export default function Templates() {
   </div>
 ))}
 </div> 
+  ) : (
+         //not available conditional rendering 
+          <div className="flex flex-col items-center justify-center  space-y-6 h-screen">
+          <p className="text-lg text-[#AAAAAA]">You have no recent templates yet</p>
+            <Image
+              src="/images/floating.png" 
+              alt="No Templates Available"
+              height={250}
+              width={250}
+              
+            />
+           
+          </div>
+        )}
 
        
       </div>

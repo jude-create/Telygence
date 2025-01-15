@@ -96,6 +96,7 @@ export const RecentDraft = () => {
       <div className="border-t-4 w-full border-[#EDEDED]" />
 
       {/* Recent Drafts */}
+      {drafts.length > 0 ? (
       <div className="space-y-1">
         {drafts.map((draft) => (
           <div key={draft.id} className="flex justify-between px-4 text-base h-10 group">
@@ -131,6 +132,13 @@ export const RecentDraft = () => {
           </div>
         ))}
       </div>
+    ): (
+          <div className="flex flex-col items-center justify-center  space-y-6 h-44">
+          <p className="text-lg text-[#AAAAAA]">You have no recent drafts yet</p>
+            
+           
+          </div>
+        )}
 
       {/* Delete Confirmation Modal */}
       <DeleteConfirmationModal
@@ -140,5 +148,6 @@ export const RecentDraft = () => {
         itemLabel="draft"
       />
     </div>
+      
   );
 };

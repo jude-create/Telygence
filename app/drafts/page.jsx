@@ -296,19 +296,20 @@ export default function Drafts()  {
       <div className="border-t-4 w-full border-[#EDEDED]" />
 
       {/* Recent Drafts */}
+      {drafts.length > 0 ? (
       <div className="space-y-1">
         {drafts.map((draft) => (
-          <div key={draft.id} className="flex justify-between px-4 text-base h-10 group">
-            <p className="truncate w-[30%] font-semibold">{draft.title}</p>
-            <p className="font-extralight truncate w-[50%]">{draft.description}</p>
-            <div className="w-[35%] flex justify-end font-medium transition-all ease-in-out duration-500">
+          <div key={draft.id} className="flex justify-between items-center px-8 text-base h-10 ">
+            <p className="truncate w-[25%] font-semibold">{draft.title}</p>
+            <p className="font-extralight truncate w-[40%]">{draft.description}</p>
+            <div className="w-[35%] flex justify-end font-medium space-x-12">
               {/* Initially visible */}
-              <p className="group-hover:opacity-0 group-hover:translate-y-2 transition-all ease-in-out duration-500">
+              <p >
                 {draft.time}
               </p>
 
               {/* Hidden initially, shown on hover */}
-              <div className="hidden group-hover:flex xl:space-x-7 items-center transition-all ease-in-out duration-500 group-hover:opacity-100 group-hover:translate-y-0">
+              <div className="flex xl:space-x-7  ">
                 <PencilSquareIcon className="h-5 w-5 text-[#737373]" />
                 {draft.isStarred ? (
                   <StarSolidIcon
@@ -331,6 +332,13 @@ export default function Drafts()  {
           </div>
         ))}
       </div>
+    ): (
+          <div className="flex flex-col items-center justify-center  space-y-6 h-44">
+          <p className="text-lg text-[#AAAAAA]">You have no recent drafts yet</p>
+            
+           
+          </div>
+        )}
 
       {/* Delete Confirmation Modal */}
       <DeleteConfirmationModal

@@ -33,8 +33,12 @@ function RecentTask() {
   };
  
 
-  const renderTasks = (taskList) =>
-    taskList.map((task, index) => (
+  const renderTasks = (taskList) => {
+    if (taskList.length === 0) {
+      return <p className="text-gray-500 italic text-center">You have no available tasks in this section</p>;
+    }
+  
+    return taskList.map((task, index) => (
       <div key={index} className="flex justify-between w-full">
         <div className="flex w-[50%] space-x-1">
           <p className="truncate w-[60%] font-medium">{task.title}</p>
@@ -46,19 +50,21 @@ function RecentTask() {
           </p>
         </div>
         <div className="flex w-[50%] justify-end space-x-1">
-        <FlagIcon
-          className={`w-5 h-5 ${
-            task.priority === "H"
-              ? "text-[#FF304F]" // High priority - Red
-              : task.priority === "L"
-              ? "text-[#03A12F]" // Low priority - Green
-              : "text-[#BABABA]" // Default/Medium - Gray
-          }`}
-        />
+          <FlagIcon
+            className={`w-5 h-5 ${
+              task.priority === "H"
+                ? "text-[#FF304F]" // High priority - Red
+                : task.priority === "L"
+                ? "text-[#03A12F]" // Low priority - Green
+                : "text-[#BABABA]" // Default/Medium - Gray
+            }`}
+          />
           <p className="text-[#4D4D4D]">{task.dueDate}</p>
         </div>
       </div>
     ));
+  };
+  
 
   return (
     <>

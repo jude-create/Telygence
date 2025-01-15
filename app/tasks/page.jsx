@@ -205,31 +205,44 @@ const toggleDropdown = (sectionKey, taskId) => {
 
 
   const TaskSection = ({ tasks, sectionTitle, sectionColor, sectionKey }) => {
-    const getTargetSection = (direction) => {
-      if (direction === "left") {
-        return sectionKey === "inProgress" ? "todo" : "inProgress";
-      } else if (direction === "right") {
-        return sectionKey === "todo" ? "inProgress" : "completed";
-      }
-      return "";
-    };
+  const getTargetSection = (direction) => {
+    if (direction === "left") {
+      return sectionKey === "inProgress" ? "todo" : "inProgress";
+    } else if (direction === "right") {
+      return sectionKey === "todo" ? "inProgress" : "completed";
+    }
+    return "";
+  };
 
-    return (
-      <section className="w-1/3">
-        <div className="flex justify-between items-center">
-          <div className="flex space-x-2 items-center">
-            <div className={`w-3 h-3 rounded-full`} style={{ backgroundColor: sectionColor }} />
-            <p className="font-semibold">
-              {sectionTitle} ({tasks.length})
-            </p>
-          </div>
-          <PlusIcon
-            onClick={handleTaskModal}
-            className="w-5 h-5 text-[#262626] cursor-pointer"
-          />
+  return (
+    <section className="w-1/3">
+      <div className="flex justify-between items-center">
+        <div className="flex space-x-2 items-center">
+          <div className={`w-3 h-3 rounded-full`} style={{ backgroundColor: sectionColor }} />
+          <p className="font-semibold">
+            {sectionTitle} ({tasks.length})
+          </p>
         </div>
-        <div className="mt-2 space-y-3">
-          {tasks.map((task) => (
+        <PlusIcon
+          onClick={handleTaskModal}
+          className="w-5 h-5 text-[#262626] cursor-pointer"
+        />
+      </div>
+      <div className="mt-2 space-y-3">
+        {tasks.length === 0 ? (
+          <div className="flex flex-col items-center pt-28  space-y-6 h-screen">
+          <p className="text-base text-[#AAAAAA]">You have not set any tasks yet in this section</p>
+            <Image
+              src="/images/ballon.png" // Replace with your "no templates available" image path
+              alt="No Templates Available"
+              height={200}
+              width={200}
+              
+            />
+           
+          </div>
+        ) : (
+          tasks.map((task) => (
             <div key={task.id} className="bg-[#FAFAFA] p-4 space-y-3">
               <div className="flex justify-between">
                 <p
@@ -268,32 +281,29 @@ const toggleDropdown = (sectionKey, taskId) => {
                       className="w-5 h-5 text-[#9983E3]"
                     />
                   )}
-                 
                   <div className="relative" ref={dropdownRefs}>
-  <EllipsisHorizontalIcon
-    onClick={() => toggleDropdown(sectionKey, task.id)}
-    className="w-5 h-5 cursor-pointer"
-    
-  />
-  {task.isDropdownVisible && (
-    <div className="absolute right-0 mt-2 bg-white border border-gray-300 rounded-md shadow-lg w-48">
-      {getDropdownOptions(sectionKey).map((option) => (
-        <button
-          key={option.action}
-          className={`w-full text-left text-sm px-4 py-2 hover:bg-gray-100 ${
+                    <EllipsisHorizontalIcon
+                      onClick={() => toggleDropdown(sectionKey, task.id)}
+                      className="w-5 h-5 cursor-pointer"
+                    />
+                    {task.isDropdownVisible && (
+                      <div className="absolute right-0 mt-2 bg-white border border-gray-300 rounded-md shadow-lg w-48">
+                        {getDropdownOptions(sectionKey).map((option) => (
+                          <button
+                            key={option.action}
+                            className={`w-full text-left text-sm px-4 py-2 hover:bg-gray-100 ${
                               option.action === "delete" ? "text-red-500" : ""
                             }`}
-          onClick={() =>
-            handleDropdownAction(sectionKey, task.id, option.action)
-          }
-        >
-          {option.label}
-        </button>
-      ))}
-    </div>
-  )}
-</div>
-
+                            onClick={() =>
+                              handleDropdownAction(sectionKey, task.id, option.action)
+                            }
+                          >
+                            {option.label}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
               <div className="space-y-4">
@@ -320,15 +330,17 @@ const toggleDropdown = (sectionKey, taskId) => {
                 </div>
               </div>
             </div>
-          ))}
-        </div>
-      </section>
-    );
-  };
+          ))
+        )}
+      </div>
+    </section>
+  );
+};
+
 
   return (
     <>
-      <div className=" p-6 md:p-7 mt-20">
+      <div className=" p-6 md:p-7 mt-20 h-screen">
         <div className="flex flex-col space-y-4 md:flex-row md:space-y-0 md:space-x-5 w-full">
           {/* Welcome Section */}
           <div className="w-full md:w-[80%] flex justify-between px-4 md:px-8 items-center h-auto bg-white rounded-xl">
