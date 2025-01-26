@@ -12,11 +12,14 @@ export default function TagsModal({ tagModal, handleTagModal,  onTagSelect }) {
     "Advertising inquiries",
     "Networking",
     "Customer Support",
+    "Contracts",
     "Design feedback",
     "Tech support",
     "Partnership proposals",
+    "Application",
     "Client onboarding",
-    "Sales outreach"
+    "Marketing campaigns",
+    "Sales outreach",
   ];
 
   const modalRef = useRef(null);
@@ -46,15 +49,15 @@ export default function TagsModal({ tagModal, handleTagModal,  onTagSelect }) {
       {/* Modal content */}
       <div
         ref={modalRef}
-        className="bg-white w-full h-full overflow-y-auto scrollbar-hide cursor-pointer px-2 py-4 rounded-xl shadow-lg shadow-[#00000033]"
+        className="bg-white w-fit h-full overflow-y-auto scrollbar-hide cursor-pointer px-2 py-4 rounded-xl shadow-lg shadow-[#00000033]"
       >
         {/* Tags grid */}
-        <div className="grid grid-cols-2 gap-4 gap-x-8">
+        <div className="flex flex-wrap gap-4 px-3">
   {tags.map((tag, index) => (
     <div
       key={index}
       onClick={() => onTagSelect(tag)}
-      className="flex items-center space-x-1 bg-[#DDD6F6] p-2 rounded-full  whitespace-nowrap w-max"
+       className="flex items-center space-x-1 bg-[#EEEBFB] py-2 px-1 rounded-full basis-[15%] whitespace-nowrap w-fit"
     >
       {/* Tag */}
       <BookmarkIcon className="h-4 w-4 text-[#5943A3]" />
