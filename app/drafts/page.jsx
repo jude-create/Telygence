@@ -126,7 +126,7 @@ export default function Drafts()  {
       </div>
       
       <div className='p-5 border bg-white w-full  mt-4 rounded-lg h-full '>
-       <div className=' flex space-x-2 items-center justify-center md:space-x-1 xl:space-x-6'>
+       <div className=' flex space-x-2 items-center justify-center md:space-x-1 xl:space-x-7'>
           <div>
             <input 
               className=" border border-[#BABABA] h-10 rounded-lg px-4 placeholder:text-sm placeholder:font-light text-base tracking-wider"
@@ -138,7 +138,7 @@ export default function Drafts()  {
           </div>
           
           
-            <div className='flex space-x-0 text-[#737373] mt-3 md:space-x-2 xl:space-x-5'>
+            <div className='flex space-x-0 text-[#737373] mt-3 md:space-x-2 xl:space-x-6'>
             <ArrowUturnLeftIcon className='w-5 h-5 cursor-pointer hover:text-[#000000] transition-transform duration-300 ease-in-out hover:scale-110' />
             <ArrowUturnRightIcon className='w-5 h-5 cursor-pointer hover:text-[#000000] transition-transform duration-300 ease-in-out hover:scale-110'/>
             <PrinterIcon
