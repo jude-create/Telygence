@@ -287,11 +287,11 @@ export default function Templates() {
           <button
             onClick={handleTemplateModal}
             className="flex justify-center items-center rounded-lg bg-custom-radial w-full h-14 
-           text-base md:text-lg font-bold tracking-wider text-white transition-all ease-in-out duration-500 
+           text-base md:text-lg font-bold tracking-wide text-white transition-all ease-in-out duration-500 
            hover:bg-[#C9F1FE80] hover:tracking-widest"
           >
             Create a template
-            <PlusIcon className="w-7 h-7 text-white ml-2" />
+            <PlusIcon className="w-7 h-7 text-white xl:ml-2" />
           </button>
 
           {/* Write Button */}
@@ -315,7 +315,7 @@ export default function Templates() {
       {templates.map((template) => (
   <div
     key={template.id}
-    className="border border-[#BABABA] bg-[#EDEDED] px-4 mx-6 rounded-xl space-y-12 lg:space-y-8 pb-4"
+    className="border border-[#BABABA] bg-[#EDEDED] xl:px-4 px-2 mx-6 rounded-xl space-y-12 lg:space-y-8 pb-4"
   >
     {/* Tag */}
     <div className="flex justify-between items-center mt-4">

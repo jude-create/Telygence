@@ -33,7 +33,7 @@ export default function Home() {
         <div className="flex flex-col space-y-4 md:flex-row md:space-y-0 md:space-x-5 w-full">
           {/* Welcome Section */}
           <div className="w-full md:w-[60%] flex flex-col md:flex-row justify-between px-4 md:px-8 items-center h-auto md:h-14 bg-white rounded-xl">
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center xl:space-x-3 md:space-x-0">
               <p className="text-base md:text-xl font-medium">Welcome, Joey!</p>
               <Image
                 src="/images/hand.png"
@@ -49,16 +49,16 @@ export default function Home() {
           </div>
 
           {/* Buttons Section */}
-          <div className="w-full md:w-[40%] flex flex-col space-y-2 md:space-y-0 md:flex-row md:space-x-4">
+          <div className="w-full md:w-[40%] flex  space-y-2 md:space-y-0 flex-row md:space-x-4">
             {/* Create Template Button */}
             <button
               onClick={handleTemplateModal}
               className="flex justify-center items-center rounded-lg bg-custom-radial w-full h-14 
-             text-base md:text-lg font-bold tracking-wider text-white transition-all ease-in-out duration-500 
-             hover:bg-[#C9F1FE80] hover:tracking-widest"
+             text-base md:text-lg font-bold tracking-wide text-white transition-all ease-in-out duration-500 
+             hover:bg-[#C9F1FE80] hover:tracking-wider"
             >
               Create a template
-              <PlusIcon className="w-7 h-7 text-white ml-2" />
+              <PlusIcon className="w-7 h-7 text-white xl:ml-2" />
             </button>
 
             {/* Write Button */}

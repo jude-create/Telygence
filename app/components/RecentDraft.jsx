@@ -74,7 +74,7 @@ export const RecentDraft = () => {
   return (
     <div className="h-auto w-full bg-[#FFFFFF] rounded-xl mt-5 space-y-5 pb-10">
       {/* Header Section */}
-      <div className="flex justify-between px-8 pt-5">
+      <div className="flex justify-between px-5 xl:px-8 pt-5">
         <div className="flex space-x-2 items-center">
           <Image
             className="w-5 h-5"
@@ -109,7 +109,7 @@ export const RecentDraft = () => {
               </p>
 
               {/* Hidden initially, shown on hover */}
-              <div className="hidden group-hover:flex xl:space-x-7 items-center transition-all ease-in-out duration-500 group-hover:opacity-100 group-hover:translate-y-0">
+              <div className="hidden group-hover:flex md:space-x-2 xl:space-x-7 items-center transition-all ease-in-out duration-500 group-hover:opacity-100 group-hover:translate-y-0">
                 <PencilSquareIcon className="h-5 w-5 text-[#737373]" />
                 {draft.isStarred ? (
                   <StarSolidIcon

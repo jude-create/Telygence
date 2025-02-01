@@ -65,7 +65,7 @@ const TemplateCard = () => {
     <>
       <div className="h-auto w-full bg-[#FFFFFF] rounded-xl mt-6 space-y-5 pb-10">
         {/* Header Section */}
-        <div className="flex justify-between px-7 pt-5">
+        <div className="flex justify-between xl:px-7 pt-5 md:px-3">
           <div className="flex space-x-2 items-center">
             <Image
               className="w-5 h-5"
@@ -90,7 +90,7 @@ const TemplateCard = () => {
             {templates.map((template) => (
               <div
                 key={template.id}
-                className="border border-[#BABABA] bg-[#EDEDED] px-7 mx-6 rounded-xl space-y-12 lg:space-y-7 pb-7"
+                className="border border-[#BABABA] bg-[#EDEDED] xl:px-7 px-3 mx-6  rounded-xl space-y-12 lg:space-y-7 pb-7"
               >
                 {/* Tag */}
                 <div className="flex space-x-2 bg-[#DDD6F6] w-fit py-2 px-4 rounded-full mt-4 items-center">
