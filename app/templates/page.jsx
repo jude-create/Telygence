@@ -244,10 +244,10 @@ export default function Templates() {
 
   return (
     <>
-    <div className=" p-6 md:p-7 mt-20 ">
-      <div className="flex flex-col space-y-4 md:flex-row md:space-y-0 md:space-x-5 w-full">
+    <div className=" p-7 mt-20 ">
+      <div className="flex   flex-row space-y-0 space-x-5 w-full">
         {/* Welcome Section */}
-        <div className="w-full md:w-[60%] flex justify-between px-4 md:px-8 items-center h-auto bg-white rounded-xl">
+        <div className="w-[60%] flex justify-between px-8 items-center h-auto bg-white rounded-xl">
             <p className="text-base md:text-xl font-medium">Templates</p>
            <div className='flex space-x-3 items-center'>
             <input
@@ -282,7 +282,7 @@ export default function Templates() {
           </div>
 
         {/* Buttons Section */}
-        <div className="w-full md:w-[40%] flex flex-col space-y-2 md:space-y-0 md:flex-row md:space-x-4">
+        <div className="w-[40%] flex  space-y-0 flex-row space-x-4">
           {/* Create Template Button */}
           <button
             onClick={handleTemplateModal}
@@ -307,7 +307,7 @@ export default function Templates() {
       
 
       <div className=' flex space-x-4'>
-      <div className="  bg-[#FFFFFF] rounded-xl mt-6 w-[60%]  md:space-x-4 py-4">
+      <div className="  bg-[#FFFFFF] rounded-xl mt-6 w-[60%] space-x-4 py-4">
     
      {/* Conditional Rendering for Templates */}
       {templates.length > 0 ? (

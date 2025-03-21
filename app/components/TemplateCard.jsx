@@ -65,7 +65,7 @@ const TemplateCard = () => {
     <>
       <div className="h-auto w-full bg-[#FFFFFF] rounded-xl mt-6 space-y-5 pb-10">
         {/* Header Section */}
-        <div className="flex justify-between xl:px-7 pt-5 md:px-3">
+        <div className="flex justify-between xl:px-7 pt-5 px-3">
           <div className="flex space-x-2 items-center">
             <Image
               className="w-5 h-5"

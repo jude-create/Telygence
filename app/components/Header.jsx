@@ -16,7 +16,7 @@ const Header = () => {
 
   return (
     <div
-      className=" fixed w-screen h-20 bg-[#775ADA] flex justify-between items-center px-6 lg:px-12 "
+      className=" fixed w-full h-20 bg-[#775ADA] flex justify-between items-center px-6 lg:px-12 "
     >
     
       <div className="relative flex-1  max-w-[50%]">

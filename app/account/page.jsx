@@ -22,9 +22,9 @@ export default function Account({ signInMethod = "google" }) {
   };
 
   return (
-    <div className="p-6 md:p-7 mt-20 w-full">
+    <div className="p-7 mt-20 w-full">
       {/* Welcome Section */}
-      <div className="w-full px-4 md:px-8 flex py-4 items-center h-auto bg-white rounded-xl">
+      <div className="w-full px-8 flex py-4 items-center h-auto bg-white rounded-xl">
         <p className="text-base md:text-xl font-medium">My Account</p>
       </div>
 

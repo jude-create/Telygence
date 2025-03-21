@@ -109,7 +109,7 @@ export const RecentDraft = () => {
               </p>
 
               {/* Hidden initially, shown on hover */}
-              <div className="hidden group-hover:flex md:space-x-2 xl:space-x-7 items-center transition-all ease-in-out duration-500 group-hover:opacity-100 group-hover:translate-y-0">
+              <div className="hidden group-hover:flex space-x-2 xl:space-x-7 items-center transition-all ease-in-out duration-500 group-hover:opacity-100 group-hover:translate-y-0">
                 <PencilSquareIcon className="h-5 w-5 text-[#737373]" />
                 {draft.isStarred ? (
                   <StarSolidIcon

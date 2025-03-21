@@ -129,7 +129,7 @@ const SideBar = () => {
       </div>
 
       {/* Spacer */}
-      <div className="flex-grow"></div>
+      <div className="md:flex-grow "></div>
 
       {/* Bottom Section */}
       <nav>

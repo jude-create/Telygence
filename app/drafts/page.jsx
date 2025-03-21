@@ -98,10 +98,10 @@ export default function Drafts()  {
 
   return (
     <>
-    <div className="h-fit p-6 md:p-7 mt-20 ">
-      <div className="flex flex-col space-y-4 md:flex-row md:space-y-0 md:space-x-5 w-full">
+    <div className="h-fit p-7 mt-20 ">
+      <div className="flex flex-row space-y-0 space-x-5 w-full">
         {/* Welcome Section */}
-        <div className="w-full md:w-[80%] flex justify-between px-4 md:px-8 items-center h-auto bg-white rounded-xl">
+        <div className="w-[80%] flex justify-between px-8 items-center h-auto bg-white rounded-xl">
             <p className="text-base md:text-xl font-medium">Drafts</p>
            <div>
             <p className='text-[#8093A8] text-sm'>Saving...</p>
@@ -109,7 +109,7 @@ export default function Drafts()  {
           </div>
 
         {/* Buttons Section */}
-        <div className="w-full md:w-[20%] flex flex-col space-y-2 md:space-y-0 md:flex-row md:space-x-4">
+        <div className="w-[20%] flex  space-y-0 flex-row space-x-4">
           {/* Create Template Button */}
           <button
            onClick={handleCreateDraft}
@@ -126,7 +126,7 @@ export default function Drafts()  {
       </div>
       
       <div className='p-5 border bg-white w-full  mt-4 rounded-lg h-full '>
-       <div className=' flex space-x-2 items-center justify-center md:space-x-1 xl:space-x-7'>
+       <div className=' flex  items-center justify-center space-x-1 xl:space-x-7'>
           <div>
             <input 
               className=" border border-[#BABABA] h-10 rounded-lg px-4 placeholder:text-sm placeholder:font-light text-base tracking-wider"
@@ -138,7 +138,7 @@ export default function Drafts()  {
           </div>
           
           
-            <div className='flex space-x-0 text-[#737373] mt-3 md:space-x-2 xl:space-x-6'>
+            <div className='flex  text-[#737373] mt-3 space-x-2 xl:space-x-6'>
             <ArrowUturnLeftIcon className='w-5 h-5 cursor-pointer hover:text-[#000000] transition-transform duration-300 ease-in-out hover:scale-110' />
             <ArrowUturnRightIcon className='w-5 h-5 cursor-pointer hover:text-[#000000] transition-transform duration-300 ease-in-out hover:scale-110'/>
             <PrinterIcon
@@ -206,7 +206,7 @@ export default function Drafts()  {
        </div>
        <div className=' mt-5'>
        <textarea
-                      className="w-full border border-[#EDEDED] bg-white md:h-[500px] rounded-lg p-4 placeholder:text-sm 
+                      className="w-full border border-[#EDEDED] bg-white h-[500px] rounded-lg p-4 placeholder:text-sm 
                       placeholder:font-light text-base resize-none  "
                     placeholder="Start writing..."
                     type='text'
@@ -309,7 +309,7 @@ export default function Drafts()  {
               </p>
 
               {/* Hidden initially, shown on hover */}
-              <div className="flex md:space-x-2 xl:space-x-7  ">
+              <div className="flex space-x-2 xl:space-x-7  ">
                 <PencilSquareIcon className="h-5 w-5 text-[#737373]" />
                 {draft.isStarred ? (
                   <StarSolidIcon

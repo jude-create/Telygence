@@ -13,6 +13,25 @@ export default function TaskModal({ taskModal, handleTaskModal }) {
   const [showStatusDropdown, setShowStatusDropdown] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [showConfirmationTaskModal, setShowConfirmationTaskModal] = useState(false);
+  const [coverFile, setCoverFile] = useState(null);
+  const [coverPreview, setCoverPreview] = useState(null);
+
+  //To handle Image upload cover
+const handleFileUpload = (file) => {
+  if (!file.type.startsWith("image/")) {
+    alert("Please upload an image (PNG or JPG)");
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.onloadend = () => {
+    setCoverPreview(reader.result);
+  };
+  reader.readAsDataURL(file);
+
+  setCoverFile(file);
+};
+
 
   const modalRef = useRef(null);
 
@@ -196,34 +215,57 @@ export default function TaskModal({ taskModal, handleTaskModal }) {
               )}
             </div>
 
-            {/* Upload Task Cover */}
-            <div className="space-y-3">
-              <p className="text-sm text-[#000] font-medium">
-                Upload task cover (Optional)
-              </p>
-              <div className="py-5 border border-[#999999] rounded-lg">
-                <div className="flex justify-center items-center">
-                  <div className="bg-[#EDEDED] p-3 rounded-full w-fit">
-                    <Image
-                      src="/images/cloud.png"
-                      alt="cloud arrow"
-                      height={20}
-                      width={20}
-                    />
-                  </div>
-                </div>
+       {/* Upload Task Cover with Drag & Drop */}
+<div className="space-y-3">
+  <p className="text-sm text-[#000] font-medium">Upload task cover (Optional)</p>
 
-                <div className="text-center text-sm text-[#999999]">
-                  <p>
-                    <span className="text-[#775ADA] text-base">
-                      Click to upload
-                    </span>{" "}
-                    or drag and drop
-                  </p>
-                  <p>PNG or JPG</p>
-                </div>
-              </div>
-            </div>
+  <div
+    className="py-5 border border-[#999999] rounded-lg cursor-pointer transition hover:border-[#775ADA] hover:bg-gray-50"
+    onClick={() => document.getElementById("task-cover-upload").click()}
+    onDragOver={(e) => e.preventDefault()}
+    onDrop={(e) => {
+      e.preventDefault();
+      const file = e.dataTransfer.files[0];
+      if (file) handleFileUpload(file);
+    }}
+  >
+    <input
+      id="task-cover-upload"
+      type="file"
+      accept="image/png, image/jpeg"
+      className="hidden"
+      onChange={(e) => {
+        const file = e.target.files[0];
+        if (file) handleFileUpload(file);
+      }}
+    />
+
+    <div className="flex flex-col justify-center items-center text-center space-y-3">
+      {coverPreview ? (
+        <Image
+          src={coverPreview}
+          alt="Cover Preview"
+          width={120}
+          height={120}
+          className="rounded-lg object-cover"
+        />
+      ) : (
+        <>
+          <div className="bg-[#EDEDED] p-3 rounded-full w-fit">
+            <Image src="/images/cloud.png" alt="Upload icon" height={20} width={20} />
+          </div>
+          <div className="text-sm text-[#999999]">
+            <p>
+              <span className="text-[#775ADA] text-base cursor-pointer">Click to upload</span> or drag and drop
+            </p>
+            <p>PNG or JPG</p>
+          </div>
+        </>
+      )}
+    </div>
+  </div>
+</div>
+
 
             {/* Deadline and Time */}
             <div className="flex justify-between">

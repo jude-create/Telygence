@@ -29,11 +29,11 @@ export default function Home() {
 
   return (
     <>
-      <div className=" p-6 md:p-7 mt-20">
-        <div className="flex flex-col space-y-4 md:flex-row md:space-y-0 md:space-x-5 w-full">
+      <div className="p-7 mt-20">
+        <div className="flex  flex-row space-y-0 space-x-5 w-full">
           {/* Welcome Section */}
-          <div className="w-full md:w-[60%] flex flex-col md:flex-row justify-between px-4 md:px-8 items-center h-auto md:h-14 bg-white rounded-xl">
-            <div className="flex items-center xl:space-x-3 md:space-x-0">
+          <div className=" w-[60%] flex flex-row justify-between px-8 items-center h-14 bg-white rounded-xl">
+            <div className="flex items-center xl:space-x-3 space-x-0">
               <p className="text-base md:text-xl font-medium">Welcome, Joey!</p>
               <Image
                 src="/images/hand.png"
@@ -43,13 +43,13 @@ export default function Home() {
                 className="w-7 h-7"
               />
             </div>
-            <p className="font-normal text-sm text-[#737373] md:text-base mt-4 md:mt-0">
+            <p className="font-normal text-sm text-[#737373] md:text-base mt-0">
               It’s 8:02 PM, Wed, Jul 24, 2024
             </p>
           </div>
 
           {/* Buttons Section */}
-          <div className="w-full md:w-[40%] flex  space-y-2 md:space-y-0 flex-row md:space-x-4">
+          <div className="w-[40%] flex  space-y-0 flex-row space-x-4">
             {/* Create Template Button */}
             <button
               onClick={handleTemplateModal}
@@ -64,11 +64,11 @@ export default function Home() {
             {/* Write Button */}
             
             <Link
-            className="md:w-[40%]"
+            className="w-[40%]"
             href="/drafts"
             >
             <button
-              className="flex justify-center items-center border-2 tracking-wider md:border-4 border-[#1E95BB]  h-14 bg-[#C9F1FE80] p-4
+              className="flex justify-center items-center  tracking-wider border-4 border-[#1E95BB]  h-14 bg-[#C9F1FE80] p-4
              rounded-lg text-base md:text-lg font-bold text-[#1E95BB] transition-all ease-in-out duration-500 hover:text-white hover:bg-[#775ADA]"
             >
               Write
@@ -78,7 +78,7 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="flex w-full md:space-x-4 h-full">
+        <div className="flex w-full space-x-4 h-full">
           <div className="w-[60%]">
             <TemplateCard  />
             <RecentDraft />
