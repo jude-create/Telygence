@@ -21,7 +21,7 @@ export default function RootLayout({ children }) {
       <head>
         <meta
           name="viewport"
-          content="width=1024, initial-scale=1.0, user-scalable=yes"
+          content=" initial-scale=1.0, user-scalable=yes"
         />
         <title>Telygence AI</title>
         <meta name="description" content="A User Dashboard" />

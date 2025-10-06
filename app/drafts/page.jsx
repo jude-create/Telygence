@@ -98,7 +98,7 @@ export default function Drafts()  {
 
   return (
     <>
-    <div className="h-fit p-7 mt-20 ">
+    <div className="h-fit p-7 mt-20  ">
       <div className="flex flex-row space-y-0 space-x-5 w-full">
         {/* Welcome Section */}
         <div className="w-[80%] flex justify-between px-8 items-center h-auto bg-white rounded-xl">
@@ -126,7 +126,7 @@ export default function Drafts()  {
       </div>
       
       <div className='p-5 border bg-white w-full  mt-4 rounded-lg h-full '>
-       <div className=' flex  items-center justify-center space-x-1 xl:space-x-7'>
+       <div className=' flex  items-center  space-x-3 xl:space-x-7'>
           <div>
             <input 
               className=" border border-[#BABABA] h-10 rounded-lg px-4 placeholder:text-sm placeholder:font-light text-base tracking-wider"
@@ -138,7 +138,7 @@ export default function Drafts()  {
           </div>
           
           
-            <div className='flex  text-[#737373] mt-3 space-x-2 xl:space-x-6'>
+            <div className='flex  text-[#737373] mt-3 space-x-3 xl:space-x-6'>
             <ArrowUturnLeftIcon className='w-5 h-5 cursor-pointer hover:text-[#000000] transition-transform duration-300 ease-in-out hover:scale-110' />
             <ArrowUturnRightIcon className='w-5 h-5 cursor-pointer hover:text-[#000000] transition-transform duration-300 ease-in-out hover:scale-110'/>
             <PrinterIcon

@@ -22,7 +22,7 @@ const Header = () => {
       <div className="relative flex-1  max-w-[50%]">
         {/* Input Field */}
         <input
-          className="w-full border-2 border-[#9983E3] bg-[#654CB9] px-12 py-2 rounded-full 
+          className="w-full border-2 border-[#9983E3] bg-[#654CB9] px-12 py-3 rounded-full 
           focus:outline-none focus:border-[#9983E3] font-light text-sm text-[#DDD6F6] tracking-wider placeholder:text-[#9983E3]"
           type="search"
           placeholder="Search drafts, tasks, or recent conversation..."

@@ -113,7 +113,7 @@ export default function Tags() {
             {/* Dropdown */}
             <div className="relative" ref={(el) => (dropdownRefs.current[index] = el)}>
               <EllipsisVerticalIcon
-                className="w-5 h-5 text-[#775ADA] cursor-pointer"
+                className="w-5 h-5 text-[#775ADA] cursor-pointer "
                 onClick={() => handleDropdownToggle(index)}
               />
               {dropdownOpen === index && (

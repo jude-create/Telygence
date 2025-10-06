@@ -133,7 +133,7 @@ const SideBar = () => {
 
       {/* Bottom Section */}
       <nav>
-        <ul className="space-y-2 pb-4">
+        <ul className="space-y-2 pb-10">
           {/* Extension Link */}
           <li>
             <a

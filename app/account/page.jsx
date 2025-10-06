@@ -139,7 +139,7 @@ export default function Account({ signInMethod = "google" }) {
         <p className="text-[#4D4D4D]">Features</p>
 
         {/* Feature 1 */}
-        <div className="flex justify-between bg-[#EDEDED] p-4 w-full rounded-lg mt-5">
+        <div className="flex justify-between bg-[#EDEDED] p-4 w-full rounded-lg mt-5 ">
           <p className="font-semibold">Smart suggestions</p>
           <p className="text-sm">
             Telygence smart suggestions are based on your recent templates,
@@ -147,12 +147,12 @@ export default function Account({ signInMethod = "google" }) {
           </p>
           <div
             onClick={handleToggle}
-            className={`relative w-14 h-7 flex items-center rounded-full cursor-pointer transition-colors duration-300 ${
+            className={`relative w-14 h-7 flex items-center rounded-full cursor-pointer transition-colors duration-300  ${
               isToggled ? "bg-[#28C7FA]" : "bg-gray-300"
             }`}
           >
             <div
-              className={`absolute w-5 h-5 bg-white rounded-full shadow-md transform transition-transform duration-300 ${
+              className={`absolute w-5 h-5 bg-white rounded-full shadow-md transform transition-transform duration-300  ${
                 isToggled ? "translate-x-8" : "translate-x-0"
               }`}
             ></div>
