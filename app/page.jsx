@@ -29,7 +29,7 @@ export default function Home() {
 
   return (
     <>
-      <div className="p-7 mt-20">
+      <div className="p-7 ">
         <div className="flex  flex-row space-y-0 space-x-5 w-full">
           {/* Welcome Section */}
           <div className=" w-[60%] flex flex-row justify-between px-8 items-center h-14 bg-white rounded-xl">

@@ -333,7 +333,7 @@ export default function Tasks() {
 
   return (
     <DragDropContext onDragEnd={handleDragEnd}>
-      <div className="p-7 mt-20 h-screen bg-[#EDEDED] lg:h-full ">
+      <div className="p-7  h-screen bg-[#EDEDED] lg:h-full ">
         <div className="flex   flex-row space-y-0 space-x-5 w-full">
           {/* Welcome Section */}
           <div className="w-[80%] flex justify-between px-8 items-center h-auto bg-white rounded-xl">

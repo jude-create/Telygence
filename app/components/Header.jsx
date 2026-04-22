@@ -16,10 +16,10 @@ const Header = () => {
 
   return (
     <div
-      className=" fixed w-full h-20 bg-[#775ADA] flex justify-between items-center px-6 lg:px-12 "
+      className=" sticky top-0 w-full h-20 bg-[#775ADA] flex items-center justify-between  px-6 lg:px-12 "
     >
-    
-      <div className="relative flex-1  max-w-[50%]">
+    <div></div>
+      <div className="relative flex-1  max-w-full">
         {/* Input Field */}
         <input
           className="w-full border-2 border-[#9983E3] bg-[#654CB9] px-12 py-3 rounded-full 
@@ -31,7 +31,7 @@ const Header = () => {
         <MagnifyingGlassIcon className="w-6 h-6 absolute left-5 top-1/2 transform -translate-y-1/2 text-[#DDD6F6]" />
       </div>
 
-      <div className="flex space-x-10 w-[30%] lg:w-[25%]">
+      <div className="flex space-x-10 justify-end  lg:w-[25%]">
         <Link href="/account">
           <UserCircleIcon
             className="w-7 h-7 text-[#FFFFFF] cursor-pointer transition-transform duration-300 ease-in-out transform hover:scale-125 hover:text-[#DDD6F6]"
