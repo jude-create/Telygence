@@ -51,16 +51,27 @@ const SideBar = () => {
     <>
       {/* Overlay */}
       {sidebar.isMobile && sidebar.isOpen && (
-        <div
-          onClick={sidebar.closeMobileDrawer}
-          className="fixed inset-0 bg-black/40 z-40"
-        />
-      )}
+  <div
+    onClick={sidebar.closeMobileDrawer}
+    className="fixed inset-0 bg-gray-900/40 z-40 transition-opacity duration-300"
+  />
+)}
 
-    <aside 
-     className={`fixed top-0 md:h-screen left-0 z-50 transition-all duration-300 ease-in-out flex flex-col pt-4 shadow-lg bg-[#1E1636] text-[#DDD6F6]
-        ${!sidebar.isMobile ? (sidebar.isCollapsed ? 'w-20 px-3' : 'w-64 px-3') : 'w-full px-5 h-[90%]'}
-        ${sidebar.isMobile ? (sidebar.isOpen ? 'translate-y-0' : '-translate-y-full') : ''}`}>
+   <aside
+  className={`
+    fixed top-0 left-0 h-screen z-50 flex flex-col pt-4 shadow-lg
+    bg-[#1E1636] text-[#DDD6F6]
+    transition-all duration-300 ease-in-out
+    ${!sidebar.isMobile
+      ? sidebar.isCollapsed ? 'w-20 px-3' : 'w-64 px-3'
+      : 'w-72 px-5'
+    }
+    ${sidebar.isMobile
+      ? sidebar.isOpen ? 'translate-x-0' : '-translate-x-full'
+      : ''
+    }
+  `}
+>
       {/* Top Section */}
       <div>
        <div className="flex items-center mb-4 h-12 justify-between">

@@ -1,10 +1,11 @@
 'use client';
 
 import React, { useState } from "react";
-import { BellIcon, MagnifyingGlassIcon } from "@heroicons/react/24/solid";
+import { Bars3CenterLeftIcon, BellIcon, MagnifyingGlassIcon } from "@heroicons/react/24/solid";
 import { UserCircleIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import Notification from "../modals/Notification";
+import { useSidebarStore } from "../store/SidebarStore";
 
 const Header = () => {
   const [notificationModal, setNotificationModal] = useState(false);
@@ -14,11 +15,19 @@ const Header = () => {
     setNotificationModal(!notificationModal);
   };
 
+   const sidebar = useSidebarStore();
+
   return (
     <div
       className=" sticky top-0 w-full h-20 bg-[#775ADA] flex items-center justify-between  px-6 lg:px-12 "
     >
-    <div></div>
+    <button
+      className="md:hidden block p-2 rounded-md  mr-2 flex-shrink-0 group"
+      onClick={sidebar.toggleSidebar}
+    >
+      <Bars3CenterLeftIcon className="h-7 w-7 transition-transform duration-200 group-hover:scale-110" />
+    </button>
+
       <div className="relative flex-1  max-w-full">
         {/* Input Field */}
         <input

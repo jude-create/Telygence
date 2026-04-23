@@ -17,7 +17,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={`${sora.variable} antialiased`}>
+      <body className={`${sora.variable} antialiased `}>
         <SidebarWrapper>{children}</SidebarWrapper>
       </body>
     </html>
