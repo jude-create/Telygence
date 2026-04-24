@@ -1,23 +1,24 @@
 import { create } from 'zustand'
 
-export const useSidebarStore = create((set, get) => ({
+export const useSidebarStore = create((set) => ({
   isCollapsed: false,
   isMobile: false,
   isOpen: false,
 
-  toggleSidebar: () => {
-    const { isMobile, isOpen, isCollapsed } = get()
-    if (isMobile) {
-      set({ isOpen: !isOpen })
-    } else {
-      set({ isCollapsed: !isCollapsed })
-    }
-  },
+  toggleSidebar: () =>
+    set((state) =>
+      state.isMobile
+        ? { isOpen: !state.isOpen }
+        : { isCollapsed: !state.isCollapsed }
+    ),
 
-  setMobile: (val) => {
-    set({ isMobile: val })
-    if (!val) set({ isOpen: false })
-  },
-
+  openMobileDrawer: () => set({ isOpen: true }),
   closeMobileDrawer: () => set({ isOpen: false }),
+
+  setMobile: (val) =>
+    set((state) =>
+      state.isMobile === val
+        ? {}
+        : { isMobile: val, isOpen: false, isCollapsed: val ? false : state.isCollapsed }
+    ),
 }))

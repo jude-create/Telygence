@@ -17,17 +17,30 @@ const SideBar = () => {
     setIsLogoutModalOpen(false); // Close the modal after logout
   };
 
-   const MOBILE_BREAKPOINT = 768
+const [mounted, setMounted] = useState(false);
 
-  useEffect(() => {
-    const handleResize = () => {
-      sidebar.setMobile(window.innerWidth < MOBILE_BREAKPOINT)
-    }
+useEffect(() => {
+  const handleResize = () => {
+    sidebar.setMobile(window.innerWidth < 768);
+  };
 
-    handleResize()
-    window.addEventListener('resize', handleResize)
-    return () => window.removeEventListener('resize', handleResize)
-  }, []);
+  handleResize();
+  setMounted(true);
+
+  window.addEventListener("resize", handleResize);
+  return () => window.removeEventListener("resize", handleResize);
+}, []);
+
+if (!mounted) return null;
+const handleNavClick = () => {
+  if (sidebar.isMobile) {
+    setTimeout(() => {
+      sidebar.closeMobileDrawer();
+    }, 0);
+  }
+};
+
+  
 
    const topNavItems = [
     { name: 'Dashboard', path: '/', img: '/images/dashboard.png' },
@@ -53,23 +66,21 @@ const SideBar = () => {
       {sidebar.isMobile && sidebar.isOpen && (
   <div
     onClick={sidebar.closeMobileDrawer}
-    className="fixed inset-0 bg-gray-900/40 z-40 transition-opacity duration-300"
+    className="h-full w-full fixed top-0 left-0 bg-gray-900/40 z-40"
   />
 )}
 
    <aside
   className={`
-    fixed top-0 left-0 h-screen z-50 flex flex-col pt-4 shadow-lg
+    fixed top-0 left-0 md:h-screen z-50 flex flex-col pt-4 shadow-lg
     bg-[#1E1636] text-[#DDD6F6]
     transition-all duration-300 ease-in-out
-    ${!sidebar.isMobile
-      ? sidebar.isCollapsed ? 'w-20 px-3' : 'w-64 px-3'
-      : 'w-72 px-5'
-    }
-    ${sidebar.isMobile
-      ? sidebar.isOpen ? 'translate-x-0' : '-translate-x-full'
-      : ''
-    }
+    ${!sidebar.isMobile && (sidebar.isCollapsed ? 'w-16 px-3' : 'w-64 px-5')}
+
+    
+    ${sidebar.isMobile && 'w-[70%] px-6 h-full pt-6'}
+
+    ${sidebar.isMobile && (sidebar.isOpen ? 'translate-x-0' : '-translate-x-full')}
   `}
 >
       {/* Top Section */}
@@ -78,7 +89,7 @@ const SideBar = () => {
   {sidebar.isCollapsed && !sidebar.isMobile ? (
     // 🔹 COLLAPSED
     <div
-      className="relative w-60  mx-auto cursor-pointer group"
+      className="relative w-10  mx-auto cursor-pointer group"
       onMouseEnter={() => setIsLogoHovered(true)}
       onMouseLeave={() => setIsLogoHovered(false)}
       onClick={sidebar.toggleSidebar}
@@ -112,14 +123,14 @@ const SideBar = () => {
           alt="Logo"
           width={120}
           height={40}
-          className="h-8 w-auto"
+          className="h-8 md:w-auto w-40"
         />
        
       </div>
 
       <button
         onClick={sidebar.toggleSidebar}
-        className="ml-auto p-2 rounded-md hover:bg-[#3B2D6D] transition"
+        className="ml-auto p-2 rounded-md hover:bg-[#3B2D6D] transition hidden md:block"
       >
         <ArrowLeftStartOnRectangleIcon className="w-7 h-7 text-gray-300 " />
       </button>
@@ -128,13 +139,14 @@ const SideBar = () => {
 </div>
 
         {/* Main Navigation Links */}
-        <nav className="mt-2">
-          <ul className="space-y-2">
+        <nav className="mt-4 md:mt-2">
+          <ul className="space-y-4 md:space-y-2">
   {topNavItems.map((item) => (
     <li key={item.name} className="relative group">
   <Link
     href={item.path}
-    className={`flex items-center py-3 rounded-md transition-all duration-300
+    onClick={handleNavClick}
+    className={`flex items-center py-5 md:py-3 rounded-md transition-all duration-300
       ${sidebar.isCollapsed && !sidebar.isMobile ? 'justify-center px-2' : 'px-6'}
       ${isActive(item.path)
         ? "bg-[#3B2D6D] text-white font-bold"
@@ -175,11 +187,11 @@ const SideBar = () => {
       </div>
 
       {/* Spacer */}
-      <div className="md:flex-grow "></div>
+      <div className="md:flex-grow mt-4 md:mt-0 "></div>
 
       {/* Bottom Section */}
       <nav>
-       <ul className="space-y-2 pb-10">
+       <ul className="md:space-y-2 space-y-4 pb-10">
   {bottomNavItems.map((item) => {
     const baseClasses = `flex items-center py-3 rounded-md transition-all duration-300
       ${sidebar.isCollapsed && !sidebar.isMobile ? 'justify-center px-2' : 'px-6'}
@@ -247,7 +259,7 @@ const SideBar = () => {
 
         {/*  Internal */}
         {!item.external && item.name !== "Log out" && (
-          <Link href={item.path} className={baseClasses}>
+          <Link href={item.path} className={baseClasses} onClick={handleNavClick}>
             {content}
           </Link>
         )}

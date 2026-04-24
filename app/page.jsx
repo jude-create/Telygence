@@ -27,7 +27,7 @@ export default function Home() {
               <Image src="/images/hand.png" alt="hand" width={30} height={30} className="w-6 h-6 md:w-7 md:h-7" />
             </div>
             <p className="font-normal text-xs md:text-base text-[#737373]">
-              It's 8:02 PM, Wed, Jul 24, 2024
+              It&apos;s 8:02 PM, Wed, Jul 24, 2024
             </p>
           </div>
 

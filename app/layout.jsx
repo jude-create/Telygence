@@ -3,6 +3,7 @@ import { Sora } from "next/font/google";
 import "./globals.css";
 import SidebarWrapper from "./components/SidebarWrapper";
 
+
 const sora = Sora({
   subsets: ["latin"],
   variable: "--font-sora",
@@ -17,7 +18,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={`${sora.variable} antialiased `}>
+      <body className={`${sora.variable} antialiased min-w-full  `}>
         <SidebarWrapper>{children}</SidebarWrapper>
       </body>
     </html>

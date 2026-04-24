@@ -12,9 +12,11 @@ export default function SidebarWrapper({ children }) {
     <div className="flex">
       {/* Sidebar */}
       <div
-        className={`transition-all duration-300 hidden md:block
-        ${sidebar.isCollapsed ? 'w-20' : 'w-64'}
+        className={`transition-all duration-300 flex-shrink-0
+        ${sidebar.isCollapsed ? 'md:w-16' : 'md:w-64'}
+        
         `}
+        
       >
         <SideBar />
       </div>
