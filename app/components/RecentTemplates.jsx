@@ -22,6 +22,13 @@ const RECENT_TEMPLATES = [
     message: `It was great meeting you at the conference. I'd love to stay in touch and learn more about your work.\nAre you available for a quick call this week?`,
     meta: { author: "Sophia", date: "09/25/2024" },
   },
+   {
+    id: 3,
+    tag: "Networking",
+    title: "Hello Alex",
+    message: `It was great meeting you at the conference. I'd love to stay in touch and learn more about your work.\nAre you available for a quick call this week?`,
+    meta: { author: "Sophia", date: "09/25/2024" },
+  },
 ];
 
 export default function RecentTemplates() {

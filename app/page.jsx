@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import { PlusIcon } from "@heroicons/react/24/solid";
-import RecentTemplates from "./components/RecentTemplates";   // ← renamed widget
+import RecentTemplates from "./components/RecentTemplates";   
 import Suggestion from "./components/Suggestion";
 import { RecentDraft } from "./components/RecentDraft";
 import RecentTask from "./components/RecentTask";
@@ -19,7 +19,7 @@ export default function Home() {
         {/* Top bar */}
         <div className="flex flex-col sm:flex-row gap-3 w-full">
           <div className="w-full sm:w-[60%] flex justify-between px-5 md:px-8 items-center h-14 bg-white rounded-xl">
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 ">
               <p className="text-base md:text-xl font-medium">Welcome, Joey!</p>
               <Image src="/images/hand.png" alt="hand" width={28} height={28} className="w-6 h-6 md:w-7 md:h-7" />
             </div>
@@ -54,7 +54,7 @@ export default function Home() {
         {/* Main content */}
         <div className="flex flex-col lg:flex-row gap-4 w-full mt-4">
           <div className="w-full lg:w-[60%] min-w-0">
-            <RecentTemplates />    {/* ← was TemplateCard */}
+            <RecentTemplates />   
             <RecentDraft />
           </div>
           <div className="w-full lg:w-[40%] min-w-0">
