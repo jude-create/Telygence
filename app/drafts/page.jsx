@@ -1,396 +1,287 @@
-"use client"
-import { ArchiveBoxIcon, FaceSmileIcon, LinkIcon, PrinterIcon, TrashIcon,  StarIcon as StarOutlineIcon, PencilSquareIcon, } from '@heroicons/react/24/outline';
-import { ArrowUturnLeftIcon, ArrowUturnRightIcon, BoldIcon, ChevronDownIcon, ChevronUpIcon, ItalicIcon, ListBulletIcon, NumberedListIcon, PlusIcon, UnderlineIcon } from '@heroicons/react/24/solid'
-import React, { useState } from 'react'
-import { StarIcon as StarSolidIcon } from "@heroicons/react/24/solid";
-import { RecentDraft } from '../components/RecentDraft';
-import DeleteConfirmationModal from '../modals/DeleteConfirmationModal';
+"use client";
+import {
+  ArchiveBoxIcon, TrashIcon,
+  StarIcon as StarOutlineIcon,
+} from "@heroicons/react/24/outline";
+import { PlusIcon, StarIcon as StarSolidIcon } from "@heroicons/react/24/solid";
+import React, { useEffect, useRef, useState } from "react";
+import DeleteConfirmationModal from "../modals/DeleteConfirmationModal";
+import DraftToolbar from "../components/DraftToolbar";
+import DraftsList from "../components/DraftsList";
 
-export default function Drafts()  {
+// ─── Initial data ─────────────────────────────────────────────────────────────
+
+const INITIAL_DRAFTS = [
+  { id: 1, title: "Professional Summary",   description: "Thank you for signing up on Telygence. Begin your journey now!", time: "11:45 AM",  isStarred: false },
+  { id: 2, title: "Company Overview",       description: "Draft an outline for your organization's key services and values.",  time: "10:30 AM",  isStarred: true  },
+  { id: 3, title: "Investor Proposal",      description: "Prepare a detailed proposal letter for potential investors.",         time: "9:15 AM",   isStarred: false },
+  { id: 4, title: "Marketing Strategy",     description: "Plan a comprehensive strategy for launching new products.",          time: "Yesterday", isStarred: false },
+  { id: 5, title: "Project Timeline",       description: "Create a timeline for completing key deliverables in Q4.",           time: "2 days ago",isStarred: true  },
+];
+
+// ─── Discard / Creating modals ────────────────────────────────────────────────
+
+function DiscardModal({ onCancel, onConfirm }) {
+  return (
+    <div className="fixed inset-0 bg-gray-800/50 flex items-center justify-center z-50 px-4">
+      <div className="bg-gray-200 rounded-lg w-full max-w-sm overflow-hidden">
+        <div className="px-6 pt-4 pb-2 text-center">
+          <h2 className="text-base font-semibold">New draft</h2>
+        </div>
+        <div className="border-t border-[#737373]" />
+        <div className="px-6 py-4 text-center">
+          <p className="text-sm text-gray-600">
+            Are you sure you want to discard the current draft and create a new one?
+          </p>
+        </div>
+        <div className="flex justify-center gap-4 px-6 pb-5">
+          <button
+            onClick={onCancel}
+            className="px-5 py-2 bg-[#D9D9D9] rounded-md text-sm hover:bg-gray-300 transition-colors"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={onConfirm}
+            className="px-7 py-2 bg-[#775ADA] text-white rounded-md text-sm hover:bg-[#5F48C2] transition-colors"
+          >
+            Yes
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function CreatingModal() {
+  return (
+    <div className="fixed inset-0 bg-gray-800/50 flex items-center justify-center z-50">
+      <div className="bg-white rounded-lg p-6 w-72 text-center">
+        <h2 className="text-base font-semibold">Creating new draft…</h2>
+        <div className="mt-3 flex justify-center">
+          <div className="w-5 h-5 border-2 border-[#775ADA] border-t-transparent rounded-full animate-spin" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── Main page ────────────────────────────────────────────────────────────────
+
+export default function Drafts() {
+  // Editor state
   const [title, setTitle] = useState("");
-  const [message, setMessage] = useState("");
+  const [isStarred, setIsStarred] = useState(false);
+  const editorRef = useRef(null);
+
+  // Toolbar dropdowns
   const [showFontDropdown, setShowFontDropdown] = useState(false);
   const [showSizeDropdown, setShowSizeDropdown] = useState(false);
+  const [font, setFont] = useState("Sora");
+  const [size, setSize] = useState(15);
+  const fontDropdownRef = useRef(null);
+  const sizeDropdownRef = useRef(null);
+
+  // Drafts list
+  const [drafts, setDrafts] = useState(INITIAL_DRAFTS);
+  const [deleteModalId, setDeleteModalId] = useState(null);
   const [showStatusDropdown, setShowStatusDropdown] = useState(false);
-  const [isStarred, setIsStarred] = useState(false); // State to track star status
-  const [deleteModalDraftId, setDeleteModalDraftId] = useState(null);
-  const [status, setStatus] = useState("");
+  const statusDropdownRef = useRef(null);
+
+  // Draft creation flow
   const [isDiscardModalOpen, setIsDiscardModalOpen] = useState(false);
-  const [isCreatingNewModalOpen, setIsCreatingNewModalOpen] = useState(false);
-  const [drafts, setDrafts] = useState([
-    {
-      id: 1,
-      title: "Professional Summary",
-      description: "Thank you for signing up on Telygence. Begin your journey now!",
-      time: "11:45 AM",
-      isStarred: false, // Initial star status
-    },
-    {
-      id: 2,
-      title: "Company Overview",
-      description: "Draft an outline for your organization's key services and values.",
-      time: "10:30 AM",
-      isStarred: true,
-    },
-    {
-      id: 3,
-      title: "Investor Proposal",
-      description: "Prepare a detailed proposal letter for potential investors.",
-      time: "9:15 AM",
-      isStarred: false,
-    },
-    {
-      id: 4,
-      title: "Marketing Strategy",
-      description: "Plan a comprehensive strategy for launching new products.",
-      time: "Yesterday",
-      isStarred: false,
-    },
-    {
-      id: 5,
-      title: "Project Timeline",
-      description: "Create a timeline for completing key deliverables in Q4.",
-      time: "2 days ago",
-      isStarred: true,
-    },
-  ]);
+  const [isCreatingModalOpen, setIsCreatingModalOpen] = useState(false);
 
-  const handleDeleteDraft = (id) => {
-    setDeleteModalDraftId(id); // Show the delete modal for this draft
+  // Close dropdowns on outside click
+  useEffect(() => {
+    const handler = (e) => {
+      if (fontDropdownRef.current && !fontDropdownRef.current.contains(e.target))
+        setShowFontDropdown(false);
+      if (sizeDropdownRef.current && !sizeDropdownRef.current.contains(e.target))
+        setShowSizeDropdown(false);
+      if (statusDropdownRef.current && !statusDropdownRef.current.contains(e.target))
+        setShowStatusDropdown(false);
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
+
+  // ── Handlers ────────────────────────────────────────────────────────────────
+
+  const handleConfirmDelete = () => {
+    setDrafts((prev) => prev.filter((d) => d.id !== deleteModalId));
+    setDeleteModalId(null);
   };
 
-  const confirmDeleteDraft = () => {
-    console.log(`Draft with ID ${deleteModalDraftId} deleted!`);
-    setDrafts((prevDrafts) =>
-      prevDrafts.filter((draft) => draft.id !== deleteModalDraftId)
-    ); // Remove the draft from the list
-    setDeleteModalDraftId(null); // Close the modal
-  };
-
-  const toggleStarDraft = (id) => {
-    setDrafts((prevDrafts) =>
-      prevDrafts.map((draft) =>
-        draft.id === id ? { ...draft, isStarred: !draft.isStarred } : draft
-      )
+  const handleToggleStar = (id) => {
+    setDrafts((prev) =>
+      prev.map((d) => (d.id === id ? { ...d, isStarred: !d.isStarred } : d))
     );
   };
 
-
-  const toggleStarDraft2= () => {
-    setIsStarred(!isStarred); // Toggle the star status
+  const handleNewDraft = () => {
+    // Only prompt discard if there's content
+    const hasContent = title.trim() || (editorRef.current?.innerText?.trim());
+    if (hasContent) {
+      setIsDiscardModalOpen(true);
+    } else {
+      createBlankDraft();
+    }
   };
 
-  const handleCreateDraft = () => {
-    setIsDiscardModalOpen(true); // Open discard modal
-  };
-
-  const confirmDiscardDraft = () => {
-    setIsDiscardModalOpen(false); // Close discard modal
-    setIsCreatingNewModalOpen(true); // Open creating new modal
-
-    // Simulate new draft creation
+  const createBlankDraft = () => {
+    setIsDiscardModalOpen(false);
+    setIsCreatingModalOpen(true);
     setTimeout(() => {
-      setIsCreatingNewModalOpen(false); // Close creating new modal
-      console.log("New draft created!");
-    }, 2000); // Adjust timing as needed
+      setTitle("");
+      if (editorRef.current) editorRef.current.innerHTML = "";
+      setIsStarred(false);
+      setIsCreatingModalOpen(false);
+    }, 1200);
   };
-  
+
+  const handleSaveDraft = () => {
+    const content = editorRef.current?.innerHTML ?? "";
+    const newDraft = {
+      id: Date.now(),
+      title: title.trim() || "Untitled draft",
+      description: editorRef.current?.innerText?.slice(0, 80) ?? "",
+      time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+      isStarred,
+    };
+    setDrafts((prev) => [newDraft, ...prev]);
+    console.log("Saved draft content:", content);
+  };
 
   return (
     <>
-    <div className="h-fit p-7   ">
-      <div className="flex flex-row space-y-0 space-x-5 w-full">
-        {/* Welcome Section */}
-        <div className="w-[80%] flex justify-between px-8 items-center h-auto bg-white rounded-xl">
-            <p className="text-base md:text-xl font-medium">Drafts</p>
-           <div>
-            <p className='text-[#8093A8] text-sm'>Saving...</p>
-           </div>
+      <div className="p-4 sm:p-6 lg:p-7">
+
+        {/* ── Top bar ────────────────────────────────────────────────────── */}
+        <div className="flex flex-col sm:flex-row gap-3 w-full">
+          <div className="w-full sm:w-[80%] flex justify-between items-center px-4 sm:px-8 py-3 bg-white rounded-xl">
+            <p className="text-base sm:text-xl font-medium">Drafts</p>
+            <p className="text-[#8093A8] text-sm">Saving…</p>
           </div>
-
-        {/* Buttons Section */}
-        <div className="w-[20%] flex  space-y-0 flex-row space-x-4">
-          {/* Create Template Button */}
-          <button
-           onClick={handleCreateDraft}
-            className="flex justify-center items-center rounded-lg bg-custom-radial w-full h-14 
-           text-base md:text-lg font-bold tracking-wider text-white transition-all ease-in-out duration-500 
-           hover:bg-[#C9F1FE80] hover:tracking-widest"
-          >
-           draft
-            <PlusIcon className="w-7 h-7 text-white ml-2" />
-          </button>
-
-         
+          <div className="w-full sm:w-[20%]">
+            <button
+              onClick={handleNewDraft}
+              className="flex justify-center items-center gap-2 rounded-lg bg-custom-radial w-full h-12 sm:h-14
+                text-sm sm:text-base font-bold tracking-wider text-white
+                transition-all ease-in-out duration-500 hover:opacity-90"
+            >
+              Draft
+              <PlusIcon className="w-5 h-5 sm:w-6 sm:h-6 shrink-0" />
+            </button>
+          </div>
         </div>
-      </div>
-      
-      <div className='p-5 border bg-white w-full  mt-4 rounded-lg h-full '>
-       <div className=' flex  items-center  space-x-3 xl:space-x-7'>
-          <div>
-            <input 
-              className=" border border-[#BABABA] h-10 rounded-lg px-4 placeholder:text-sm placeholder:font-light text-base tracking-wider"
-                    placeholder="Enter title here..."
-                    type='text'
-                   value={title}
-                  onChange={(e) => setTitle(e.target.value)} 
+
+        {/* ── Editor panel ───────────────────────────────────────────────── */}
+        <div className="bg-white w-full mt-4 rounded-xl p-4 sm:p-5">
+
+          {/* Title input */}
+          <input
+            className="border border-[#BABABA] h-10 rounded-lg px-4 text-sm w-full sm:w-auto
+                       placeholder:text-sm placeholder:font-light tracking-wide
+                       focus:outline-none focus:ring-2 focus:ring-[#775ADA]"
+            placeholder="Enter title here..."
+            type="text"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+          />
+
+          {/* Toolbar — wraps on small screens */}
+          <div className="mt-3 overflow-x-auto">
+            <DraftToolbar
+              editorRef={editorRef}
+              font={font}
+              size={size}
+              onFontClick={() => setShowFontDropdown((o) => !o)}
+              onSizeClick={() => setShowSizeDropdown((o) => !o)}
+              showFontDropdown={showFontDropdown}
+              showSizeDropdown={showSizeDropdown}
+              fontDropdownRef={fontDropdownRef}
+              sizeDropdownRef={sizeDropdownRef}
             />
           </div>
-          
-          
-            <div className='flex  text-[#737373] mt-3 space-x-3 xl:space-x-6'>
-            <ArrowUturnLeftIcon className='w-5 h-5 cursor-pointer hover:text-[#000000] transition-transform duration-300 ease-in-out hover:scale-110' />
-            <ArrowUturnRightIcon className='w-5 h-5 cursor-pointer hover:text-[#000000] transition-transform duration-300 ease-in-out hover:scale-110'/>
-            <PrinterIcon
-              title='Print(Ctrl + P)'
-             className='w-5 h-5 cursor-pointer hover:text-[#000000] transition-transform duration-300 ease-in-out hover:scale-110' />
-            <div className='border-l-2 h-7 border-[#737373]'/>
-            <BoldIcon
-            title='Bold(Ctrl + B)'
-             className='w-5 h-5 cursor-pointer hover:text-[#000000] transition-transform duration-300 ease-in-out hover:scale-110'/>
-            <ItalicIcon 
-            title='Italic(Ctrl + I)'
-             className='w-5 h-5 cursor-pointer hover:text-[#000000] transition-transform duration-300 ease-in-out hover:scale-110' />
-            <UnderlineIcon
-            title='Underline(Ctrl + U)'
-              className='w-5 h-5 cursor-pointer hover:text-[#000000] transition-transform duration-300 ease-in-out hover:scale-110' />
-            <div className='border-l-2 h-7 border-[#737373]'/>
-            <ListBulletIcon
-            title='Bullet(Ctrl + -)'
-             className='w-5 h-5 cursor-pointer hover:text-[#000000] transition-transform duration-300 ease-in-out hover:scale-110' />
-             <NumberedListIcon
-             title='Number(Ctrl + 1)'
-              className='w-5 h-5 cursor-pointer hover:text-[#000000] transition-transform duration-300 ease-in-out hover:scale-110' />
-             <div className='border-l-2 h-7 border-[#737373]'/>
-             <LinkIcon
-             title='Insert link(Ctrl + K)'
-               className='w-5 h-5 cursor-pointer hover:text-[#000000] transition-transform duration-300 ease-in-out hover:scale-110 '/>
-             <FaceSmileIcon
-             title='Add emoji'
-              className='w-5 h-5 cursor-pointer hover:text-[#000000] transition-transform duration-300 ease-in-out hover:scale-110 '/>
-            </div>
 
-            <div className='flex space-x-4'>
-             <div className=" "> 
-              <div
-                className="w-full h-10 border border-[#999999] rounded-lg py-1 px-4 flex justify-center  items-center space-x-14 cursor-pointer"
-                onClick={() => setShowFontDropdown(!showFontDropdown)}
-              >
-                <p>Sora</p>
-                {showFontDropdown ? (
-                  <ChevronUpIcon className="h-5 w-5 text-[#262626] font-bold" />
-                ) : (
-                  <ChevronDownIcon className="h-5 w-5 text-[#262626] font-bold" />
-                )}
-              </div>
-              
-            </div>
-
-            <div className=" "> 
-              <div
-                className="w-full h-10 border border-[#999999] rounded-lg py-1 px-2 flex justify-center items-center space-x-2 cursor-pointer"
-                onClick={() => setShowSizeDropdown(!showSizeDropdown)}
-              >
-                <p>15</p>
-                {showSizeDropdown ? (
-                  <ChevronUpIcon className="h-5 w-5 text-[#262626] font-bold" />
-                ) : (
-                  <ChevronDownIcon className="h-5 w-5 text-[#262626] font-bold" />
-                )}
-              </div>
-              
-              </div>
-       
-       </div>
-
-       </div>
-       <div className=' mt-5'>
-       <textarea
-                      className="w-full border border-[#EDEDED] bg-white h-[500px] rounded-lg p-4 placeholder:text-sm 
-                      placeholder:font-light text-base resize-none  "
-                    placeholder="Start writing..."
-                    type='text'
-                   value={message}
-                  onChange={(e) => setMessage(e.target.value)} 
-
-                   />
-            </div>
-
-            <div className='px-7 flex justify-between bg-white mt-3'>
-            <div>
-    {/* Gradient Text Button */}
-    <button
-  
-  className="border-2 border-blue-700 w-fit py-2 px-5 rounded-full transition-transform duration-300 ease-in-out hover:scale-105 hover:shadow-lg"
->
-  <p className="text-transparent bg-clip-text bg-gradient-to-r from-[#775ADA] to-[#1E95BB] text-base">
-  Auto-complete with AI
-  </p>
-</button>
-
-  </div>
-   
-   <div className='flex space-x-6 '>
-   
-                {isStarred ? (
-                  <StarSolidIcon
-                    onClick={toggleStarDraft2}
-                    className="h-5 w-5 text-[#FF304F] cursor-pointer"
-                  />
-                ) : (
-                  <StarOutlineIcon
-                    onClick={toggleStarDraft2}
-                    className="h-5 w-5 text-[#737373]  cursor-pointer"
-                  />
-                )}
-                <ArchiveBoxIcon className="h-5 w-5 text-[#737373] cursor-pointer" />
-                <TrashIcon
-                  onClick={handleDeleteDraft}
-                  className="h-5 w-5 text-[#737373] cursor-pointer"
-                />
-   </div>
-
-            </div>
-     
-      </div>
-      
-      <div className="h-auto w-full bg-[#FFFFFF] rounded-xl mt-5 space-y-5 pb-10">
-      {/* Header Section */}
-      <div className="flex justify-between px-8 pt-5 relative">
-        <div className="flex space-x-2 items-center">
-         
-          <p className="font-light text-base text-[#001C3D]">Recent</p>
+          {/* ContentEditable editor — supports real rich-text formatting */}
           <div
-          className='cursor-pointer'
-          onClick={() => setShowStatusDropdown(!showStatusDropdown)}
-          >
-          {showStatusDropdown ? (
-                  <ChevronUpIcon className="h-5 w-5 text-[#262626] font-bold" />
-                ) : (
-                  <ChevronDownIcon className="h-5 w-5 text-[#262626] font-bold" />
-                )}
-                </div>
-                </div>
-                {showStatusDropdown && (
-                <div className="w-[12%] bg-white border border-gray-300 rounded-lg shadow-md absolute left-5 top-14  z-50">
-                  {["Starred", "Archived"].map((item) => (
-                    <p
-                      key={item}
-                      className="px-4 py-2 hover:bg-gray-300  cursor-pointer"
-                      onClick={() => {
-                        setStatus(item);
-                        setShowStatusDropdown(false);
-                      }}
-                    >
-                      {item}
-                    </p>
-                  ))}
-        </div>
-      )}
-        </div>
-        
-        
-      
+            ref={editorRef}
+            contentEditable
+            suppressContentEditableWarning
+            className="w-full mt-4 min-h-[300px] sm:min-h-[420px] border border-[#EDEDED] rounded-lg p-4
+                       text-sm leading-relaxed focus:outline-none focus:ring-2 focus:ring-[#775ADA]
+                       empty:before:content-['Start_writing...'] empty:before:text-[#BABABA]"
+            style={{ fontFamily: font }}
+          />
 
-      {/* Divider */}
-      <div className="border-t-4 w-full border-[#EDEDED]" />
+          {/* Editor footer */}
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mt-4 px-1">
+            {/* AI button */}
+            <button className="border-2 border-blue-700 py-2 px-5 rounded-full
+                               transition-transform hover:scale-105 hover:shadow-md shrink-0">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#775ADA] to-[#1E95BB] text-sm font-medium">
+                Auto-complete with AI
+              </span>
+            </button>
 
-      {/* Recent Drafts */}
-      {drafts.length > 0 ? (
-      <div className="space-y-1">
-        {drafts.map((draft) => (
-          <div key={draft.id} className="flex justify-between items-center px-8 text-base h-10 ">
-            <p className="truncate w-[25%] font-semibold">{draft.title}</p>
-            <p className="font-extralight truncate w-[40%]">{draft.description}</p>
-            <div className="w-[35%] flex justify-end font-medium space-x-12">
-              {/* Initially visible */}
-              <p >
-                {draft.time}
-              </p>
-
-              {/* Hidden initially, shown on hover */}
-              <div className="flex space-x-2 xl:space-x-7  ">
-                <PencilSquareIcon className="h-5 w-5 text-[#737373]" />
-                {draft.isStarred ? (
-                  <StarSolidIcon
-                    onClick={() => toggleStarDraft(draft.id)}
-                    className="h-5 w-5 text-[#FF304F] cursor-pointer"
-                  />
-                ) : (
-                  <StarOutlineIcon
-                    onClick={() => toggleStarDraft(draft.id)}
-                    className="h-5 w-5 text-[#FF304F] cursor-pointer"
-                  />
-                )}
-                <ArchiveBoxIcon className="h-5 w-5 text-[#737373]" />
-                <TrashIcon
-                  onClick={() => handleDeleteDraft(draft.id)}
-                  className="h-5 w-5 text-[#737373] cursor-pointer"
+            {/* Actions */}
+            <div className="flex items-center gap-4 sm:gap-6">
+              {isStarred ? (
+                <StarSolidIcon
+                  onClick={() => setIsStarred(false)}
+                  className="h-5 w-5 text-[#FF304F] cursor-pointer"
                 />
-              </div>
+              ) : (
+                <StarOutlineIcon
+                  onClick={() => setIsStarred(true)}
+                  className="h-5 w-5 text-[#737373] cursor-pointer hover:text-[#FF304F]"
+                />
+              )}
+              <ArchiveBoxIcon className="h-5 w-5 text-[#737373] cursor-pointer hover:text-black" />
+              <TrashIcon
+                onClick={() => {
+                  setTitle("");
+                  if (editorRef.current) editorRef.current.innerHTML = "";
+                }}
+                className="h-5 w-5 text-[#737373] cursor-pointer hover:text-[#E50606]"
+              />
+              <button
+                onClick={handleSaveDraft}
+                className="py-1.5 px-4 bg-[#775ADA] text-white text-sm rounded-lg
+                           hover:bg-[#5F48C2] transition-colors"
+              >
+                Save
+              </button>
             </div>
           </div>
-        ))}
+        </div>
+
+        {/* ── Recent drafts list ─────────────────────────────────────────── */}
+        <DraftsList
+          drafts={drafts}
+          deleteModalId={deleteModalId}
+          onDeleteClick={(id) => setDeleteModalId(id)}
+          onConfirmDelete={handleConfirmDelete}
+          onCloseDeleteModal={() => setDeleteModalId(null)}
+          onToggleStar={handleToggleStar}
+          showStatusDropdown={showStatusDropdown}
+          onToggleStatusDropdown={() => setShowStatusDropdown((o) => !o)}
+          onStatusSelect={(s) => { console.log("Filter by:", s); setShowStatusDropdown(false); }}
+          statusDropdownRef={statusDropdownRef}
+        />
+
       </div>
-    ): (
-          <div className="flex flex-col items-center justify-center  space-y-6 h-44">
-          <p className="text-lg text-[#AAAAAA]">You have no recent drafts yet</p>
-            
-           
-          </div>
-        )}
 
-      {/* Delete Confirmation Modal */}
-      <DeleteConfirmationModal
-        isOpen={deleteModalDraftId !== null}
-        onClose={() => setDeleteModalDraftId(null)}
-        onConfirm={confirmDeleteDraft}
-        itemLabel="draft"
-      />
-    </div>
-    </div>
-      
-    {/* Discard Confirmation Modal */}
-    {isDiscardModalOpen && (
-        <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50 ">
-          <div className="bg-gray-200 rounded-lg  space-y-4 w-[25%]">
-          <div className='px-6 pt-2'>
-            <h2 className="text-lg font-semibold text-center">New draft</h2>
-            </div>
-      <div className="border-t w-full border-[#737373] mb-5" />
-      <div className='px-6 '>
-            <p className="text-base text-gray-600 text-center ">
-            Are you sure you want to discard current draft and a create new one?
-            </p>
-           </div>
-            <div className="flex  space-x-7 p-6 items-center justify-center">
-              <button
-                onClick={() => setIsDiscardModalOpen(false)}
-                className="px-4 py-2 bg-[#D9D9D9] rounded-md hover:bg-gray-300"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={confirmDiscardDraft}
-                className="px-7 py-2 bg-[#775ADA] text-white rounded-md hover:bg-[#775ADA]/70"
-              >
-                Yes
-              </button>
-            </div>
-          </div>
-        </div>
+      {/* ── Modals ─────────────────────────────────────────────────────── */}
+      {isDiscardModalOpen && (
+        <DiscardModal
+          onCancel={() => setIsDiscardModalOpen(false)}
+          onConfirm={createBlankDraft}
+        />
       )}
-
-      {/* Creating New Draft Modal */}
-      {isCreatingNewModalOpen && (
-        <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 space-y-4 w-96">
-            <h2 className="text-lg font-semibold text-center ">Creating new... </h2>
-          </div>
-        </div>
-      )}
-   
-      
-      </>
-  )
+      {isCreatingModalOpen && <CreatingModal />}
+    </>
+  );
 }

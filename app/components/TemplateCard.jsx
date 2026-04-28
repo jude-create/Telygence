@@ -1,178 +1,178 @@
-"use client"
+"use client";
 import { BookmarkIcon, Square2StackIcon, TrashIcon } from "@heroicons/react/24/outline";
-import { ShareIcon } from "@heroicons/react/24/solid";
-import Image from "next/image";
-import React, { useState } from "react";
-import Share from "../modals/Share";
-import Link from "next/link";
+import { ShareIcon, XMarkIcon } from "@heroicons/react/24/solid";
 import DeleteConfirmationModal from "../modals/DeleteConfirmationModal";
+import Share from "../modals/Share";
+import TagPicker from "./TagPicker";
+import PlaceholderPicker from "./PlaceholderPicker";
+import ChipList from "./ChipList";
+import EditToolbar from "./EditToolbar";
 
-const TemplateCard = () => {
-  const [activeShareModalId, setActiveShareModalId] = useState(null);
-  const [copiedTemplateId, setCopiedTemplateId] = useState(null);
-  const [deleteModalTemplateId, setDeleteModalTemplateId] = useState(null);
-
- 
-  const templates = [
-    {
-      id: 1,
-      tag: "Job hunt cold emails",
-      title: "Hi Joel",
-      message: `I sent you a message a few weeks back. To follow up, I'd love to connect to discuss Topic. 
-      Are you free sometime in the next couple of days for a quick chat? Let me know, thanks!`,
-      meta: { author: "David", date: "09/26/2024" },
-    },
-    {
-      id: 2,
-      tag: "Networking ",
-      title: "Hello Alex",
-      message: `It was great meeting you at the conference. I'd love to stay in touch and learn more about 
-      your work. Are you available for a quick call this week?`,
-      meta: { author: "Sophia", date: "09/25/2024" },
-    },
-  ]; // Set this array to empty for testing "No template available" case
-
-  const handleCopyToClipboard = (id) => {
-    const template = templates.find((t) => t.id === id);
-    const textToCopy = template.message;
-
-    navigator.clipboard.writeText(textToCopy).then(() => {
-      setCopiedTemplateId(id);
-      setTimeout(() => {
-        setCopiedTemplateId(null);
-      }, 2000);
-    });
-  };
-
-  const handleShareModal = (id) => {
-    if (id === activeShareModalId) {
-      setActiveShareModalId(null);
-    } else {
-      setActiveShareModalId(id);
-    }
-  };
-
-  const handleDeleteTemplate = (id) => {
-    setDeleteModalTemplateId(id);
-  };
-
-  const confirmDeleteTemplate = () => {
-    console.log(`Template with ID ${deleteModalTemplateId} deleted!`);
-    setDeleteModalTemplateId(null);
-  };
+/**
+ * TemplateCard
+ *
+ * Renders one template with view / edit states, tag + placeholder pickers,
+ * share, copy-to-clipboard, and delete.
+ */
+export default function TemplateCard({
+  template,
+  allTags,
+  allPlaceholders,
+  isEditing,
+  editedMessage,
+  attachedTags,
+  attachedPlaceholders,
+  isSelected,
+  copiedId,
+  activeShareId,
+  deleteModalId,
+  openPickerType,        // "tags" | "placeholders" | null  (for THIS card)
+  // handlers
+  onEditStart,
+  onEditSave,
+  onEditCancel,
+  onMessageChange,
+  onCheckboxChange,
+  onCopy,
+  onShare,
+  onDeleteClick,
+  onConfirmDelete,
+  onCloseDeleteModal,
+  onOpenPicker,
+  onClosePicker,
+  onTagSelect,
+  onTagRemove,
+  onPlaceholderSelect,
+  onPlaceholderRemove,
+}) {
+  const tagIcon = <BookmarkIcon className="h-3.5 w-3.5 shrink-0" />;
 
   return (
-    <>
-      <div className="h-auto w-full bg-[#FFFFFF] rounded-xl mt-6 space-y-5 pb-10">
-        {/* Header Section */}
-        <div className="flex justify-between xl:px-7 pt-5 px-3">
-          <div className="flex space-x-2 items-center">
-            <Image
-              className="w-5 h-5"
-              src="/images/temp.png"
-              alt="Dashboard Icon"
-              height={40}
-              width={40}
+    <div className="border border-[#BABABA] bg-[#EDEDED] px-3 sm:px-4 mx-3 sm:mx-6 rounded-xl pb-4 space-y-4">
+
+      {/* ── Tags row ─────────────────────────────────────────────────────── */}
+      <div className="flex justify-between items-start pt-4 gap-3">
+        <div className="relative flex-1 min-w-0">
+          <ChipList
+            items={attachedTags}
+            colorClass="text-[#5943A3] bg-[#DDD6F6]"
+            icon={tagIcon}
+            canEdit={isEditing}
+            isPickerOpen={openPickerType === "tags"}
+            onPickerToggle={() => onOpenPicker(template.id, "tags")}
+            onRemove={(tag) => onTagRemove(tag)}
+            hint="Tags — editable in edit mode"
+          />
+          {openPickerType === "tags" && (
+            <TagPicker
+              mode="picker"
+              tags={allTags}
+              selected={attachedTags}
+              onSelect={onTagSelect}
+              onRemove={onTagRemove}
+              onClose={onClosePicker}
             />
-            <p className="font-light text-lg text-[#001C3D]">Recently used templates</p>
-          </div>
-          <Link href="/templates">
-            <p className="text-base text-[#775ADA] cursor-pointer hover:underline">View all</p>
-          </Link>
+          )}
         </div>
 
-        {/* Divider */}
-        <div className="border-t-4 w-full border-[#EDEDED]" />
-
-        {/* Conditional Rendering for Templates */}
-        {templates.length > 0 ? (
-          <div className="space-y-7">
-            {templates.map((template) => (
-              <div
-                key={template.id}
-                className="border border-[#BABABA] bg-[#EDEDED] xl:px-7 px-3 mx-6  rounded-xl space-y-12 lg:space-y-7 pb-7"
-              >
-                {/* Tag */}
-                <div className="flex space-x-2 bg-[#DDD6F6] w-fit py-2 px-4 rounded-full mt-4 items-center">
-                  <BookmarkIcon className="h-4 w-4 text-[#5943A3]" />
-                  <p className="text-[#5943A3] text-sm">{template.tag}</p>
-                </div>
-
-                {/* Message */}
-                <div className="font-normal text-base text-[#4D4D4D]">{template.title}</div>
-                <div className="text-base text-[#4D4D4D] font-normal">
-                  <p>{template.message}</p>
-                </div>
-
-                {/* Meta Info */}
-                <div className="text-[#4D4D4D] flex capitalize text-sm space-x-4">
-                  <p className="w-fit bg-[#D9D9D9] rounded-full px-6 py-2">{template.meta.author}</p>
-                  <p className="w-fit bg-[#D9D9D9] rounded-full px-6 py-2">{template.meta.date}</p>
-                </div>
-
-                {/* Footer */}
-                <div className="flex justify-between items-center">
-                  <p className="text-[#4D4D4D] text-base font-normal">Cheers</p>
-                  <div className="flex space-x-8 relative">
-                    {/* Share Icon */}
-                    <ShareIcon
-                      onClick={() => handleShareModal(template.id)}
-                      className="w-6 h-6 text-[#737373] cursor-pointer hover:text-[#000000]
-                       transition-transform duration-300 ease-in-out hover:scale-110"
-                    />
-
-                    {/* Copy to Clipboard Icon */}
-                    <Square2StackIcon
-                      onClick={() => handleCopyToClipboard(template.id)}
-                      className="w-6 h-6 text-[#737373] cursor-pointer hover:text-[#000000]
-                       transition-transform duration-300 ease-in-out hover:scale-110"
-                    />
-
-                    {/* Delete Icon */}
-                    <TrashIcon
-                      onClick={() => handleDeleteTemplate(template.id)}
-                      className="w-6 h-6 text-[#737373] cursor-pointer hover:text-[#000000] 
-                    transition-transform duration-300 ease-in-out hover:scale-110"
-                    />
-
-                    {/* Copied to Clipboard Message */}
-                    {copiedTemplateId === template.id && (
-                      <div className="absolute -top-10 right-0 bg-[#1E95BB] text-[#FFFFFF] text-sm w-max px-4 py-2 rounded-md shadow-md">
-                        Copied to clipboard!
-                      </div>
-                    )}
-                  </div>
-                </div>
-                {activeShareModalId === template.id && (
-                  <Share isOpen={true} onClose={() => handleShareModal(null)} />
-                )}
-
-                {/* Delete Confirmation Modal */}
-                <DeleteConfirmationModal
-                  isOpen={deleteModalTemplateId !== null}
-                  onClose={() => setDeleteModalTemplateId(null)}
-                  onConfirm={confirmDeleteTemplate}
-                  itemLabel="template"
-                />
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className="flex flex-col items-center justify-center  space-y-6 ">
-          <p className="text-lg text-[#AAAAAA]">You have no recent templates yet</p>
-            <Image
-              src="/images/floating.png" // Replace with your "no templates available" image path
-              alt="No Templates Available"
-              height={250}
-              width={250}
-              
-            />
-           
-          </div>
+        {!isEditing && (
+          <input
+            type="checkbox"
+            className="w-4 h-4 cursor-pointer mt-1 shrink-0"
+            checked={isSelected}
+            onChange={onCheckboxChange}
+            aria-label="Select template"
+          />
         )}
       </div>
-    </>
-  );
-};
 
-export default TemplateCard;
+      {/* ── Message ──────────────────────────────────────────────────────── */}
+      {isEditing ? (
+        <textarea
+          value={editedMessage}
+          onChange={onMessageChange}
+          className="w-full p-3 border border-gray-300 rounded-lg h-40 bg-white text-sm resize-none
+                     focus:outline-none focus:ring-2 focus:ring-[#775ADA]"
+        />
+      ) : (
+        <p className="text-sm text-[#4D4D4D] whitespace-pre-line leading-relaxed">
+          {template.message}
+        </p>
+      )}
+
+      {/* ── Placeholders row ─────────────────────────────────────────────── */}
+      <div className="relative">
+        <ChipList
+          items={attachedPlaceholders}
+          colorClass="text-[#4D4D4D] bg-[#D9D9D9]"
+          canEdit={isEditing}
+          isPickerOpen={openPickerType === "placeholders"}
+          onPickerToggle={() => onOpenPicker(template.id, "placeholders")}
+          onRemove={(p) => onPlaceholderRemove(p)}
+          hint="Placeholders — editable in edit mode"
+        />
+        {openPickerType === "placeholders" && (
+          <PlaceholderPicker
+            mode="picker"
+            placeholders={allPlaceholders}
+            selected={attachedPlaceholders}
+            onSelect={onPlaceholderSelect}
+            onRemove={onPlaceholderRemove}
+            onClose={onClosePicker}
+          />
+        )}
+      </div>
+
+      {/* ── Footer ───────────────────────────────────────────────────────── */}
+      <div className="flex justify-between items-center">
+        <p className="text-sm text-[#4D4D4D]">Cheers</p>
+
+        <div className="flex gap-4 sm:gap-5 relative">
+          <ShareIcon
+            onClick={() => onShare(template.id)}
+            className="w-5 h-5 text-[#737373] cursor-pointer hover:text-black transition-transform hover:scale-110"
+          />
+          <Square2StackIcon
+            onClick={() => onCopy(template.id)}
+            className="w-5 h-5 text-[#737373] cursor-pointer hover:text-black transition-transform hover:scale-110"
+          />
+          <TrashIcon
+            onClick={() => onDeleteClick(template.id)}
+            className="w-5 h-5 text-[#737373] cursor-pointer hover:text-black transition-transform hover:scale-110"
+          />
+
+          {copiedId === template.id && (
+            <div className="absolute -top-9 right-0 bg-[#1E95BB] text-white text-xs px-3 py-1.5 rounded-md shadow whitespace-nowrap z-10">
+              Copied to clipboard!
+            </div>
+          )}
+
+          {activeShareId === template.id && (
+            <Share isOpen onClose={() => onShare(null)} />
+          )}
+        </div>
+      </div>
+
+      {/* ── Edit toolbar / Edit button ────────────────────────────────────── */}
+      {isEditing ? (
+        <EditToolbar onSave={onEditSave} onCancel={onEditCancel} />
+      ) : (
+        <button
+          onClick={() => onEditStart(template.id)}
+          className="py-1.5 px-3 bg-[#775ADA] text-white text-sm rounded-lg
+                     hover:bg-[#5F48C2] transition-colors"
+        >
+          Edit
+        </button>
+      )}
+
+      {/* ── Modals ───────────────────────────────────────────────────────── */}
+      <DeleteConfirmationModal
+        isOpen={deleteModalId === template.id}
+        onClose={onCloseDeleteModal}
+        onConfirm={onConfirmDelete}
+        itemLabel="template"
+      />
+    </div>
+  );
+}

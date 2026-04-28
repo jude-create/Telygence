@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useSidebarStore } from "../store/SidebarStore";
+import LogoutModal from "../modals/LogoutModal";
 
 const SideBar = () => {
   const pathname = usePathname(); // Get the current path
@@ -51,8 +52,8 @@ const handleNavClick = () => {
   ];
 
   const bottomNavItems = [
-    { name: 'Get Extension', path: 'https://example.com', img: "/images/extension.png", external: true },
-    { name: 'Support', path: 'https://example.com', img: "/images/support.png", external: true },
+    { name: 'Get Extension', path: '/', img: "/images/extension.png", external: true },
+    { name: 'Support', path: '/account', img: "/images/support.png", external: true },
     { name: 'My Account', path: '/account', img: "/images/Group.png" },
     { name: 'Log out', path: '/logout', img: "/images/logout.png" },
   ];
@@ -140,7 +141,7 @@ const handleNavClick = () => {
 
         {/* Main Navigation Links */}
         <nav className="mt-4 md:mt-2">
-          <ul className="space-y-4 md:space-y-2">
+          <ul className="space-y-2">
   {topNavItems.map((item) => (
     <li key={item.name} className="relative group">
   <Link
@@ -187,7 +188,7 @@ const handleNavClick = () => {
       </div>
 
       {/* Spacer */}
-      <div className="md:flex-grow mt-4 md:mt-0 "></div>
+      <div className="md:flex-grow  md:mt-0 "></div>
 
       {/* Bottom Section */}
       <nav>
@@ -277,35 +278,12 @@ const handleNavClick = () => {
       </nav>
     </aside>
     
-    {isLogoutModalOpen && (
-        <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-[#1E1636] rounded-lg space-y-4 w-[25%] h-[45%]">
-            <div className="px-6 pt-4">
-              <h2 className="text-base font-semibold text-center text-[#FFFFFF]">Log out of Telygence AI</h2>
-            </div>
-            <div className="border-t w-full border-[#737373] mb-5" />
-            <div className="px-6 pt-8 ">
-              <p className="text-base text-[#FFFFFF] text-center ">
-              Are you sure you want to log out of your account?
-              </p>
-            </div>
-            <div className="flex space-x-7 p-6 items-center justify-center">
-              <button
-                onClick={() => setIsLogoutModalOpen(false)}
-                className="px-6 py-2 bg-[#3B2D6D] rounded-md  hover:scale-125  text-[#DDD6F6] transition-all ease-in-out duration-300"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleLogout}
-                className="px-4 py-2 bg-[#775ADA] hover:scale-125  rounded-md text-[#FFFFFF] transition-all ease-in-out duration-300"
-              >
-                Yes, logout
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+  <LogoutModal
+  isOpen={isLogoutModalOpen}
+  onCancel={() => setIsLogoutModalOpen(false)}
+  onConfirm={handleLogout}
+/>
+  
     </>
   );
 };

@@ -1,59 +1,135 @@
 "use client";
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import Portal from "./Portal";
+import { useNotificationStore } from "../store/NotificationStore";
+
 
 export default function Notification({ notificationModal, handleNotificationModal }) {
   const modalRef = useRef(null);
+  const [visible, setVisible] = useState(false);
 
-  const notifications = [
-    { id: 1, time: "Today, 11:16 AM", message: "It is a new week! Start your day by drafting a message to your customers" },
-    { id: 2, time: "Today, 11:05 AM", message: "You just set a new task" },
-    { id: 3, time: "Today, 11:05 AM", message: "You have a new message on WhatsApp Business" },
-    { id: 4, time: "Mon 12/09, 2:09 AM", message: "You have a new message from LinkedIn" },
-    { id: 5, time: "Mon 12/09, 2:09 AM", message: "You have a new message from Slack" },
-     { id: 6, time: "Mon 12/09, 2:09 AM", message: "You have a new message from LinkedIn" },
-    { id: 7, time: "Mon 12/09, 2:09 AM", message: "You have a new message from LinkedIn" }
-   
-  ];
+  const {
+    notifications,
+    markAllAsRead,
+    markAsRead,
+    deleteNotification,
+  } = useNotificationStore();
 
   const isToday = (time) => time.startsWith("Today");
 
+  // Animate in/out
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (modalRef.current && !modalRef.current.contains(event.target)) {
+    if (notificationModal) {
+      setVisible(true);
+    } else {
+      setTimeout(() => setVisible(false), 200); // match duration
+    }
+  }, [notificationModal]);
+
+  // Close on outside click
+  useEffect(() => {
+    const handler = (e) => {
+      if (modalRef.current && !modalRef.current.contains(e.target)) {
         handleNotificationModal();
       }
     };
 
     if (notificationModal) {
-      document.addEventListener("mousedown", handleClickOutside);
+      document.addEventListener("mousedown", handler);
     }
 
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
+    return () => document.removeEventListener("mousedown", handler);
   }, [notificationModal, handleNotificationModal]);
 
-  if (!notificationModal) return null;
+  if (!visible) return null;
 
   return (
     <Portal>
-      <div className="fixed inset-0 z-[9999] bg-black/30 flex justify-end">
+      {/* Backdrop */}
+      <div
+        className={`fixed inset-0 z-[9999] flex justify-end items-end sm:items-start
+          ${notificationModal ? "bg-black/40" : "bg-black/0"}
+          transition-all duration-200`}
+      >
+        {/* Panel */}
         <div
           ref={modalRef}
-          className="bg-white w-[22%] h-[90vh] mt-14 mr-6 rounded-xl shadow-lg px-6 py-7 overflow-y-auto transition-transform duration-300 ease-out"
+          className={`
+            w-full max-h-[80vh] rounded-t-2xl p-4
+            sm:w-80 sm:max-h-[85vh] sm:mt-16 sm:mr-6 sm:rounded-2xl
+            bg-white shadow-2xl flex flex-col overflow-hidden
+            transition-all duration-200 ease-out
+
+            ${
+              notificationModal
+                ? "translate-y-0 opacity-100 sm:translate-y-0 sm:translate-x-0"
+                : "translate-y-6 opacity-0 sm:translate-y-0 sm:translate-x-6"
+            }
+          `}
         >
-          {notifications.map((notification) => (
-            <div key={notification.id} className="space-y-2 mb-4 border-b pb-2">
-              <div className="flex justify-between items-center">
-                <p className="text-sm text-gray-500">{notification.time}</p>
-                {isToday(notification.time) && (
-                  <span className="w-2.5 h-2.5 bg-red-500 rounded-full"></span>
-                )}
-              </div>
-              <p className="text-xs text-gray-700">{notification.message}</p>
-            </div>
-          ))}
+          {/* Header */}
+          <div className="flex justify-between items-center mb-3 border-b pb-3">
+            <p className="text-sm font-semibold text-gray-800">
+              Notifications
+            </p>
+
+            <button
+              onClick={markAllAsRead}
+              className="text-xs text-[#775ADA] font-medium"
+            >
+              Mark all
+            </button>
+          </div>
+
+          {/* Body */}
+          <div className="overflow-y-auto flex-1 space-y-2">
+            {notifications.length === 0 ? (
+              <p className="text-xs text-gray-400 text-center py-6">
+                No notifications
+              </p>
+            ) : (
+              notifications.map((n) => (
+                <div
+                  key={n.id}
+                  onClick={() => markAsRead(n.id)}
+                  className={`flex justify-between gap-3 p-3 rounded-lg cursor-pointer transition
+                    ${!n.read ? "bg-[#F8F7FF]" : "hover:bg-gray-50"}
+                  `}
+                >
+                  <div className="flex-1">
+                    <p className="text-xs text-gray-800">{n.message}</p>
+                    <p className="text-[10px] text-gray-400 mt-1">
+                      {n.time.split(", ")[1] || n.time}
+                    </p>
+                  </div>
+
+                  {!n.read && (
+                    <span className="w-2 h-2 bg-red-500 rounded-full mt-1.5"></span>
+                  )}
+
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      deleteNotification(n.id);
+                    }}
+                    className="text-[10px] text-gray-400 hover:text-red-500"
+                  >
+                    ✕
+                  </button>
+                </div>
+              ))
+            )}
+          </div>
+
+          {/* Footer */}
+          <div className="border-t pt-3 mt-3">
+            <button
+              onClick={handleNotificationModal}
+              className="w-full text-xs text-gray-500"
+            >
+              Close
+            </button>
+          </div>
         </div>
       </div>
     </Portal>

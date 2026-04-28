@@ -6,13 +6,17 @@ import { UserCircleIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import Notification from "../modals/Notification";
 import { useSidebarStore } from "../store/SidebarStore";
+import { useNotificationStore } from "../store/NotificationStore";
 
 const Header = () => {
-  const [notificationModal, setNotificationModal] = useState(false);
+ const [notificationModal, setNotificationModal] = useState(false);
 
-  // Function to handle the Notification modal
-  const handleNotificationModal = () => {
-    setNotificationModal(!notificationModal);
+  const { notifications } = useNotificationStore();
+
+  const unreadCount = notifications.filter((n) => !n.read).length;
+
+  const toggleModal = () => {
+    setNotificationModal((prev) => !prev);
   };
 
   const sidebar = useSidebarStore();
@@ -22,7 +26,7 @@ const Header = () => {
   
   return (
     <div
-      className=" sticky top-0 w-full h-20 bg-[#775ADA] flex items-center justify-between  px-2 lg:px-12 "
+      className=" sticky top-0 w-full h-20 bg-[#775ADA] flex items-center justify-between z-50  px-2 lg:px-12 "
     >
     <button
   className="md:hidden p-2 rounded-md   flex-shrink-0 "
@@ -50,20 +54,24 @@ const Header = () => {
           />
         </Link>
 
-        <div className="relative" onClick={handleNotificationModal}>
-          {/* Bell Icon */}
-          <BellIcon
-            className="w-7 h-7 text-[#FFFFFF] cursor-pointer transition-transform duration-300 ease-in-out transform hover:scale-125 hover:text-[#DDD6F6]"
-          />
-          {/* Notification Badge */}
-          <div className="absolute top-0 right-1 border-2 border-[#FFFFFF] bg-[#FF304F] w-3 h-3 rounded-full"></div>
-        </div>
+       <div className="relative">
+        <BellIcon
+          onClick={toggleModal}
+          className="w-7 h-7 text-white cursor-pointer"
+        />
+
+        {unreadCount > 0 && (
+          <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] px-1.5 rounded-full">
+            {unreadCount}
+          </span>
+        )}
+      </div>
       </div>
 
       {/* Notification Modal */}
       <Notification
         notificationModal={notificationModal}
-        handleNotificationModal={handleNotificationModal}
+        handleNotificationModal={toggleModal}
       />
     </div>
   );
