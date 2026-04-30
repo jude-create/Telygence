@@ -52,8 +52,8 @@ const handleNavClick = () => {
   ];
 
   const bottomNavItems = [
-    { name: 'Get Extension', path: '/', img: "/images/extension.png", external: true },
-    { name: 'Support', path: '/account', img: "/images/support.png", external: true },
+    { name: 'Get Extension', path: 'https://example.com/extension', img: "/images/extension.png", external: true },
+    { name: 'Support', path: 'https://example.com/support', img: "/images/support.png", external: true },
     { name: 'My Account', path: '/account', img: "/images/Group.png" },
     { name: 'Log out', path: '/logout', img: "/images/logout.png" },
   ];
@@ -118,7 +118,7 @@ const handleNavClick = () => {
   ) : (
     // 🔹 EXPANDED
     <>
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 pt-36 md:pt-0">
         <Image
           src="/images/light.png"
           alt="Logo"
@@ -140,7 +140,7 @@ const handleNavClick = () => {
 </div>
 
         {/* Main Navigation Links */}
-        <nav className="mt-4 md:mt-2">
+        <nav className="mt-24 md:mt-2">
           <ul className="space-y-2">
   {topNavItems.map((item) => (
     <li key={item.name} className="relative group">

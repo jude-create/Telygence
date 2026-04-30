@@ -34,7 +34,7 @@ const INITIAL_TASKS = {
     { id: 2, title: "Write marketing report", description: "Draft a marketing performance report for Q3.", priority: "High", dueDate: "Wed, Oct 2nd 2024", time: "02:15 PM", imageSrc: "", flagColor: "#D89E07" },
   ],
   inProgress: [
-    { id: 3, title: "Organize sign-up documents", description: "Prepare sign-up sheets for the new event.", priority: "High", dueDate: "Fri, Oct 4th 2024", time: "09:30 AM", imageSrc: "/images/rectangle.png", flagColor: "#BABABA" },
+    { id: 3, title: "Organize sign-up documents", description: "Prepare sign-up sheets for the new event.", priority: "High", dueDate: "Fri, Oct 4th 2024", time: "09:30 AM", imageSrc: "/images/Rectangle.png", flagColor: "#BABABA" },
   ],
   completed: [
     { id: 4, title: "Prepare proposal for expo", description: "Prepare a detailed partnership proposal for the NES 30 competition exhibition at Transcorp Hilton hotel Abuja", priority: "Low", dueDate: "Mon, Oct 7th 2024", time: "05:00 PM", imageSrc: "", flagColor: "#03A12F" },
@@ -144,11 +144,15 @@ function TaskCard({ task, sectionKey, index, onMove, onDelete, onDropdownToggle 
 
           {/* Image */}
           {task.imageSrc && (
-            <Image
-              src={task.imageSrc}
-              className="w-full h-28 object-cover rounded-lg"
-              height={112} width={300} alt="task"
-            />
+            <div className="relative w-full h-28">
+              <Image
+                src={task.imageSrc}
+                fill
+                loading="eager"
+                className="object-cover rounded-lg"
+                alt="task"
+              />
+            </div>
           )}
 
           {/* Footer: due date + time */}
@@ -207,7 +211,7 @@ function TaskSection({ tasks, section, viewMode, onMove, onDelete, onDropdownTog
           <div className={`space-y-3 flex-1 ${viewMode === "list" ? "space-y-1.5" : ""}`}>
             {total === 0 ? (
               <div className="flex flex-col items-center justify-center py-12 text-center">
-                <Image src="/images/ballon.png" alt="empty" height={100} width={100} className="opacity-50" />
+                <Image src="/images/ballon.png" alt="empty" height={100} width={100} className="opacity-50" style={{ width: "auto", height: "auto" }} />
                 <p className="text-xs text-[#AAAAAA] mt-3 max-w-[140px]">No tasks here yet</p>
               </div>
             ) : (
