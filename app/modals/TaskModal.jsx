@@ -1,6 +1,6 @@
 "use client";
 
-import { CloudArrowUpIcon } from "@heroicons/react/24/outline";
+import { CloudArrowUpIcon, SparklesIcon } from "@heroicons/react/24/outline";
 import { XMarkIcon } from "@heroicons/react/24/solid";
 import Image from "next/image";
 import React, { useEffect, useRef, useState } from "react";
@@ -11,6 +11,44 @@ const STATUSES = [
   { value: "inProgress", label: "In progress" },
   { value: "completed", label: "Completed" },
 ];
+const MAX_COVER_SIZE = 900;
+
+function readFileAsDataUrl(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onloadend = () => resolve(String(reader.result || ""));
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+function resizeImageFile(file) {
+  return new Promise((resolve, reject) => {
+    const image = new window.Image();
+    const objectUrl = URL.createObjectURL(file);
+
+    image.onload = () => {
+      const ratio = Math.min(1, MAX_COVER_SIZE / Math.max(image.width, image.height));
+      const width = Math.max(1, Math.round(image.width * ratio));
+      const height = Math.max(1, Math.round(image.height * ratio));
+      const canvas = document.createElement("canvas");
+      const context = canvas.getContext("2d");
+
+      canvas.width = width;
+      canvas.height = height;
+      context.drawImage(image, 0, 0, width, height);
+      URL.revokeObjectURL(objectUrl);
+      resolve(canvas.toDataURL("image/jpeg", 0.82));
+    };
+
+    image.onerror = () => {
+      URL.revokeObjectURL(objectUrl);
+      reject(new Error("Unable to read image"));
+    };
+
+    image.src = objectUrl;
+  });
+}
 
 function Label({ children, optional }) {
   return (
@@ -29,6 +67,7 @@ function emptyForm() {
     priority: "Low",
     deadline: "",
     dueTime: "",
+    imageSrc: "",
   };
 }
 
@@ -42,6 +81,7 @@ function formFromTask(task) {
     priority: task.priority || "Low",
     deadline: task.deadline || "",
     dueTime: task.dueTime || "",
+    imageSrc: task.imageSrc || "",
   };
 }
 
@@ -50,6 +90,7 @@ export default function TaskModal({ taskModal, taskToEdit, handleTaskModal, onTa
   const [coverPreview, setCoverPreview] = useState(null);
   const [isDragging, setIsDragging] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [isGeneratingAi, setIsGeneratingAi] = useState(false);
   const [error, setError] = useState("");
   const modalRef = useRef(null);
   const isEditing = Boolean(taskToEdit?.id);
@@ -57,7 +98,7 @@ export default function TaskModal({ taskModal, taskToEdit, handleTaskModal, onTa
   useEffect(() => {
     if (taskModal) {
       setForm(formFromTask(taskToEdit));
-      setCoverPreview(null);
+      setCoverPreview(taskToEdit?.imageSrc || null);
       setError("");
     }
   }, [taskModal, taskToEdit]);
@@ -82,11 +123,17 @@ export default function TaskModal({ taskModal, taskToEdit, handleTaskModal, onTa
     setForm((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleFile = (file) => {
+  const handleFile = async (file) => {
     if (!file?.type.startsWith("image/")) return;
-    const reader = new FileReader();
-    reader.onloadend = () => setCoverPreview(reader.result);
-    reader.readAsDataURL(file);
+    try {
+      const imageSrc = await resizeImageFile(file);
+      setCoverPreview(imageSrc);
+      updateField("imageSrc", imageSrc);
+    } catch {
+      const imageSrc = await readFileAsDataUrl(file);
+      setCoverPreview(imageSrc);
+      updateField("imageSrc", imageSrc);
+    }
   };
 
   const validate = () => {
@@ -107,12 +154,43 @@ export default function TaskModal({ taskModal, taskToEdit, handleTaskModal, onTa
     try {
       setIsSaving(true);
       setError("");
-      await onTaskSave(form);
+      await onTaskSave({ ...form, imageSrc: coverPreview || "" });
       handleTaskModal();
     } catch (saveError) {
       setError(saveError.message || "Unable to save task");
     } finally {
       setIsSaving(false);
+    }
+  };
+
+  const handleAiTask = async () => {
+    if (isGeneratingAi) return;
+
+    const input = [form.title, form.description].filter(Boolean).join("\n\n").trim();
+    if (!input) {
+      setError("Add a rough task note first");
+      return;
+    }
+
+    try {
+      setIsGeneratingAi(true);
+      setError("");
+      const response = await fetch("/api/ai", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ tool: "task", input }),
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "Unable to generate task");
+      setForm((prev) => ({
+        ...prev,
+        ...data.task,
+        id: prev.id,
+      }));
+    } catch (error) {
+      setError(error.message);
+    } finally {
+      setIsGeneratingAi(false);
     }
   };
 
@@ -133,7 +211,18 @@ export default function TaskModal({ taskModal, taskToEdit, handleTaskModal, onTa
 
         <div className="overflow-y-auto flex-1 px-5 sm:px-8 py-5 space-y-5">
           <div>
-            <Label>Task name</Label>
+            <div className="flex items-center justify-between gap-3">
+              <Label>Task name</Label>
+              <button
+                type="button"
+                onClick={handleAiTask}
+                disabled={isGeneratingAi}
+                className="mb-1.5 flex items-center gap-1.5 rounded-lg bg-[#F3F0FF] px-3 py-1.5 text-xs font-medium text-[#5943A3] transition-colors hover:bg-[#E6DEFF] disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                <SparklesIcon className="h-4 w-4" />
+                {isGeneratingAi ? "Writing..." : "AI draft"}
+              </button>
+            </div>
             <input
               className="w-full border border-[#999999] min-h-11 rounded-lg px-4 text-sm placeholder:text-xs focus:outline-none focus:ring-2 focus:ring-[#775ADA]"
               placeholder="Enter task name"
@@ -180,7 +269,7 @@ export default function TaskModal({ taskModal, taskToEdit, handleTaskModal, onTa
               {coverPreview ? (
                 <div className="relative">
                   <Image src={coverPreview} alt="Cover preview" width={600} height={160} className="w-full h-36 object-cover rounded-xl" />
-                  <button onClick={(event) => { event.stopPropagation(); setCoverPreview(null); }} className="absolute top-2 right-2 bg-white/80 p-1 rounded-full hover:bg-white shadow">
+                  <button onClick={(event) => { event.stopPropagation(); setCoverPreview(null); updateField("imageSrc", ""); }} className="absolute top-2 right-2 bg-white/80 p-1 rounded-full hover:bg-white shadow">
                     <XMarkIcon className="w-4 h-4 text-gray-700" />
                   </button>
                 </div>

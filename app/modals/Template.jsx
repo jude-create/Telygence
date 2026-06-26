@@ -1,7 +1,7 @@
 "use client";
 
 import { XMarkIcon } from "@heroicons/react/24/solid";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import TagsModal from "./TagsModal";
 import PlaceholderModal from "./PlaceholderModal";
 import WritingStylesModal from "./WritingStylesModal";
@@ -11,6 +11,7 @@ import {
   TemplateMessageEditor,
   TemplateTagField,
 } from "../components/templates/TemplateComposerParts";
+import { loadAccountSettings } from "../lib/accountSettings";
 
 export default function Template({ templateModal, handleTemplateModal, onTemplateCreate }) {
   const [selectedTags, setSelectedTags] = useState([]);
@@ -20,11 +21,26 @@ export default function Template({ templateModal, handleTemplateModal, onTemplat
   const [showSuccess, setShowSuccess] = useState(false);
   const [createError, setCreateError] = useState("");
   const [isCreating, setIsCreating] = useState(false);
+  const [isGeneratingAi, setIsGeneratingAi] = useState(false);
   const [tagModal, setTagModal] = useState(false);
   const [placeholderModal, setPlaceholderModal] = useState(false);
   const [stylesModal, setStylesModal] = useState(false);
+  const [accountSettings, setAccountSettings] = useState(loadAccountSettings);
   const tagInputRef = useRef(null);
   const editorRef = useRef(null);
+
+  useEffect(() => {
+    const syncSettings = (event) => {
+      setAccountSettings(event.detail || loadAccountSettings());
+    };
+
+    window.addEventListener("telygence-settings-change", syncSettings);
+    window.addEventListener("storage", syncSettings);
+    return () => {
+      window.removeEventListener("telygence-settings-change", syncSettings);
+      window.removeEventListener("storage", syncSettings);
+    };
+  }, []);
 
   if (!templateModal) return null;
 
@@ -36,6 +52,10 @@ export default function Template({ templateModal, handleTemplateModal, onTemplat
   const addPlaceholder = (placeholder) => {
     if (!selectedPlaceholders.includes(placeholder)) {
       setSelectedPlaceholders((prev) => [...prev, placeholder]);
+    }
+    if (editorRef.current) {
+      editorRef.current.focus();
+      document.execCommand("insertText", false, `{{${placeholder}}}`);
     }
   };
 
@@ -77,6 +97,42 @@ export default function Template({ templateModal, handleTemplateModal, onTemplat
     }
   };
 
+  const handleAiGenerate = async (styleOverride = selectedStyle) => {
+    if (isGeneratingAi) return;
+
+    try {
+      setIsGeneratingAi(true);
+      setCreateError("");
+      const currentText = editorRef.current?.innerText?.trim() || "";
+      const response = await fetch("/api/ai", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          tool: "template",
+          input: currentText || "Create a useful reusable message template.",
+          context: [
+            styleOverride ? `Writing style: ${styleOverride}` : "",
+            selectedTags.length ? `Tags: ${selectedTags.join(", ")}` : "",
+            selectedPlaceholders.length ? `Placeholders: ${selectedPlaceholders.join(", ")}` : "",
+          ].filter(Boolean).join("\n"),
+        }),
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "Unable to generate template");
+      if (editorRef.current) editorRef.current.innerText = data.text || "";
+    } catch (error) {
+      setCreateError(error.message);
+    } finally {
+      setIsGeneratingAi(false);
+    }
+  };
+
+  const handleStyleSelect = (style) => {
+    setSelectedStyle(style);
+    setStylesModal(false);
+    handleAiGenerate(style);
+  };
+
   return (
     <>
       <div className="fixed inset-0 bg-black/50 z-[1000] flex items-end sm:items-center justify-center p-0 sm:p-4" onClick={(event) => { if (event.target === event.currentTarget) handleTemplateModal(); }}>
@@ -111,9 +167,12 @@ export default function Template({ templateModal, handleTemplateModal, onTemplat
 
           <TemplateFooter
             selectedStyle={selectedStyle}
+            isWritingStyleEnabled={accountSettings.writingStyle}
             isCreating={isCreating}
+            isGeneratingAi={isGeneratingAi}
             createError={createError}
             onStylesClick={() => setStylesModal(true)}
+            onAiGenerate={handleAiGenerate}
             onCancel={handleTemplateModal}
             onCreate={handleCreate}
           />
@@ -122,7 +181,9 @@ export default function Template({ templateModal, handleTemplateModal, onTemplat
 
       {tagModal && <TagsModal tagModal={tagModal} handleTagModal={() => setTagModal(false)} onTagSelect={(tag) => { addTag(tag); setTagModal(false); }} />}
       {placeholderModal && <PlaceholderModal placeholderModal={placeholderModal} handlePlaceholderModal={() => setPlaceholderModal(false)} onPlaceholderSelect={(placeholder) => { addPlaceholder(placeholder); setPlaceholderModal(false); }} />}
-      <WritingStylesModal stylesModal={stylesModal} handleStylesModal={() => setStylesModal(false)} onStyleSelect={(style) => { setSelectedStyle(style); setStylesModal(false); }} />
+      {accountSettings.writingStyle && (
+        <WritingStylesModal stylesModal={stylesModal} handleStylesModal={() => setStylesModal(false)} onStyleSelect={handleStyleSelect} />
+      )}
       {showSuccess && <SuccessToast message="Template created!" />}
     </>
   );

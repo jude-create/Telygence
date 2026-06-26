@@ -24,6 +24,8 @@ export default function DraftEditorPanel({
   toolbarState,
 }) {
   const [editorText, setEditorText] = useState("");
+  const [aiStatus, setAiStatus] = useState("");
+  const [isGeneratingAi, setIsGeneratingAi] = useState(false);
 
   const editor = useEditor({
     extensions: [
@@ -110,6 +112,58 @@ export default function DraftEditorPanel({
     setEditorText("");
   };
 
+  const textToTiptapContent = (text) => {
+    const paragraphs = String(text || "")
+      .split(/\n{2,}/)
+      .map((paragraph) => paragraph.trim())
+      .filter(Boolean);
+
+    return paragraphs.length
+      ? paragraphs.map((paragraph) => ({
+          type: "paragraph",
+          content: [{ type: "text", text: paragraph }],
+        }))
+      : "";
+  };
+
+  const runAiTool = async (tool) => {
+    if (!editor || isGeneratingAi) return;
+
+    const input = editor.getText().trim();
+    if (!input) {
+      setAiStatus("Write a little first");
+      return;
+    }
+
+    try {
+      setIsGeneratingAi(true);
+      setAiStatus(tool === "autocomplete" ? "Completing..." : "Rewriting...");
+      const response = await fetch("/api/ai", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          tool,
+          input,
+          context: title ? `Draft title: ${title}` : "",
+        }),
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "AI request failed");
+
+      if (tool === "autocomplete") {
+        editor.chain().focus().insertContent(textToTiptapContent(data.text)).run();
+      } else {
+        editor.commands.setContent(textToTiptapContent(data.text));
+      }
+      setEditorText(editor.getText());
+      setAiStatus("AI updated draft");
+    } catch (error) {
+      setAiStatus(error.message);
+    } finally {
+      setIsGeneratingAi(false);
+    }
+  };
+
   return (
     <div className="mt-4 w-full rounded-xl border border-[#E7E4F0] bg-white p-4 shadow-sm sm:p-5">
       <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
@@ -155,10 +209,26 @@ export default function DraftEditorPanel({
       </div>
 
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mt-4 px-1">
-        <button className="flex min-h-10 shrink-0 items-center gap-2 rounded-lg border border-[#775ADA] px-4 py-2 text-sm font-medium text-[#775ADA] transition-colors hover:bg-[#F3F0FF]">
-          <SparklesIcon className="h-4 w-4" />
-          Auto-complete with AI
-        </button>
+        <div className="flex flex-wrap items-center gap-2">
+          <button
+            type="button"
+            onClick={() => runAiTool("autocomplete")}
+            disabled={isGeneratingAi}
+            className="flex min-h-10 shrink-0 items-center gap-2 rounded-lg border border-[#775ADA] px-4 py-2 text-sm font-medium text-[#775ADA] transition-colors hover:bg-[#F3F0FF] disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            <SparklesIcon className="h-4 w-4" />
+            {isGeneratingAi ? "Working..." : "Auto-complete with AI"}
+          </button>
+          <button
+            type="button"
+            onClick={() => runAiTool("rewrite")}
+            disabled={isGeneratingAi}
+            className="min-h-10 rounded-lg bg-[#F3F0FF] px-4 py-2 text-sm font-medium text-[#5943A3] transition-colors hover:bg-[#E6DEFF] disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            Rewrite
+          </button>
+          {aiStatus && <span className="text-xs text-[#8093A8]">{aiStatus}</span>}
+        </div>
 
         <div className="flex flex-wrap items-center gap-3 sm:gap-4">
           {isStarred ? (

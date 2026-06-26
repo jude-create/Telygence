@@ -13,9 +13,8 @@ export default function Notification({ notificationModal, handleNotificationModa
     markAllAsRead,
     markAsRead,
     deleteNotification,
+    clearNotifications,
   } = useNotificationStore();
-
-  const isToday = (time) => time.startsWith("Today");
 
   // Animate in/out
   useEffect(() => {
@@ -68,24 +67,34 @@ export default function Notification({ notificationModal, handleNotificationModa
           `}
         >
           {/* Header */}
-          <div className="flex justify-between items-center mb-3 border-b pb-3">
+          <div className="flex justify-between items-center gap-3 mb-3 border-b pb-3">
             <p className="text-sm font-semibold text-gray-800">
               Notifications
             </p>
 
-            <button
-              onClick={markAllAsRead}
-              className="text-xs text-[#775ADA] font-medium"
-            >
-              Mark all
-            </button>
+            <div className="flex items-center gap-3">
+              <button
+                onClick={markAllAsRead}
+                disabled={notifications.length === 0}
+                className="text-xs font-medium text-[#775ADA] disabled:text-gray-300"
+              >
+                Mark all
+              </button>
+              <button
+                onClick={clearNotifications}
+                disabled={notifications.length === 0}
+                className="text-xs font-medium text-[#E50606] disabled:text-gray-300"
+              >
+                Clear
+              </button>
+            </div>
           </div>
 
           {/* Body */}
           <div className="overflow-y-auto flex-1 space-y-2">
             {notifications.length === 0 ? (
               <p className="text-xs text-gray-400 text-center py-6">
-                No notifications
+                No notifications yet
               </p>
             ) : (
               notifications.map((n) => (

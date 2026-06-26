@@ -1,7 +1,7 @@
 "use client";
 
 import {
-  FaceSmileIcon, LinkIcon, Square2StackIcon, TrashIcon,
+  FaceSmileIcon, LinkIcon, SparklesIcon, Square2StackIcon, TrashIcon,
 } from "@heroicons/react/24/outline";
 import {
   ArrowUturnLeftIcon, ArrowUturnRightIcon, BoldIcon, BookmarkIcon,
@@ -139,14 +139,37 @@ export function TemplateMessageEditor({
   );
 }
 
-export function TemplateFooter({ selectedStyle, isCreating, createError, onStylesClick, onCancel, onCreate }) {
+export function TemplateFooter({
+  selectedStyle,
+  isWritingStyleEnabled,
+  isCreating,
+  isGeneratingAi,
+  createError,
+  onStylesClick,
+  onAiGenerate,
+  onCancel,
+  onCreate,
+}) {
   return (
     <div className="shrink-0 border-t border-[#EDEDED] px-4 sm:px-7 py-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
-      <button onClick={onStylesClick} className="border-2 border-[#775ADA] py-2 px-4 rounded-full text-sm hover:shadow-md transition-transform shrink-0">
-        <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#775ADA] to-[#1E95BB] font-medium">
-          {selectedStyle ? `Style: ${selectedStyle}` : "Change writing style with AI"}
-        </span>
-      </button>
+      <div className="flex flex-wrap items-center gap-2">
+        {isWritingStyleEnabled && (
+          <button onClick={onStylesClick} className="border-2 border-[#775ADA] py-2 px-4 rounded-full text-sm hover:shadow-md transition-transform shrink-0">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#775ADA] to-[#1E95BB] font-medium">
+              {selectedStyle ? `Style: ${selectedStyle}` : "Change writing style with AI"}
+            </span>
+          </button>
+        )}
+        <button
+          type="button"
+          onClick={onAiGenerate}
+          disabled={isGeneratingAi}
+          className="flex items-center gap-2 rounded-lg bg-[#F3F0FF] px-4 py-2 text-sm font-medium text-[#5943A3] transition-colors hover:bg-[#E6DEFF] disabled:cursor-not-allowed disabled:opacity-60"
+        >
+          <SparklesIcon className="h-4 w-4" />
+          {isGeneratingAi ? "Writing..." : "Generate"}
+        </button>
+      </div>
       <div className="grid grid-cols-2 sm:flex gap-3 w-full sm:w-auto justify-end">
         {createError && <p className="self-center text-sm text-[#E50606]">{createError}</p>}
         <button onClick={onCancel} disabled={isCreating} className="py-2 px-5 bg-[#DDD6F6] text-[#1E1636] rounded-lg text-sm hover:bg-[#BEB6E5] transition-colors disabled:opacity-60">

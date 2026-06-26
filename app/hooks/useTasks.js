@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { TASK_SECTIONS } from "../components/tasks/taskConstants";
+import { useNotificationStore } from "../store/NotificationStore";
 
 const EMPTY_TASKS = { todo: [], inProgress: [], completed: [] };
 
@@ -17,6 +18,7 @@ function updateTaskInBoard(board, updatedTask) {
 }
 
 export function useTasks() {
+  const addNotification = useNotificationStore((state) => state.addNotification);
   const [tasks, setTasks] = useState(EMPTY_TASKS);
   const [isLoadingTasks, setIsLoadingTasks] = useState(true);
   const [taskError, setTaskError] = useState("");
@@ -74,6 +76,7 @@ export function useTasks() {
 
   const saveTask = async (task) => {
     setTaskError("");
+    const isEditing = Boolean(task.id);
     const response = await fetch("/api/tasks", {
       method: task.id ? "PATCH" : "POST",
       headers: { "Content-Type": "application/json" },
@@ -82,6 +85,7 @@ export function useTasks() {
     const data = await response.json();
     if (!response.ok) throw new Error(data.error || "Unable to save task");
     setTasks((prev) => updateTaskInBoard(prev, data));
+    addNotification({ message: isEditing ? "Task updated" : "Task created" });
     return data;
   };
 
@@ -126,6 +130,7 @@ export function useTasks() {
       const response = await fetch(`/api/tasks?id=${encodeURIComponent(taskId)}`, { method: "DELETE" });
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || "Unable to delete task");
+      addNotification({ message: "Task deleted" });
     } catch (error) {
       setTaskError(error.message);
       if (currentTask) setTasks((prev) => ({ ...prev, [sectionKey]: [currentTask, ...prev[sectionKey]] }));

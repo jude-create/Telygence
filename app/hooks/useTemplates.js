@@ -1,8 +1,10 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
 import { useTemplatePickers } from "./useTemplatePickers";
+import { useNotificationStore } from "../store/NotificationStore";
 
 export function useTemplates() {
+  const addNotification = useNotificationStore((state) => state.addNotification);
   const [templates, setTemplates] = useState([]);
   const [isLoadingTemplates, setIsLoadingTemplates] = useState(true);
   const [templateError, setTemplateError] = useState("");
@@ -82,6 +84,7 @@ export function useTemplates() {
       setTemplates((prev) => prev.filter((template) => !idSet.has(template.id)));
       setSelectedTemplates({});
       setBulkDropdownOpen(false);
+      addNotification({ message: `${ids.length} template${ids.length === 1 ? "" : "s"} deleted` });
     } catch {
       setTemplateError("Unable to delete selected templates");
     } finally {
@@ -99,6 +102,7 @@ export function useTemplates() {
       setTemplates([]);
       setSelectedTemplates({});
       setBulkDropdownOpen(false);
+      addNotification({ message: "All templates deleted" });
     } catch (error) {
       setTemplateError(error.message);
     } finally {
@@ -120,6 +124,7 @@ export function useTemplates() {
       const template = await response.json();
       setTemplates((prev) => [template, ...prev]);
       pickers.addTemplateMeta(template);
+      addNotification({ message: "Template created" });
       return template;
     } catch (error) {
       setTemplateError(error.message);
@@ -164,6 +169,7 @@ export function useTemplates() {
       setTemplates((prev) => prev.map((template) => (template.id === id ? updatedTemplate : template)));
       pickers.addTemplateMeta(updatedTemplate);
       setEditModeId(null);
+      addNotification({ message: "Template updated" });
     } catch (error) {
       setTemplateError(error.message);
     } finally {
@@ -191,6 +197,7 @@ export function useTemplates() {
 
       setTemplates((prev) => prev.filter((template) => template.id !== templateId));
       setDeleteModalId(null);
+      addNotification({ message: "Template deleted" });
     } catch (error) {
       setTemplateError(error.message);
     } finally {

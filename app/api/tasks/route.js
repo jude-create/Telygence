@@ -1,4 +1,6 @@
 import { NextResponse } from "next/server";
+import fs from "node:fs/promises";
+import path from "node:path";
 import { prisma } from "@/app/lib/prisma";
 import { getCurrentDbUser } from "@/app/lib/currentUser";
 
@@ -10,6 +12,63 @@ const STATUS_COLORS = {
   inProgress: "#D89E07",
   completed: "#03A12F",
 };
+const TASK_UPLOAD_DIR = path.join(process.cwd(), "public", "uploads", "tasks");
+const TASK_UPLOAD_URL = "/uploads/tasks";
+const IMAGE_EXTENSIONS = ["png", "jpg", "jpeg", "webp"];
+const MAX_IMAGE_BYTES = 1_500_000;
+
+function parseImageDataUrl(imageSrc) {
+  if (typeof imageSrc !== "string" || !imageSrc.startsWith("data:image/")) return null;
+
+  const match = imageSrc.match(/^data:image\/(png|jpe?g|webp);base64,(.+)$/);
+  if (!match) return "invalid";
+
+  const extension = match[1] === "jpeg" ? "jpg" : match[1];
+  const buffer = Buffer.from(match[2], "base64");
+
+  if (!buffer.length || buffer.length > MAX_IMAGE_BYTES) return "invalid";
+
+  return { extension, buffer };
+}
+
+async function removeTaskImages(taskId) {
+  await Promise.all(
+    IMAGE_EXTENSIONS.map((extension) =>
+      fs.unlink(path.join(TASK_UPLOAD_DIR, `${taskId}.${extension}`)).catch(() => null),
+    ),
+  );
+}
+
+async function saveTaskImage(taskId, imageSrc) {
+  if (typeof imageSrc !== "string") return;
+  if (imageSrc.startsWith(TASK_UPLOAD_URL)) return;
+
+  if (!imageSrc) {
+    await removeTaskImages(taskId);
+    return;
+  }
+
+  const parsed = parseImageDataUrl(imageSrc);
+  if (!parsed || parsed === "invalid") return;
+
+  await fs.mkdir(TASK_UPLOAD_DIR, { recursive: true });
+  await removeTaskImages(taskId);
+  await fs.writeFile(path.join(TASK_UPLOAD_DIR, `${taskId}.${parsed.extension}`), parsed.buffer);
+}
+
+async function getTaskImageSrc(taskId) {
+  for (const extension of IMAGE_EXTENSIONS) {
+    const filePath = path.join(TASK_UPLOAD_DIR, `${taskId}.${extension}`);
+    try {
+      await fs.access(filePath);
+      return `${TASK_UPLOAD_URL}/${taskId}.${extension}`;
+    } catch {
+      // Try the next supported extension.
+    }
+  }
+
+  return "";
+}
 
 function parseDueDate(deadline, time) {
   if (!deadline) return null;
@@ -28,7 +87,7 @@ function normalizeStatus(status) {
   return "todo";
 }
 
-function formatTask(task) {
+async function formatTask(task) {
   const updatedAt = new Date(task.updatedAt);
   const dueDate = task.dueDate ? new Date(task.dueDate) : null;
 
@@ -51,17 +110,19 @@ function formatTask(task) {
       minute: "2-digit",
     }).format(dueDate || updatedAt),
     dueTime: dueDate ? dueDate.toTimeString().slice(0, 5) : "",
-    imageSrc: "",
+    imageSrc: await getTaskImageSrc(task.id),
     flagColor: STATUS_COLORS[task.status] || "#BABABA",
     status: task.status,
   };
 }
 
-function groupTasks(tasks) {
+async function groupTasks(tasks) {
+  const formattedTasks = await Promise.all(tasks.map(formatTask));
+
   return {
-    todo: tasks.filter((task) => task.status === "todo").map(formatTask),
-    inProgress: tasks.filter((task) => task.status === "inProgress").map(formatTask),
-    completed: tasks.filter((task) => task.status === "completed").map(formatTask),
+    todo: formattedTasks.filter((task) => task.status === "todo"),
+    inProgress: formattedTasks.filter((task) => task.status === "inProgress"),
+    completed: formattedTasks.filter((task) => task.status === "completed"),
   };
 }
 
@@ -79,7 +140,7 @@ export async function GET() {
     orderBy: { updatedAt: "desc" },
   });
 
-  return NextResponse.json(groupTasks(tasks));
+  return NextResponse.json(await groupTasks(tasks));
 }
 
 export async function POST(request) {
@@ -108,7 +169,9 @@ export async function POST(request) {
     },
   });
 
-  return NextResponse.json(formatTask(task), { status: 201 });
+  await saveTaskImage(task.id, body.imageSrc);
+
+  return NextResponse.json(await formatTask(task), { status: 201 });
 }
 
 export async function PATCH(request) {
@@ -136,6 +199,10 @@ export async function PATCH(request) {
     },
   });
 
+  if (Object.prototype.hasOwnProperty.call(body, "imageSrc")) {
+    await saveTaskImage(body.id, body.imageSrc);
+  }
+
   const task = await prisma.task.findFirst({
     where: { id: body.id, userId: user.id },
   });
@@ -144,7 +211,7 @@ export async function PATCH(request) {
     return NextResponse.json({ error: "Task not found" }, { status: 404 });
   }
 
-  return NextResponse.json(formatTask(task));
+  return NextResponse.json(await formatTask(task));
 }
 
 export async function DELETE(request) {
@@ -160,6 +227,8 @@ export async function DELETE(request) {
   await prisma.task.deleteMany({
     where: { id, userId: user.id },
   });
+
+  await removeTaskImages(id);
 
   return NextResponse.json({ ok: true });
 }

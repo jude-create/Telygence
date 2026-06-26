@@ -1,12 +1,25 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useNotificationStore } from "../store/NotificationStore";
+
+function draftPromptToHtml(prompt) {
+  return String(prompt || "")
+    .split(/\n{2,}/)
+    .map((paragraph) => paragraph.trim())
+    .filter(Boolean)
+    .map((paragraph) => `<p>${paragraph.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")}</p>`)
+    .join("");
+}
 
 export function useDrafts() {
+  const addNotification = useNotificationStore((state) => state.addNotification);
   const [title, setTitle] = useState("");
   const [isStarred, setIsStarred] = useState(false);
   const [editingDraftId, setEditingDraftId] = useState(null);
   const [routeDraftId, setRouteDraftId] = useState(null);
+  const [routeDraftIdea, setRouteDraftIdea] = useState(null);
+  const appliedDraftIdeaRef = useRef("");
   const editorRef = useRef(null);
   const [drafts, setDrafts] = useState([]);
   const [isLoadingDrafts, setIsLoadingDrafts] = useState(true);
@@ -47,12 +60,56 @@ export function useDrafts() {
     const syncDraftIdFromUrl = () => {
       const params = new URLSearchParams(window.location.search);
       setRouteDraftId(params.get("draft"));
+      const prompt = params.get("prompt");
+      setRouteDraftIdea(prompt ? { title: params.get("title") || "", prompt } : null);
     };
 
     syncDraftIdFromUrl();
     window.addEventListener("popstate", syncDraftIdFromUrl);
     return () => window.removeEventListener("popstate", syncDraftIdFromUrl);
   }, []);
+
+  useEffect(() => {
+    if (!routeDraftIdea || !editorRef.current?.setContent) return;
+    if (appliedDraftIdeaRef.current === routeDraftIdea.prompt) return;
+
+    appliedDraftIdeaRef.current = routeDraftIdea.prompt;
+    setEditingDraftId(null);
+    setTitle(routeDraftIdea.title);
+    setIsStarred(false);
+    editorRef.current.setContent(draftPromptToHtml("Preparing your suggested draft..."));
+    setSaveStatus("Preparing draft...");
+
+    let isCancelled = false;
+
+    async function prepareSuggestedDraft() {
+      try {
+        const response = await fetch("/api/ai", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            tool: "draft",
+            input: routeDraftIdea.prompt,
+            context: routeDraftIdea.title ? `Draft title: ${routeDraftIdea.title}` : "",
+          }),
+        });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || "Unable to prepare draft");
+        if (isCancelled) return;
+        editorRef.current?.setContent(draftPromptToHtml(data.text));
+        setSaveStatus("Suggested draft ready");
+      } catch {
+        if (isCancelled) return;
+        editorRef.current?.setContent(draftPromptToHtml(routeDraftIdea.prompt));
+        setSaveStatus("Draft idea loaded");
+      }
+    }
+
+    prepareSuggestedDraft();
+    return () => {
+      isCancelled = true;
+    };
+  }, [routeDraftIdea]);
 
   useEffect(() => {
     if (!routeDraftId || isLoadingDrafts || !editorRef.current?.setContent) return;
@@ -81,6 +138,7 @@ export function useDrafts() {
       if (!response.ok) throw new Error("Unable to delete draft");
       setDeleteModalId(null);
       setSaveStatus("Deleted");
+      addNotification({ message: "Draft deleted" });
     } catch (error) {
       setDrafts(previousDrafts);
       setDraftError(error.message);
@@ -167,6 +225,7 @@ export function useDrafts() {
       setIsStarred(false);
       setEditingDraftId(null);
       setSaveStatus("Saved");
+      addNotification({ message: editingDraftId ? "Draft updated" : "Draft saved" });
     } catch (error) {
       setDraftError(error.message);
       setSaveStatus("Save failed");
