@@ -4,29 +4,32 @@
 import SideBar from "./SideBar";
 import Header from "./Header";
 import { useSidebarStore } from "../store/SidebarStore";
+import { usePathname } from "next/navigation";
 
 export default function SidebarWrapper({ children }) {
   const sidebar = useSidebarStore();
+  const pathname = usePathname();
+
+  if (pathname.startsWith("/sign-in") || pathname.startsWith("/sign-up")) {
+    return children;
+  }
 
   return (
-    <div className="flex">
-      {/* Sidebar */}
+    <div className="flex min-h-screen bg-[#F6F7FB] text-[#1C1C1C]">
+      <SideBar />
+
+      {/* Desktop sidebar spacer */}
       <div
-        className={`transition-all duration-300 flex-shrink-0
-        ${sidebar.isCollapsed ? 'md:w-16' : 'md:w-64'}
-        
-        `}
-        
-      >
-        <SideBar />
-      </div>
+        className={`transition-all duration-300 flex-shrink-0 hidden md:block
+        ${sidebar.isCollapsed ? 'md:w-20' : 'md:w-64'}`}
+      />
 
       {/* Main Content */}
       <div className="flex-1 min-w-0 w-full">
         <Header />
-        <div className="w-full bg-[#EDEDED] text-black">
+        <main className="w-full min-h-[calc(100vh-4.5rem)] bg-[#F6F7FB] text-black overflow-x-hidden">
           {children}
-        </div>
+        </main>
       </div>
     </div>
   );

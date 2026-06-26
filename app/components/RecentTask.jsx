@@ -1,76 +1,58 @@
 "use client"
 import { FlagIcon, PlusIcon } from "@heroicons/react/24/solid";
 import Image from "next/image";
-import React, { useState } from "react";
-import TaskModal from "../modals/TaskModal";
+import React from "react";
 import Link from "next/link";
+import { LoadingState } from "./LoadingState";
 
-function RecentTask() {
-  const tasks = {
-    todo: [
-      { title: "Prepare seminar docs", priority: "M", priorityColor: "#946A00", priorityBg: "#D89E074D", dueDate: "Tues, Oct 1st 2024" },
-      {title: "Prepare seminar docs", priority: "M", priorityColor: "#946A00", priorityBg: "#D89E074D", dueDate: "Tues, Oct 1st 2024" },
-      {title: "Prepare seminar docs", priority: "M", priorityColor: "#946A00", priorityBg: "#D89E074D", dueDate: "Tues, Oct 1st 2024" }
-    ],
-    inProgress: [
-      { title: "Organize sign-up documents", priority: "H", priorityColor: "#801827", priorityBg: "#FFCBD3", dueDate: "Tues, Oct 1st 2024" },
-      { title: "Organize sign-up documents", priority: "H", priorityColor: "#801827", priorityBg: "#FFCBD3", dueDate: "Tues, Oct 1st 2024" },
-      { title: "Organize sign-up documents", priority: "H", priorityColor: "#801827", priorityBg: "#FFCBD3", dueDate: "Tues, Oct 1st 2024" },
-    ],
-    completed: [
-      { title: "Prepare proposal for expo", priority: "L", priorityColor: "#14637D", priorityBg: "#C9F1FE", dueDate: "Mon, Sept 30th 2024" },
-      { title: "Prepare proposal for expo", priority: "L", priorityColor: "#14637D", priorityBg: "#C9F1FE", dueDate: "Mon, Sept 30th 2024" },
-      { title: "Prepare proposal for expo", priority: "L", priorityColor: "#14637D", priorityBg: "#C9F1FE", dueDate: "Mon, Sept 30th 2024" },
-     
-    ],
-  };
-    
-  const [taskModal, setTaskModal] = useState(false);
+const PRIORITY_LOOKUP = {
+  High: { label: "H", color: "#801827", bg: "#FFCBD3" },
+  Medium: { label: "M", color: "#946A00", bg: "#D89E074D" },
+  Low: { label: "L", color: "#14637D", bg: "#C9F1FE" },
+};
 
-   // Function to handle the "Create Template" modal
-   const handleTaskModal = () => {
-    setTaskModal(!taskModal);
-  };
- 
+function RecentTask({ tasks = { todo: [], inProgress: [], completed: [] }, isLoading = false }) {
 
   const renderTasks = (taskList) => {
     if (taskList.length === 0) {
       return <p className="text-gray-500 italic text-center">You have no available tasks in this section</p>;
     }
   
-    return taskList.map((task, index) => (
-      <div key={index} className="flex justify-between w-full">
-        <div className="flex w-[50%] space-x-1">
-          <p className="truncate w-[60%] font-medium">{task.title}</p>
+    return taskList.map((task) => {
+      const priority = PRIORITY_LOOKUP[task.priority] || PRIORITY_LOOKUP.Low;
+      return (
+      <div key={task.id} className="grid grid-cols-1 sm:grid-cols-[minmax(0,1fr)_auto] gap-2 w-full rounded-lg bg-[#FAFAFD] border border-[#E7E4F0] p-3">
+        <div className="flex min-w-0 items-center gap-2">
+          <p className="truncate font-medium min-w-0">{task.title}</p>
           <p
-            className="font-semibold w-fit px-4 py-1 rounded-lg"
-            style={{ color: task.priorityColor, backgroundColor: task.priorityBg }}
+            className="font-semibold px-3 py-1 rounded-lg text-xs shrink-0"
+            style={{ color: priority.color, backgroundColor: priority.bg }}
           >
-            {task.priority}
+            {priority.label}
           </p>
         </div>
-        <div className="flex w-[50%] justify-end space-x-1">
+        <div className="flex min-w-0 justify-start sm:justify-end items-center gap-1">
           <FlagIcon
             className={`w-5 h-5 ${
-              task.priority === "H"
-                ? "text-[#FF304F]" // High priority - Red
-                : task.priority === "L"
-                ? "text-[#03A12F]" // Low priority - Green
-                : "text-[#BABABA]" // Default/Medium - Gray
+              priority.label === "H"
+                ? "text-[#FF304F]"
+                : priority.label === "L"
+                ? "text-[#03A12F]"
+                : "text-[#BABABA]"
             }`}
           />
-          <p className="text-[#4D4D4D]">{task.dueDate}</p>
+          <p className="text-[#4D4D4D] truncate">{task.dueDate}</p>
         </div>
       </div>
-    ));
+    )});
   };
   
 
   return (
     <>
-    <div className="max-h-full w-full bg-[#FFFFFF] rounded-xl mt-4 space-y-6 pb-8">
+    <section className="max-h-full w-full bg-white rounded-xl border border-[#E7E4F0] shadow-sm space-y-5 pb-6 overflow-hidden">
       {/* Header Section */}
-      <div className="flex justify-between xl:px-7 px-4 pt-5">
+      <div className="flex justify-between gap-3 xl:px-6 px-4 pt-5">
         <div className="flex space-x-2 items-center">
           <Image
             className="w-5 h-5"
@@ -79,7 +61,7 @@ function RecentTask() {
             height={40}
             width={40}
           />
-          <p className="font-light text-lg text-[#001C3D]">Recently tasks</p>
+          <p className="font-medium text-base text-[#001C3D]">Recent tasks</p>
         </div>
         <Link href="/tasks">
         <p className="text-base text-[#775ADA] cursor-pointer hover:underline">
@@ -99,11 +81,9 @@ function RecentTask() {
             <div className="mt-2 w-3 h-3 rounded-full bg-[#FF304F]" />
             <p className="pt-2 font-semibold">To do</p>
           </div>
-          <PlusIcon
-          onClick={handleTaskModal}
-           className="w-5 h-5 text-[#262626] cursor-pointer" />
+          <Link href="/tasks" className="p-2 rounded-full hover:bg-[#EDE9FB]" aria-label="Add task"><PlusIcon className="w-5 h-5 text-[#262626]" /></Link>
         </div>
-        <div className="mt-6 space-y-3">{renderTasks(tasks.todo)}</div>
+        <div className="mt-4 space-y-3">{isLoading ? <LoadingState label="Loading tasks..." /> : renderTasks(tasks.todo.slice(0, 3))}</div>
       </div>
 
       <div className="border-t-4 w-full border-[#EDEDED]" />
@@ -115,11 +95,9 @@ function RecentTask() {
             <div className="mt-2 w-3 h-3 rounded-full bg-[#D89E07]" />
             <p className="pt-2 font-semibold">In progress</p>
           </div>
-          <PlusIcon
-          onClick={handleTaskModal}
-           className="w-5 h-5 text-[#262626] cursor-pointer" />
+          <Link href="/tasks" className="p-2 rounded-full hover:bg-[#EDE9FB]" aria-label="Add task"><PlusIcon className="w-5 h-5 text-[#262626]" /></Link>
         </div>
-        <div className="mt-6 space-y-3">{renderTasks(tasks.inProgress)}</div>
+        <div className="mt-4 space-y-3">{isLoading ? <LoadingState label="Loading tasks..." /> : renderTasks(tasks.inProgress.slice(0, 3))}</div>
       </div>
 
       <div className="border-t-4 w-full border-[#EDEDED]" />
@@ -131,15 +109,11 @@ function RecentTask() {
             <div className="mt-2 w-3 h-3 rounded-full bg-[#03A12F]" />
             <p className="pt-2 font-semibold">Completed</p>
           </div>
-          <PlusIcon 
-          onClick={handleTaskModal}
-          className="w-5 h-5 text-[#262626] cursor-pointer" />
+          <Link href="/tasks" className="p-2 rounded-full hover:bg-[#EDE9FB]" aria-label="Add task"><PlusIcon className="w-5 h-5 text-[#262626]" /></Link>
         </div>
-        <div className="mt-6 space-y-3">{renderTasks(tasks.completed)}</div>
+        <div className="mt-4 space-y-3">{isLoading ? <LoadingState label="Loading tasks..." /> : renderTasks(tasks.completed.slice(0, 3))}</div>
       </div>
-    </div>
-     {/* Task Modal */}
-     <TaskModal taskModal={taskModal} handleTaskModal={handleTaskModal} />
+    </section>
      </>
   );
 }

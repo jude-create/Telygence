@@ -2,14 +2,8 @@
 import { UserIcon, PencilIcon, KeyIcon } from "@heroicons/react/24/solid";
 import Image from "next/image";
 import React, { useState } from "react";
-
-const USER_DATA = {
-  name: "Joel Mgbikeh",
-  email: "mgbikehjoel@gmail.com",
-  agency: "Telygence",
-  area: "AI",
-  profileImage: "/images/profile.png",
-};
+import { useUser } from "@clerk/nextjs";
+import { LoadingState } from "../components/LoadingState";
 
 // ─── Reusable toggle ──────────────────────────────────────────────────────────
 
@@ -63,6 +57,7 @@ function PillButton({ icon: Icon, label, onClick }) {
 // ─── Main component ───────────────────────────────────────────────────────────
 
 export default function Account({ signInMethod = "google" }) {
+  const { user, isLoaded } = useUser();
   const [features, setFeatures] = useState({
     smartSuggestions: true,
     writingStyle: false,
@@ -72,32 +67,48 @@ export default function Account({ signInMethod = "google" }) {
     setFeatures((prev) => ({ ...prev, [key]: !prev[key] }));
 
   const isGoogle = signInMethod === "google";
+  const displayName = user?.fullName || user?.firstName || "Your account";
+  const email = user?.primaryEmailAddress?.emailAddress || "No email available";
+  const profileImage = user?.imageUrl;
+  const initials = displayName
+    .split(" ")
+    .map((part) => part[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
 
   return (
-    <div className="p-4 sm:p-6 lg:p-7 w-full space-y-4">
+    <div className="p-3 sm:p-5 lg:p-7 w-full space-y-4">
 
       {/* ── Page title ───────────────────────────────────────────────────── */}
-      <div className="w-full px-4 sm:px-8 py-4 bg-white rounded-xl">
+      <div className="w-full px-4 sm:px-6 py-4 bg-white rounded-xl border border-[#E7E4F0] shadow-sm">
         <p className="text-base sm:text-xl font-medium">My Account</p>
       </div>
 
       {/* ── Profile card ─────────────────────────────────────────────────── */}
-      <div className="bg-[#F8F8F8] w-full py-5 px-4 sm:px-8 rounded-xl">
+      <div className="bg-white border border-[#E7E4F0] shadow-sm w-full py-5 px-4 sm:px-6 rounded-xl">
         <p className="text-sm text-[#4D4D4D] font-medium mb-4">Profile information</p>
 
-        <div className="flex flex-col sm:flex-row sm:items-center gap-5 sm:gap-8">
+        {!isLoaded ? (
+          <LoadingState label="Loading account..." />
+        ) : (
+          <div className="flex flex-col sm:flex-row sm:items-center gap-5 sm:gap-8">
           {/* Avatar */}
           <div className="shrink-0">
-            {USER_DATA.profileImage ? (
+            {profileImage ? (
               <Image
-                src={USER_DATA.profileImage}
+                src={profileImage}
                 alt="Profile"
                 height={80} width={80}
                 className="w-16 h-16 sm:w-20 sm:h-20 rounded-full object-cover"
               />
             ) : (
               <div className="bg-[#D2D2D2] p-2 rounded-full w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center">
-                <UserIcon className="text-[#999999] w-10 h-10 sm:w-12 sm:h-12" />
+                {initials ? (
+                  <span className="text-lg font-semibold text-[#737373]">{initials}</span>
+                ) : (
+                  <UserIcon className="text-[#999999] w-10 h-10 sm:w-12 sm:h-12" />
+                )}
               </div>
             )}
           </div>
@@ -105,23 +116,23 @@ export default function Account({ signInMethod = "google" }) {
           {/* Name + email */}
           <div className="flex-1 min-w-0">
             <div className="flex flex-wrap items-center gap-2">
-              <p className="font-semibold text-[#1C1C1C]">{USER_DATA.name}</p>
+              <p className="font-semibold text-[#1C1C1C]">{displayName}</p>
               <span className="text-xs bg-[#D6DCE2] rounded-full px-2.5 py-1 text-[#002651] font-medium">
                 Agency
               </span>
             </div>
-            <p className="text-sm text-[#737373] mt-0.5">{USER_DATA.email}</p>
+            <p className="text-sm text-[#737373] mt-0.5">{email}</p>
           </div>
 
           {/* Meta: Agency + Area */}
           <div className="flex gap-6 sm:gap-10 shrink-0">
             <div>
               <p className="text-xs text-[#8093A8]">Agency</p>
-              <p className="text-sm font-medium text-[#002651] mt-0.5">{USER_DATA.agency}</p>
+              <p className="text-sm font-medium text-[#002651] mt-0.5">Telygence</p>
             </div>
             <div>
               <p className="text-xs text-[#8093A8]">Area</p>
-              <p className="text-sm font-medium text-[#002651] mt-0.5">{USER_DATA.area}</p>
+              <p className="text-sm font-medium text-[#002651] mt-0.5">Workspace</p>
             </div>
           </div>
 
@@ -132,11 +143,12 @@ export default function Account({ signInMethod = "google" }) {
             )}
             <PillButton icon={PencilIcon} label="Edit profile" />
           </div>
-        </div>
+          </div>
+        )}
       </div>
 
       {/* ── Features ─────────────────────────────────────────────────────── */}
-      <div className="bg-[#F8F8F8] rounded-xl px-4 sm:px-8 py-6 space-y-3">
+      <div className="bg-white border border-[#E7E4F0] shadow-sm rounded-xl px-4 sm:px-6 py-6 space-y-3">
         <p className="text-sm text-[#4D4D4D] font-medium mb-1">Features</p>
 
         <FeatureRow

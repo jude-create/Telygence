@@ -8,13 +8,15 @@ import TemplatesHeader from "../components/TemplatesHeader";
 import TemplateCard from "../components/TemplateCard";
 import TagPicker from "../components/TagPicker";
 import PlaceholderPicker from "../components/PlaceholderPicker";
+import { ErrorState, LoadingState } from "../components/LoadingState";
 
 export default function Templates() {
   const [templateModal, setTemplateModal] = useState(false);
 
   const {
     // Data
-    templates, allTags, setAllTags, allPlaceholders, setAllPlaceholders,
+    templates, isLoadingTemplates, templateError, isBulkMutating, mutatingTemplateIds,
+    allTags, setAllTags, allPlaceholders, setAllPlaceholders,
     attachedTags, attachedPlaceholders,
     // Selection
     selectAll, selectedTemplates, setSelectedTemplates,
@@ -27,6 +29,7 @@ export default function Templates() {
     editModeId, editedMessages, setEditedMessages,
     // Actions
     handleCopy, handleEditStart, handleEditSave, handleEditCancel, handleConfirmDelete,
+    handleCreateTemplate,
     // Pickers
     activePicker, setActivePicker,
     handleOpenPicker, handleTagSelect, handleTagRemove,
@@ -35,7 +38,7 @@ export default function Templates() {
 
   return (
     <>
-      <div className="p-4 sm:p-6 lg:p-7">
+      <div className="p-3 sm:p-5 lg:p-7">
 
         {/* ── Top bar ────────────────────────────────────────────────────── */}
         <TemplatesHeader
@@ -47,14 +50,17 @@ export default function Templates() {
           onDeleteSelected={handleDeleteSelected}
           onDeleteAll={handleDeleteAll}
           onCreateTemplate={() => setTemplateModal(true)}
+          isBulkMutating={isBulkMutating}
         />
 
         {/* ── Body ───────────────────────────────────────────────────────── */}
-        <div className="flex flex-col lg:flex-row gap-4 mt-4 sm:mt-6">
+        <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1.35fr)_minmax(280px,0.65fr)] gap-4 mt-4 sm:mt-6">
 
           {/* Template list */}
-          <div className="bg-white rounded-xl py-4 w-full lg:w-[60%]">
-            {templates.length > 0 ? (
+          <div className="bg-white rounded-xl border border-[#E7E4F0] shadow-sm py-4 w-full min-w-0 overflow-hidden">
+            {isLoadingTemplates ? (
+              <LoadingState label="Loading templates..." />
+            ) : templates.length > 0 ? (
               <div className="space-y-4">
                 {templates.map((template) => {
                   const openPickerType =
@@ -75,6 +81,7 @@ export default function Templates() {
                       activeShareId={activeShareId}
                       deleteModalId={deleteModalId}
                       openPickerType={openPickerType}
+                      isMutating={mutatingTemplateIds.has(template.id)}
                       onEditStart={handleEditStart}
                       onEditSave={() => handleEditSave(template.id)}
                       onEditCancel={handleEditCancel}
@@ -110,10 +117,13 @@ export default function Templates() {
                 />
               </div>
             )}
+            <div className="px-4 sm:px-6 pt-4">
+              <ErrorState message={templateError} />
+            </div>
           </div>
 
           {/* Sidebar — TagPicker + PlaceholderPicker in sidebar mode */}
-          <div className="w-full lg:w-[40%] flex flex-col">
+          <div className="w-full min-w-0 flex flex-col">
             <TagPicker
               mode="sidebar"
               tags={allTags}
@@ -132,6 +142,7 @@ export default function Templates() {
       <Template
         templateModal={templateModal}
         handleTemplateModal={() => setTemplateModal((o) => !o)}
+        onTemplateCreate={handleCreateTemplate}
       />
     </>
   );

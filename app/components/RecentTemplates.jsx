@@ -6,57 +6,35 @@ import Link from "next/link";
 import React, { useState } from "react";
 import Share from "../modals/Share";
 import DeleteConfirmationModal from "../modals/DeleteConfirmationModal";
+import { LoadingState, Spinner } from "./LoadingState";
 
-const RECENT_TEMPLATES = [
-  {
-    id: 1,
-    tag: "Job hunt cold emails",
-    title: "Hi Joel",
-    message: `I sent you a message a few weeks back. To follow up, I'd love to connect to discuss Topic.\nAre you free sometime in the next couple of days for a quick chat? Let me know, thanks!`,
-    meta: { author: "David", date: "09/26/2024" },
-  },
-  {
-    id: 2,
-    tag: "Networking",
-    title: "Hello Alex",
-    message: `It was great meeting you at the conference. I'd love to stay in touch and learn more about your work.\nAre you available for a quick call this week?`,
-    meta: { author: "Sophia", date: "09/25/2024" },
-  },
-   {
-    id: 3,
-    tag: "Networking",
-    title: "Hello Alex",
-    message: `It was great meeting you at the conference. I'd love to stay in touch and learn more about your work.\nAre you available for a quick call this week?`,
-    meta: { author: "Sophia", date: "09/25/2024" },
-  },
-];
-
-export default function RecentTemplates() {
-  const [templates, setTemplates] = useState(RECENT_TEMPLATES);
+export default function RecentTemplates({ templates = [], isLoading = false, deletingTemplateId, onDeleteTemplate }) {
   const [activeShareId, setActiveShareId] = useState(null);
   const [copiedId, setCopiedId] = useState(null);
   const [deleteModalId, setDeleteModalId] = useState(null);
+  const recentTemplates = templates.slice(0, 3);
 
   const handleCopy = (id) => {
     const t = templates.find((t) => t.id === id);
-    navigator.clipboard.writeText(`${t.title}\n${t.message}`).then(() => {
+    if (!t) return;
+    navigator.clipboard.writeText(t.message).then(() => {
       setCopiedId(id);
       setTimeout(() => setCopiedId(null), 2000);
     });
   };
 
   const handleDelete = () => {
-    setTemplates((prev) => prev.filter((t) => t.id !== deleteModalId));
+    if (deleteModalId) onDeleteTemplate?.(deleteModalId);
     setDeleteModalId(null);
   };
 
   return (
-    <div className="h-auto w-full bg-white rounded-xl mt-4 sm:mt-6 pb-8">
+    <section className="h-auto w-full bg-white rounded-xl border border-[#E7E4F0] shadow-sm pb-6 overflow-hidden">
       {/* Header */}
-      <div className="flex justify-between px-4 sm:px-7 pt-5">
+      <div className="flex justify-between gap-3 px-4 sm:px-6 pt-5">
         <div className="flex items-center gap-2">
           <Image src="/images/temp.png" alt="Templates" height={20} width={20} className="w-5 h-5" />
-          <p className="font-light text-base text-[#001C3D]">Recently used templates</p>
+          <p className="font-medium text-base text-[#001C3D]">Recently used templates</p>
         </div>
         <Link href="/templates">
           <p className="text-sm text-[#775ADA] cursor-pointer hover:underline">View all</p>
@@ -65,33 +43,33 @@ export default function RecentTemplates() {
 
       <div className="border-t-4 w-full border-[#EDEDED] mt-4" />
 
-      {templates.length > 0 ? (
-        <div className="space-y-5 mt-5">
-          {templates.map((template) => (
+      {isLoading ? (
+        <LoadingState label="Loading templates..." />
+      ) : recentTemplates.length > 0 ? (
+        <div className="space-y-4 mt-5">
+          {recentTemplates.map((template) => (
             <div
               key={template.id}
-              className="border border-[#BABABA] bg-[#EDEDED] px-4 sm:px-7 mx-4 sm:mx-6 rounded-xl pb-5 space-y-4"
+              className="border border-[#E0DDEA] bg-[#FAFAFD] px-4 sm:px-5 mx-3 sm:mx-5 rounded-xl pb-5 space-y-4 shadow-sm"
             >
               {/* Tag */}
               <div className="flex items-center gap-2 bg-[#DDD6F6] w-fit py-1.5 px-3 rounded-full mt-4">
                 <BookmarkIcon className="h-4 w-4 text-[#5943A3]" />
-                <p className="text-[#5943A3] text-xs font-medium">{template.tag}</p>
+                <p className="text-[#5943A3] text-xs font-medium">{template.tags?.[0] || "Template"}</p>
               </div>
 
               {/* Content */}
-              <p className="font-semibold text-sm text-[#4D4D4D]">{template.title}</p>
               <p className="text-sm text-[#4D4D4D] whitespace-pre-line leading-relaxed">
                 {template.message}
               </p>
 
               {/* Meta chips */}
               <div className="flex gap-2 flex-wrap">
-                <span className="bg-[#D9D9D9] rounded-full px-4 py-1 text-xs text-[#4D4D4D]">
-                  {template.meta.author}
-                </span>
-                <span className="bg-[#D9D9D9] rounded-full px-4 py-1 text-xs text-[#4D4D4D]">
-                  {template.meta.date}
-                </span>
+                {(template.placeholders || []).slice(0, 3).map((placeholder) => (
+                  <span key={placeholder} className="bg-[#D9D9D9] rounded-full px-4 py-1 text-xs text-[#4D4D4D]">
+                    {placeholder}
+                  </span>
+                ))}
               </div>
 
               {/* Footer */}
@@ -107,9 +85,10 @@ export default function RecentTemplates() {
                     className="w-5 h-5 text-[#737373] cursor-pointer hover:text-black transition-transform hover:scale-110"
                   />
                   <TrashIcon
-                    onClick={() => setDeleteModalId(template.id)}
-                    className="w-5 h-5 text-[#737373] cursor-pointer hover:text-black transition-transform hover:scale-110"
+                    onClick={() => !deletingTemplateId && setDeleteModalId(template.id)}
+                    className={`w-5 h-5 text-[#737373] hover:text-black transition-transform hover:scale-110 ${deletingTemplateId === template.id ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
                   />
+                  {deletingTemplateId === template.id && <Spinner />}
                   {copiedId === template.id && (
                     <div className="absolute -top-9 right-0 bg-[#1E95BB] text-white text-xs px-3 py-1.5 rounded-md shadow whitespace-nowrap">
                       Copied to clipboard!
@@ -134,8 +113,9 @@ export default function RecentTemplates() {
         isOpen={deleteModalId !== null}
         onClose={() => setDeleteModalId(null)}
         onConfirm={handleDelete}
+        isLoading={Boolean(deletingTemplateId)}
         itemLabel="template"
       />
-    </div>
+    </section>
   );
 }

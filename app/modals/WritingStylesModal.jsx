@@ -47,11 +47,11 @@ export default function WritingStylesModal({
     <div
       className={`${
         stylesModal ? "opacity-100" : "hidden opacity-0"
-      } fixed top-28 left-[300px] w-[12%] h-[68vh] flex z-[1000] transition-all ease-in-out duration-500`}
+      } fixed inset-0 sm:inset-auto sm:top-28 sm:left-1/2 sm:-translate-x-1/2 w-full sm:w-64 h-full sm:h-auto sm:max-h-[68vh] flex z-[1000] transition-all ease-in-out duration-500 bg-black/30 sm:bg-transparent p-4 sm:p-0`}
     >
       <div
         ref={modalRef}
-        className="bg-white w-full h-full overflow-y-auto scrollbar-hide cursor-pointer py-4 rounded-xl shadow-lg shadow-[#00000033]"
+        className="bg-white w-full max-w-sm sm:max-w-none mx-auto self-center sm:self-auto max-h-[70vh] overflow-y-auto scrollbar-hide cursor-pointer py-4 rounded-xl shadow-lg shadow-[#00000033]"
       >
         <div className="space-y-5">
           {writingStyles.map((style, index) => (

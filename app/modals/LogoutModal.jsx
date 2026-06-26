@@ -1,7 +1,7 @@
 "use client";
 
 
-export default function LogoutModal({ isOpen, onCancel, onConfirm }) {
+export default function LogoutModal({ isOpen, onCancel, onConfirm, isLoading = false }) {
   if (!isOpen) return null;
 
   return (
@@ -31,17 +31,19 @@ export default function LogoutModal({ isOpen, onCancel, onConfirm }) {
         <div className="flex gap-3 px-6 pb-6 justify-center">
           <button
             onClick={onCancel}
+            disabled={isLoading}
             className="flex-1 py-2.5 bg-[#3B2D6D] text-[#DDD6F6] rounded-xl text-sm font-medium
-                       hover:bg-[#4A3A85] transition-colors duration-200"
+                       hover:bg-[#4A3A85] transition-colors duration-200 disabled:opacity-60"
           >
             Cancel
           </button>
           <button
             onClick={onConfirm}
+            disabled={isLoading}
             className="flex-1 py-2.5 bg-[#775ADA] text-white rounded-xl text-sm font-medium
-                       hover:bg-[#5F48C2] transition-colors duration-200"
+                       hover:bg-[#5F48C2] transition-colors duration-200 disabled:opacity-60"
           >
-            Yes, log out
+            {isLoading ? "Logging out..." : "Yes, log out"}
           </button>
         </div>
       </div>

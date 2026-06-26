@@ -1,6 +1,7 @@
 "use client";
 import { EllipsisVerticalIcon, PlusIcon } from "@heroicons/react/24/solid";
 import { PencilSquareIcon } from "@heroicons/react/24/outline";
+import Link from "next/link";
 
 /**
  * TemplatesHeader
@@ -17,11 +18,12 @@ export default function TemplatesHeader({
   onDeleteSelected,
   onDeleteAll,
   onCreateTemplate,
+  isBulkMutating = false,
 }) {
   return (
-    <div className="flex flex-col sm:flex-row gap-3 sm:gap-5">
+    <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(280px,0.75fr)] gap-3">
       {/* Title + checkbox + bulk dropdown */}
-      <div className="flex justify-between items-center px-4 sm:px-6 py-3 bg-white rounded-xl w-full sm:w-[60%]">
+      <div className="flex justify-between items-center gap-3 px-4 sm:px-6 py-3 bg-white rounded-xl border border-[#E7E4F0] shadow-sm w-full min-w-0">
         <p className="text-base sm:text-lg font-medium">Templates</p>
 
         <div className="flex items-center gap-3 relative" ref={bulkDropdownRef}>
@@ -30,6 +32,7 @@ export default function TemplatesHeader({
             className="w-4 h-4 cursor-pointer"
             checked={selectAll}
             onChange={onSelectAll}
+            disabled={isBulkMutating}
             aria-label="Select all templates"
           />
           <EllipsisVerticalIcon
@@ -41,14 +44,16 @@ export default function TemplatesHeader({
               <button
                 className="w-full px-4 py-2 text-left text-sm hover:bg-gray-50"
                 onClick={onDeleteSelected}
+                disabled={isBulkMutating}
               >
-                Delete selected
+                {isBulkMutating ? "Deleting..." : "Delete selected"}
               </button>
               <button
                 className="w-full px-4 py-2 text-left text-sm hover:bg-gray-50 text-[#E50606]"
                 onClick={onDeleteAll}
+                disabled={isBulkMutating}
               >
-                Delete all
+                {isBulkMutating ? "Deleting..." : "Delete all"}
               </button>
             </div>
           )}
@@ -56,26 +61,28 @@ export default function TemplatesHeader({
       </div>
 
       {/* Action buttons */}
-      <div className="flex gap-3 w-full sm:w-[40%]">
+      <div className="grid grid-cols-[minmax(0,1fr)_minmax(88px,0.55fr)] sm:grid-cols-[minmax(0,1fr)_110px] gap-2 sm:gap-3 w-full">
         <button
           onClick={onCreateTemplate}
-          className="flex flex-1 justify-center items-center gap-2 rounded-lg bg-custom-radial
-                     h-12 sm:h-14 text-sm sm:text-base font-bold text-white
+          className="flex min-w-0 flex-1 justify-center items-center gap-1.5 sm:gap-2 rounded-lg bg-custom-radial px-2 sm:px-3
+                     min-h-12 sm:min-h-14 text-xs sm:text-base font-bold text-white
                      hover:opacity-90 transition-opacity"
         >
-          Create a template
+          <span className="truncate">Create a template</span>
           <PlusIcon className="w-5 h-5 shrink-0" />
         </button>
 
-        <button
-          className="flex items-center justify-center gap-2 border-2 border-[#1E95BB]
-                     bg-[#C9F1FE80] rounded-lg px-4 h-12 sm:h-14 text-sm sm:text-base
-                     font-bold text-[#1E95BB] hover:text-white hover:bg-[#775ADA]
-                     transition-all whitespace-nowrap"
-        >
-          Write
-          <PencilSquareIcon className="w-5 h-5 shrink-0" />
-        </button>
+        <Link href="/drafts" className="min-w-0">
+          <button
+            className="flex w-full items-center justify-center gap-1.5 sm:gap-2 border-2 border-[#1E95BB]
+                       bg-[#C9F1FE80] rounded-lg px-2 sm:px-4 min-h-12 sm:min-h-14 text-xs sm:text-base
+                       font-bold text-[#1E95BB] hover:text-white hover:bg-[#775ADA]
+                       transition-all whitespace-nowrap"
+          >
+            Write
+            <PencilSquareIcon className="w-5 h-5 shrink-0" />
+          </button>
+        </Link>
       </div>
     </div>
   );

@@ -27,10 +27,10 @@ const ShareModal = ({ isOpen, onClose }) => {
   if (!isOpen) return null; // Don't render the modal if not open
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 h-auto">
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/50 h-auto p-0 sm:p-4">
       <div
         ref={modalRef}
-        className="bg-white rounded-lg shadow-lg w-[90%] sm:w-[350px]"
+        className="bg-white rounded-t-xl sm:rounded-xl shadow-lg w-full sm:max-w-[360px]"
       >
         {/* Modal Header */}
         {/* Centered Share Text */}
@@ -52,12 +52,12 @@ const ShareModal = ({ isOpen, onClose }) => {
         
         <div className='py-5 px-8'>
         {/* Share Link Button */}
-        <button className="w-full bg-[#775ADA] text-white py-2 rounded-lg mb-4">
+        <button className="w-full bg-[#775ADA] text-white py-3 rounded-lg mb-4">
           Share as link
         </button>
 
         {/* Sharing Options */}
-        <div className="grid grid-cols-4 gap-6 mt-4">
+        <div className="grid grid-cols-4 gap-4 mt-4 justify-items-center">
           {/* Gmail */}
           <div className="bg-[#FDECEB] w-fit rounded-full p-3 flex items-center justify-center">
             <Image src="/images/gmail.png" alt="Gmail" width={25} height={25} />

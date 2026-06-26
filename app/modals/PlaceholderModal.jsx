@@ -31,12 +31,11 @@ export default function PlaceholderModal({ placeholderModal, handlePlaceholderMo
   if (!placeholderModal) return null;
 
   return (
-    <div className="fixed inset-0 z-[1000] flex items-end justify-center
-                    bg-black/30 sm:bg-transparent sm:absolute sm:inset-auto
-                    sm:top-full sm:right-0 sm:mt-2 sm:w-72">
+    <div className="fixed inset-0 z-[1010] flex items-end justify-center
+                    bg-black/30 sm:items-center sm:p-4">
       <div
         ref={ref}
-        className="pointer-events-auto w-full sm:w-72 max-h-[60dvh] sm:max-h-[48vh]
+        className="pointer-events-auto w-full sm:w-[26rem] max-h-[60dvh] sm:max-h-[70vh]
                    bg-white rounded-t-2xl sm:rounded-2xl shadow-xl shadow-black/20
                    flex flex-col overflow-hidden"
       >
@@ -52,8 +51,8 @@ export default function PlaceholderModal({ placeholderModal, handlePlaceholderMo
         </div>
 
         {/* Placeholder grid */}
-        <div className="overflow-y-auto flex-1 p-3">
-          <div className="grid grid-cols-2 gap-2">
+        <div className="overflow-y-auto flex-1 p-3 sm:p-4">
+          <div className="grid grid-cols-2 gap-2 sm:gap-2.5">
             {PLACEHOLDERS.map((p) => (
               <button
                 key={p}

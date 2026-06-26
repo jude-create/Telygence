@@ -1,87 +1,79 @@
-import { LightBulbIcon } from "@heroicons/react/24/outline";
-import { ArrowPathIcon } from "@heroicons/react/24/solid";
-import Image from "next/image";
+import { ArrowPathIcon, SparklesIcon } from "@heroicons/react/24/solid";
+import { DocumentTextIcon, LightBulbIcon } from "@heroicons/react/24/outline";
+import Link from "next/link";
 import React from "react";
 
 const Suggestion = () => {
-  // Array of suggestions
   const suggestions = [
-   "Prepare a proposal letter for investors seeking equity allocation...",
-    "Write partnership proposal letter to potential companies...", 
-    "Prepare a proposal letter for investors seeking equity allocation...", 
-    "Draft the organizational summary and blueprint of your company", 
-    "Prepare a proposal letter for investors seeking equity allocation...",
+    {
+      title: "Investor proposal follow-up",
+      context: "Based on your proposal templates",
+      href: "/drafts",
+    },
+    {
+      title: "Partnership outreach email",
+      context: "Suggested from recent templates",
+      href: "/drafts",
+    },
+    {
+      title: "Company summary draft",
+      context: "Useful for investor and client replies",
+      href: "/drafts",
+    },
   ];
 
   return (
-    <div className="h-auto w-full bg-[#FFFFFF] rounded-xl mt-6 space-y-5 pb-6">
-      <div className="flex space-x-2 px-6 pt-5 items-center">
-        <LightBulbIcon className="w-5 h-5 text-[#737373]" />
-        <p className="font-light text-lg text-[#001C3D]">Smart suggestions</p>
+    <section className="w-full bg-white rounded-xl border border-[#E7E4F0] shadow-sm overflow-hidden">
+      <div className="flex items-center justify-between gap-3 p-3 sm:p-4 md:p-5">
+        <div className="flex min-w-0 flex-1 gap-2.5 sm:gap-3">
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#EEEBFB] text-[#5943A3] sm:h-10 sm:w-10 sm:rounded-xl">
+            <LightBulbIcon className="h-4 w-4 sm:h-5 sm:w-5" />
+          </div>
+          <div className="min-w-0">
+            <div className="flex flex-wrap items-center gap-2">
+              <h2 className="text-sm font-semibold text-[#001C3D] sm:text-base">
+                <span className="sm:hidden">Next drafts</span>
+                <span className="hidden sm:inline">Suggested next drafts</span>
+              </h2>
+              <span className="hidden items-center gap-1 rounded-full bg-[#C9F1FE80] px-2.5 py-1 text-xs font-medium text-[#1E95BB] sm:inline-flex">
+                <SparklesIcon className="h-3.5 w-3.5" />
+                AI-assisted
+              </span>
+            </div>
+            <p className="mt-1 hidden text-sm text-[#737373] sm:block">
+              Shortcuts to draft ideas Telygence can prepare from your templates, drafts, and tasks.
+            </p>
+          </div>
+        </div>
+
+        <button className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-[#D9D2F5] text-[#5943A3] hover:bg-[#F5F2FF] sm:h-10 sm:w-auto sm:gap-2 sm:px-4 sm:text-sm sm:font-medium">
+          <ArrowPathIcon className="h-4 w-4" />
+          <span className="sr-only sm:not-sr-only">Refresh</span>
+        </button>
       </div>
 
-      {/* Divider */}
-      <div className="border-t-4 w-full border-[#EDEDED]" />
-
-      {/* Show message only if suggestions are available */}
-      {suggestions.length > 0 && (
-        <p className="text-[#8093A8] px-6 text-base">
-          Smart suggestions are based on your recent activities
-        </p>
-      )}
-
       {suggestions.length > 0 ? (
-        <div className="space-y-3 text-sm px-6 text-[#4D4D4D] font-normal">
+        <div className="flex snap-x gap-3 overflow-x-auto border-t border-[#EDEDED] px-3 py-3 sm:p-4 md:grid md:grid-cols-3 md:overflow-visible md:p-5">
           {suggestions.map((suggestion, index) => (
-            <div
+            <Link
               key={index}
-              className="hover:bg-[#775ADA] flex space-x-3 p-3 rounded-xl items-center bg-[#EDEDED] 
-               hover:text-white transition duration-300 ease-in-out cursor-pointer"
+              href={suggestion.href}
+              className="group flex min-h-[86px] min-w-[78%] snap-start items-start gap-3 rounded-lg border border-[#E7E4F0] bg-[#FAFAFD] p-3 transition-colors hover:border-[#775ADA] hover:bg-[#F5F2FF] sm:min-w-[18rem] md:min-h-[92px] md:min-w-0"
             >
-              <Image
-                src="/images/magic.png"
-                className="w-5 h-5"
-                alt="magic-wand"
-                height={30}
-                width={30}
-              />
-              <p className="truncate w-full hover:whitespace-normal hover:break-words transition duration-300 ease-in-out">
-                {suggestion}
-              </p>
-            </div>
+              <DocumentTextIcon className="mt-0.5 h-5 w-5 shrink-0 text-[#775ADA]" />
+              <span className="min-w-0">
+                <span className="block text-sm font-semibold text-[#1E1636]">{suggestion.title}</span>
+                <span className="mt-1 block text-xs leading-5 text-[#737373]">{suggestion.context}</span>
+              </span>
+            </Link>
           ))}
-
-          {/* Update Suggestions Button */}
-          <div className="flex items-center space-x-3 justify-end pt-2">
-            <ArrowPathIcon className="h-5 w-5 text-[#775ADA]" />
-            <p className="text-sm text-[#775ADA] hover:underline cursor-pointer">
-              Update suggestions
-            </p>
-          </div>
         </div>
       ) : (
-        <div>
-        <div className="flex flex-col items-center justify-center space-y-6">
-          <p className="text-base text-[#AAAAAA]">
-            Start using Telygence to get smart suggestions
-          </p>
-          <Image
-            src="/images/floating.png" // Replace with your "no templates available" image path
-            alt="No Templates Available"
-            height={200}
-            width={200}
-          />
-          </div>
-          {/* Update Suggestions Button (Disabled) */}
-          <div className="flex items-center space-x-2 justify-end px-2 pt-6">
-            <ArrowPathIcon className="h-5 w-5 text-[#D3D3D3]" />
-            <p className="text-sm text-[#BBACEC] cursor-not-allowed">
-              Update suggestions
-            </p>
-          </div>
+        <div className="border-t border-[#EDEDED] p-5 text-sm text-[#737373]">
+          Create a few drafts or tasks and Telygence will suggest useful next messages here.
         </div>
       )}
-    </div>
+    </section>
   );
 };
 

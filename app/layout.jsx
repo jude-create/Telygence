@@ -1,14 +1,6 @@
-// app/layout.jsx
-import { Sora } from "next/font/google";
 import "./globals.css";
 import SidebarWrapper from "./components/SidebarWrapper";
-
-
-const sora = Sora({
-  subsets: ["latin"],
-  variable: "--font-sora",
-  weight: ["100","200","300","400","500","600","700","800"],
-});
+import { ClerkProvider } from "@clerk/nextjs";
 
 export const metadata = {
   title: "Telygence AI",
@@ -18,8 +10,10 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={`${sora.variable} antialiased min-w-full  `}>
-        <SidebarWrapper>{children}</SidebarWrapper>
+      <body className="antialiased min-w-0">
+        <ClerkProvider>
+          <SidebarWrapper>{children}</SidebarWrapper>
+        </ClerkProvider>
       </body>
     </html>
   );

@@ -25,21 +25,20 @@ const Header = () => {
 
   
   return (
-    <div
-      className=" sticky top-0 w-full h-20 bg-[#775ADA] flex items-center justify-between z-50  px-2 lg:px-12 "
-    >
+    <header className="sticky top-0 w-full min-h-[72px] bg-[#775ADA] flex items-center justify-between z-40 px-3 sm:px-5 lg:px-8 gap-3 shadow-sm">
     <button
-  className="md:hidden p-2 rounded-md   flex-shrink-0 "
-   onClick={sidebar.toggleSidebar}
+      className="md:hidden p-2 rounded-lg flex-shrink-0 text-white hover:bg-white/10 active:bg-white/20"
+      onClick={sidebar.openMobileDrawer}
+      aria-label="Open navigation menu"
 >
       <Bars3CenterLeftIcon className="h-7 w-7 transition-transform duration-200 group-hover:scale-110" />
     </button>
 
-      <div className="relative md:flex-1  max-w-full">
+      <div className="relative flex-1 max-w-2xl min-w-0 hidden sm:block">
         {/* Input Field */}
         <input
-          className="w-full border-2 border-[#9983E3] bg-[#654CB9] px-12 py-3 rounded-full 
-          focus:outline-none focus:border-[#9983E3] font-light text-sm text-[#DDD6F6] tracking-wider placeholder:text-[#9983E3]"
+          className="w-full border border-white/20 bg-[#654CB9] px-11 py-2.5 rounded-full 
+          focus:outline-none focus:ring-2 focus:ring-white/30 font-light text-sm text-[#F4F1FF] placeholder:text-[#CFC5F4]"
           type="search"
           placeholder="Search drafts, tasks, or recent conversation..."
         />
@@ -47,14 +46,14 @@ const Header = () => {
         <MagnifyingGlassIcon className="w-6 h-6 absolute left-5 top-1/2 transform -translate-y-1/2 text-[#DDD6F6]" />
       </div>
 
-      <div className="flex md:space-x-10 space-x-4 justify-end   lg:w-[25%]">
-        <Link href="/account">
+      <div className="flex items-center gap-2 sm:gap-4 justify-end">
+        <Link href="/account" className="p-2 rounded-full hover:bg-white/10" aria-label="My account">
           <UserCircleIcon
             className="w-7 h-7 text-[#FFFFFF] cursor-pointer transition-transform duration-300 ease-in-out transform hover:scale-125 hover:text-[#DDD6F6]"
           />
         </Link>
 
-       <div className="relative">
+       <div className="relative p-2 rounded-full hover:bg-white/10">
         <BellIcon
           onClick={toggleModal}
           className="w-7 h-7 text-white cursor-pointer"
@@ -73,7 +72,7 @@ const Header = () => {
         notificationModal={notificationModal}
         handleNotificationModal={toggleModal}
       />
-    </div>
+    </header>
   );
 };
 

@@ -32,13 +32,11 @@ export default function TagsModal({ tagModal, handleTagModal, onTagSelect }) {
   if (!tagModal) return null;
 
   return (
-    // Mobile: full-width sheet from bottom. sm+: inline popover anchored by parent.
-    <div className="fixed inset-0 z-[1000] flex items-end justify-center
-                    bg-black/30 sm:bg-transparent sm:absolute sm:inset-auto
-                    sm:top-full sm:right-0 sm:mt-2 sm:w-80">
+    <div className="fixed inset-0 z-[1010] flex items-end justify-center
+                    bg-black/30 sm:items-center sm:p-4">
       <div
         ref={ref}
-        className="pointer-events-auto w-full sm:w-80 max-h-[65dvh] sm:max-h-[52vh]
+        className="pointer-events-auto w-full sm:w-[30rem] max-h-[65dvh] sm:max-h-[70vh]
                    bg-white rounded-t-2xl sm:rounded-2xl shadow-xl shadow-black/20
                    flex flex-col overflow-hidden"
       >
@@ -54,8 +52,8 @@ export default function TagsModal({ tagModal, handleTagModal, onTagSelect }) {
         </div>
 
         {/* Tag chips */}
-        <div className="overflow-y-auto flex-1 p-3">
-          <div className="flex flex-wrap gap-2">
+        <div className="overflow-y-auto flex-1 p-3 sm:p-4">
+          <div className="flex flex-wrap gap-2 sm:gap-2.5">
             {TAGS.map((tag) => (
               <button
                 key={tag}

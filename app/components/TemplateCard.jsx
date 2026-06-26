@@ -27,6 +27,7 @@ export default function TemplateCard({
   activeShareId,
   deleteModalId,
   openPickerType,        // "tags" | "placeholders" | null  (for THIS card)
+  isMutating = false,
   // handlers
   onEditStart,
   onEditSave,
@@ -48,7 +49,7 @@ export default function TemplateCard({
   const tagIcon = <BookmarkIcon className="h-3.5 w-3.5 shrink-0" />;
 
   return (
-    <div className="border border-[#BABABA] bg-[#EDEDED] px-3 sm:px-4 mx-3 sm:mx-6 rounded-xl pb-4 space-y-4">
+    <div className="border border-[#E0DDEA] bg-[#FAFAFD] px-3 sm:px-4 mx-3 sm:mx-6 rounded-xl pb-4 space-y-4 shadow-sm">
 
       {/* ── Tags row ─────────────────────────────────────────────────────── */}
       <div className="flex justify-between items-start pt-4 gap-3">
@@ -124,21 +125,21 @@ export default function TemplateCard({
       </div>
 
       {/* ── Footer ───────────────────────────────────────────────────────── */}
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
         <p className="text-sm text-[#4D4D4D]">Cheers</p>
 
-        <div className="flex gap-4 sm:gap-5 relative">
+        <div className="flex gap-2 sm:gap-3 relative">
           <ShareIcon
             onClick={() => onShare(template.id)}
-            className="w-5 h-5 text-[#737373] cursor-pointer hover:text-black transition-transform hover:scale-110"
+            className="w-10 h-10 p-2 rounded-lg text-[#737373] cursor-pointer hover:text-black hover:bg-white transition-transform"
           />
           <Square2StackIcon
             onClick={() => onCopy(template.id)}
-            className="w-5 h-5 text-[#737373] cursor-pointer hover:text-black transition-transform hover:scale-110"
+            className="w-10 h-10 p-2 rounded-lg text-[#737373] cursor-pointer hover:text-black hover:bg-white transition-transform"
           />
           <TrashIcon
-            onClick={() => onDeleteClick(template.id)}
-            className="w-5 h-5 text-[#737373] cursor-pointer hover:text-black transition-transform hover:scale-110"
+            onClick={() => !isMutating && onDeleteClick(template.id)}
+            className={`w-10 h-10 p-2 rounded-lg text-[#737373] hover:text-[#E50606] hover:bg-white transition-transform ${isMutating ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
           />
 
           {copiedId === template.id && (
@@ -159,8 +160,9 @@ export default function TemplateCard({
       ) : (
         <button
           onClick={() => onEditStart(template.id)}
-          className="py-1.5 px-3 bg-[#775ADA] text-white text-sm rounded-lg
-                     hover:bg-[#5F48C2] transition-colors"
+          disabled={isMutating}
+          className="min-h-10 py-2 px-4 bg-[#775ADA] text-white text-sm rounded-lg
+                     hover:bg-[#5F48C2] transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
         >
           Edit
         </button>
@@ -171,6 +173,7 @@ export default function TemplateCard({
         isOpen={deleteModalId === template.id}
         onClose={onCloseDeleteModal}
         onConfirm={onConfirmDelete}
+        isLoading={isMutating}
         itemLabel="template"
       />
     </div>

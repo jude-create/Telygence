@@ -113,7 +113,7 @@ export default function PlaceholderPicker({
 
   // ── Sidebar mode ──────────────────────────────────────────────────────────
   return (
-    <div className="bg-white w-full rounded-xl mt-4 hidden md:block">
+    <div className="bg-white w-full rounded-xl border border-[#E7E4F0] shadow-sm mt-4">
       <div className="flex items-center justify-between px-4 py-3">
         <p className="font-light text-sm text-[#4D4D4D]">Placeholders</p>
         <button
