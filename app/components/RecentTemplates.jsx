@@ -46,7 +46,7 @@ export default function RecentTemplates({ templates = [], isLoading = false, del
       {isLoading ? (
         <LoadingState label="Loading templates..." />
       ) : recentTemplates.length > 0 ? (
-        <div className="space-y-4 mt-5 max-h-[640px] overflow-y-auto overscroll-contain pb-1 pr-1 lg:max-h-none lg:overflow-visible lg:overscroll-auto lg:pr-0">
+        <div className="space-y-4 mt-5 pb-1">
           {recentTemplates.map((template) => (
             <div
               key={template.id}

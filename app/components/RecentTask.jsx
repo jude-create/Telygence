@@ -74,7 +74,7 @@ function RecentTask({ tasks = { todo: [], inProgress: [], completed: [] }, isLoa
       {/* Divider */}
       <div className="border-t-4 w-full border-[#EDEDED]" />
 
-      <div className="max-h-[520px] overflow-y-auto overscroll-contain pb-1">
+      <div className="pb-1">
         {/* To Do Section */}
         <div className="px-4 text-sm">
           <div className="flex justify-between">
