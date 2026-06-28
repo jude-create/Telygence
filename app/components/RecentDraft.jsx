@@ -15,7 +15,7 @@ import { LoadingState, Spinner } from "./LoadingState";
 
 export const RecentDraft = ({ drafts = [], isLoading = false, deletingDraftId, onDeleteDraft, onToggleStar }) => {
   const [deleteModalDraftId, setDeleteModalDraftId] = useState(null);
-  const recentDrafts = drafts.slice(0, 5);
+  const recentDrafts = drafts.slice(0, 3);
 
   const handleDeleteDraft = (id) => {
     setDeleteModalDraftId(id);

@@ -12,7 +12,7 @@ export default function RecentTemplates({ templates = [], isLoading = false, del
   const [activeShareId, setActiveShareId] = useState(null);
   const [copiedId, setCopiedId] = useState(null);
   const [deleteModalId, setDeleteModalId] = useState(null);
-  const recentTemplates = templates.slice(0, 3);
+  const recentTemplates = templates.slice(0, 2);
 
   const handleCopy = (id) => {
     const t = templates.find((t) => t.id === id);

@@ -84,7 +84,7 @@ function RecentTask({ tasks = { todo: [], inProgress: [], completed: [] }, isLoa
             </div>
             <Link href="/tasks" className="p-2 rounded-full hover:bg-[#EDE9FB]" aria-label="Add task"><PlusIcon className="w-5 h-5 text-[#262626]" /></Link>
           </div>
-          <div className="mt-4 space-y-3">{isLoading ? <LoadingState label="Loading tasks..." /> : renderTasks(tasks.todo.slice(0, 3))}</div>
+          <div className="mt-4 space-y-3">{isLoading ? <LoadingState label="Loading tasks..." /> : renderTasks(tasks.todo.slice(0, 2))}</div>
         </div>
 
         <div className="border-t-4 w-full border-[#EDEDED] mt-5" />
@@ -98,7 +98,7 @@ function RecentTask({ tasks = { todo: [], inProgress: [], completed: [] }, isLoa
             </div>
             <Link href="/tasks" className="p-2 rounded-full hover:bg-[#EDE9FB]" aria-label="Add task"><PlusIcon className="w-5 h-5 text-[#262626]" /></Link>
           </div>
-          <div className="mt-4 space-y-3">{isLoading ? <LoadingState label="Loading tasks..." /> : renderTasks(tasks.inProgress.slice(0, 3))}</div>
+          <div className="mt-4 space-y-3">{isLoading ? <LoadingState label="Loading tasks..." /> : renderTasks(tasks.inProgress.slice(0, 2))}</div>
         </div>
 
         <div className="border-t-4 w-full border-[#EDEDED] mt-5" />
@@ -112,7 +112,7 @@ function RecentTask({ tasks = { todo: [], inProgress: [], completed: [] }, isLoa
             </div>
             <Link href="/tasks" className="p-2 rounded-full hover:bg-[#EDE9FB]" aria-label="Add task"><PlusIcon className="w-5 h-5 text-[#262626]" /></Link>
           </div>
-          <div className="mt-4 space-y-3">{isLoading ? <LoadingState label="Loading tasks..." /> : renderTasks(tasks.completed.slice(0, 3))}</div>
+          <div className="mt-4 space-y-3">{isLoading ? <LoadingState label="Loading tasks..." /> : renderTasks(tasks.completed.slice(0, 2))}</div>
         </div>
       </div>
     </section>
