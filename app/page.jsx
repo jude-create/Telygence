@@ -5,7 +5,7 @@ import RecentTemplates from "./components/RecentTemplates";
 import Suggestion from "./components/Suggestion";
 import { RecentDraft } from "./components/RecentDraft";
 import RecentTask from "./components/RecentTask";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Template from "./modals/Template";
 import { PencilSquareIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
@@ -14,8 +14,20 @@ import { ErrorState } from "./components/LoadingState";
 
 export default function Home() {
   const [templateModal, setTemplateModal] = useState(false);
+  const [currentDateTime, setCurrentDateTime] = useState("");
   const dashboard = useDashboardData();
-  const now = new Date();
+
+  useEffect(() => {
+    setCurrentDateTime(
+      new Date().toLocaleString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+        weekday: "short",
+        month: "short",
+        day: "numeric",
+      }),
+    );
+  }, []);
 
   return (
     <>
@@ -28,7 +40,7 @@ export default function Home() {
               <Image src="/images/hand.png" alt="hand" width={28} height={28} className="w-6 h-6 md:w-7 md:h-7" />
             </div>
             <p className="font-normal text-xs md:text-base text-[#737373]">
-              {now.toLocaleString([], { hour: "2-digit", minute: "2-digit", weekday: "short", month: "short", day: "numeric" })}
+              {currentDateTime}
             </p>
           </div>
 
@@ -68,6 +80,9 @@ export default function Home() {
               deletingTemplateId={dashboard.deletingTemplateId}
               onDeleteTemplate={dashboard.deleteTemplate}
             />
+          </div>
+          <div className="w-full min-w-0 space-y-4">
+            <RecentTask tasks={dashboard.tasks} isLoading={dashboard.isLoading} />
             <RecentDraft
               drafts={dashboard.drafts}
               isLoading={dashboard.isLoading}
@@ -75,9 +90,6 @@ export default function Home() {
               onDeleteDraft={dashboard.deleteDraft}
               onToggleStar={dashboard.toggleDraftStar}
             />
-          </div>
-          <div className="w-full min-w-0 space-y-4">
-            <RecentTask tasks={dashboard.tasks} isLoading={dashboard.isLoading} />
           </div>
         </div>
       </div>

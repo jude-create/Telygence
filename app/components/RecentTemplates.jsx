@@ -46,7 +46,7 @@ export default function RecentTemplates({ templates = [], isLoading = false, del
       {isLoading ? (
         <LoadingState label="Loading templates..." />
       ) : recentTemplates.length > 0 ? (
-        <div className="space-y-4 mt-5">
+        <div className="space-y-4 mt-5 max-h-[640px] overflow-y-auto overscroll-contain pb-1 pr-1 lg:max-h-none lg:overflow-visible lg:overscroll-auto lg:pr-0">
           {recentTemplates.map((template) => (
             <div
               key={template.id}
@@ -63,13 +63,18 @@ export default function RecentTemplates({ templates = [], isLoading = false, del
                 {template.message}
               </p>
 
-              {/* Meta chips */}
-              <div className="flex gap-2 flex-wrap">
-                {(template.placeholders || []).slice(0, 3).map((placeholder) => (
-                  <span key={placeholder} className="bg-[#D9D9D9] rounded-full px-4 py-1 text-xs text-[#4D4D4D]">
-                    {placeholder}
-                  </span>
-                ))}
+              {/* Meta */}
+              <div className="flex flex-col gap-3">
+                <p className="text-xs font-medium text-[#8093A8]">
+                  Created {template.createdAtLabel || "recently"}
+                </p>
+                <div className="flex gap-2 flex-wrap">
+                  {(template.placeholders || []).slice(0, 3).map((placeholder) => (
+                    <span key={placeholder} className="bg-[#D9D9D9] rounded-full px-4 py-1 text-xs text-[#4D4D4D]">
+                      {placeholder}
+                    </span>
+                  ))}
+                </div>
               </div>
 
               {/* Footer */}

@@ -4,7 +4,7 @@ import { ArrowPathIcon, SparklesIcon } from "@heroicons/react/24/solid";
 import { DocumentTextIcon, LightBulbIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
-import { loadAccountSettings } from "../lib/accountSettings";
+import { DEFAULT_ACCOUNT_SETTINGS, loadAccountSettings } from "../lib/accountSettings";
 
 const Suggestion = () => {
   const suggestionSets = [
@@ -44,10 +44,12 @@ const Suggestion = () => {
     ],
   ];
   const [setIndex, setSetIndex] = useState(0);
-  const [settings, setSettings] = useState(loadAccountSettings);
+  const [settings, setSettings] = useState(DEFAULT_ACCOUNT_SETTINGS);
   const suggestions = suggestionSets[setIndex];
 
   useEffect(() => {
+    setSettings(loadAccountSettings());
+
     const syncSettings = (event) => {
       setSettings(event.detail || loadAccountSettings());
     };
@@ -88,15 +90,14 @@ const Suggestion = () => {
   return (
     <section className="w-full bg-white rounded-xl border border-[#E7E4F0] shadow-sm overflow-hidden">
       <div className="flex items-center justify-between gap-3 p-3 sm:p-4 md:p-5">
-        <div className="flex min-w-0 flex-1 gap-2.5 sm:gap-3">
+        <div className="flex min-w-0 flex-1 gap-2.5 items-center sm:gap-3">
           <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#EEEBFB] text-[#5943A3] sm:h-10 sm:w-10 sm:rounded-xl">
             <LightBulbIcon className="h-4 w-4 sm:h-5 sm:w-5" />
           </div>
           <div className="min-w-0">
             <div className="flex flex-wrap items-center gap-2">
               <h2 className="text-sm font-semibold text-[#001C3D] sm:text-base">
-                <span className="sm:hidden">Next drafts</span>
-                <span className="hidden sm:inline">Suggested next drafts</span>
+                <span className="">Suggested  drafts</span>
               </h2>
               <span className="hidden items-center gap-1 rounded-full bg-[#C9F1FE80] px-2.5 py-1 text-xs font-medium text-[#1E95BB] sm:inline-flex">
                 <SparklesIcon className="h-3.5 w-3.5" />

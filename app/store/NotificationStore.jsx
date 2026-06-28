@@ -31,7 +31,9 @@ function persistNotifications(notifications) {
 }
 
 export const useNotificationStore = create((set) => ({
-  notifications: loadNotifications(),
+  notifications: DEFAULT_NOTIFICATIONS,
+
+  hydrateNotifications: () => set({ notifications: loadNotifications() }),
 
   addNotification: (notif) =>
     set((state) => {

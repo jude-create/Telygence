@@ -11,7 +11,7 @@ import {
   TemplateMessageEditor,
   TemplateTagField,
 } from "../components/templates/TemplateComposerParts";
-import { loadAccountSettings } from "../lib/accountSettings";
+import { DEFAULT_ACCOUNT_SETTINGS, loadAccountSettings } from "../lib/accountSettings";
 
 export default function Template({ templateModal, handleTemplateModal, onTemplateCreate }) {
   const [selectedTags, setSelectedTags] = useState([]);
@@ -25,11 +25,13 @@ export default function Template({ templateModal, handleTemplateModal, onTemplat
   const [tagModal, setTagModal] = useState(false);
   const [placeholderModal, setPlaceholderModal] = useState(false);
   const [stylesModal, setStylesModal] = useState(false);
-  const [accountSettings, setAccountSettings] = useState(loadAccountSettings);
+  const [accountSettings, setAccountSettings] = useState(DEFAULT_ACCOUNT_SETTINGS);
   const tagInputRef = useRef(null);
   const editorRef = useRef(null);
 
   useEffect(() => {
+    setAccountSettings(loadAccountSettings());
+
     const syncSettings = (event) => {
       setAccountSettings(event.detail || loadAccountSettings());
     };

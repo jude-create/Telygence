@@ -6,11 +6,21 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 function formatTemplate(template) {
+  const createdAt = new Date(template.createdAt);
+
   return {
     id: template.id,
     message: template.message,
     tags: template.tags || [],
     placeholders: template.placeholders || [],
+    createdAt: template.createdAt.toISOString(),
+    createdAtLabel: new Intl.DateTimeFormat("en", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    }).format(createdAt),
   };
 }
 

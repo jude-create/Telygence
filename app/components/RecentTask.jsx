@@ -74,44 +74,46 @@ function RecentTask({ tasks = { todo: [], inProgress: [], completed: [] }, isLoa
       {/* Divider */}
       <div className="border-t-4 w-full border-[#EDEDED]" />
 
-      {/* To Do Section */}
-      <div className="px-4 text-sm">
-        <div className="flex justify-between">
-          <div className="flex space-x-2 justify-center items-center">
-            <div className="mt-2 w-3 h-3 rounded-full bg-[#FF304F]" />
-            <p className="pt-2 font-semibold">To do</p>
+      <div className="max-h-[520px] overflow-y-auto overscroll-contain pb-1">
+        {/* To Do Section */}
+        <div className="px-4 text-sm">
+          <div className="flex justify-between">
+            <div className="flex space-x-2 justify-center items-center">
+              <div className="mt-2 w-3 h-3 rounded-full bg-[#FF304F]" />
+              <p className="pt-2 font-semibold">To do</p>
+            </div>
+            <Link href="/tasks" className="p-2 rounded-full hover:bg-[#EDE9FB]" aria-label="Add task"><PlusIcon className="w-5 h-5 text-[#262626]" /></Link>
           </div>
-          <Link href="/tasks" className="p-2 rounded-full hover:bg-[#EDE9FB]" aria-label="Add task"><PlusIcon className="w-5 h-5 text-[#262626]" /></Link>
+          <div className="mt-4 space-y-3">{isLoading ? <LoadingState label="Loading tasks..." /> : renderTasks(tasks.todo.slice(0, 3))}</div>
         </div>
-        <div className="mt-4 space-y-3">{isLoading ? <LoadingState label="Loading tasks..." /> : renderTasks(tasks.todo.slice(0, 3))}</div>
-      </div>
 
-      <div className="border-t-4 w-full border-[#EDEDED]" />
+        <div className="border-t-4 w-full border-[#EDEDED] mt-5" />
 
-      {/* In Progress Section */}
-      <div className="px-4 text-sm">
-        <div className="flex justify-between">
-          <div className="flex space-x-2 justify-center items-center">
-            <div className="mt-2 w-3 h-3 rounded-full bg-[#D89E07]" />
-            <p className="pt-2 font-semibold">In progress</p>
+        {/* In Progress Section */}
+        <div className="px-4 text-sm mt-5">
+          <div className="flex justify-between">
+            <div className="flex space-x-2 justify-center items-center">
+              <div className="mt-2 w-3 h-3 rounded-full bg-[#D89E07]" />
+              <p className="pt-2 font-semibold">In progress</p>
+            </div>
+            <Link href="/tasks" className="p-2 rounded-full hover:bg-[#EDE9FB]" aria-label="Add task"><PlusIcon className="w-5 h-5 text-[#262626]" /></Link>
           </div>
-          <Link href="/tasks" className="p-2 rounded-full hover:bg-[#EDE9FB]" aria-label="Add task"><PlusIcon className="w-5 h-5 text-[#262626]" /></Link>
+          <div className="mt-4 space-y-3">{isLoading ? <LoadingState label="Loading tasks..." /> : renderTasks(tasks.inProgress.slice(0, 3))}</div>
         </div>
-        <div className="mt-4 space-y-3">{isLoading ? <LoadingState label="Loading tasks..." /> : renderTasks(tasks.inProgress.slice(0, 3))}</div>
-      </div>
 
-      <div className="border-t-4 w-full border-[#EDEDED]" />
+        <div className="border-t-4 w-full border-[#EDEDED] mt-5" />
 
-      {/* Completed Section */}
-      <div className="px-4 text-sm">
-        <div className="flex justify-between">
-          <div className="flex space-x-2 justify-center items-center">
-            <div className="mt-2 w-3 h-3 rounded-full bg-[#03A12F]" />
-            <p className="pt-2 font-semibold">Completed</p>
+        {/* Completed Section */}
+        <div className="px-4 text-sm mt-5">
+          <div className="flex justify-between">
+            <div className="flex space-x-2 justify-center items-center">
+              <div className="mt-2 w-3 h-3 rounded-full bg-[#03A12F]" />
+              <p className="pt-2 font-semibold">Completed</p>
+            </div>
+            <Link href="/tasks" className="p-2 rounded-full hover:bg-[#EDE9FB]" aria-label="Add task"><PlusIcon className="w-5 h-5 text-[#262626]" /></Link>
           </div>
-          <Link href="/tasks" className="p-2 rounded-full hover:bg-[#EDE9FB]" aria-label="Add task"><PlusIcon className="w-5 h-5 text-[#262626]" /></Link>
+          <div className="mt-4 space-y-3">{isLoading ? <LoadingState label="Loading tasks..." /> : renderTasks(tasks.completed.slice(0, 3))}</div>
         </div>
-        <div className="mt-4 space-y-3">{isLoading ? <LoadingState label="Loading tasks..." /> : renderTasks(tasks.completed.slice(0, 3))}</div>
       </div>
     </section>
      </>
