@@ -1,4 +1,4 @@
-// app/components/SidebarWrapper.jsx
+
 'use client'
 
 import SideBar from "./SideBar";
@@ -10,7 +10,7 @@ export default function SidebarWrapper({ children }) {
   const sidebar = useSidebarStore();
   const pathname = usePathname();
 
-  if (pathname.startsWith("/sign-in") || pathname.startsWith("/sign-up")) {
+  if (pathname.startsWith("/sign-in") || pathname.startsWith("/sign-up")  || pathname.startsWith("/forgot-password")) {
     return children;
   }
 

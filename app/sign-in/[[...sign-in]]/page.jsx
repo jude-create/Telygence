@@ -207,7 +207,16 @@ export default function SignInPage() {
             {isSubmitting ? "Please wait..." : needsCode ? "Verify and sign in" : "Sign in"}
           </button>
         </form>
-
+        
+        <div className="mt-4 flex items-center justify-between"> 
+ 
+    
+    <Link className="text-sm font-medium text-[#775ADA] hover:text-[#5F48C2]" href="/forgot-password">
+      Forgot password?
+    </Link>
+  
+ 
+</div>
         <div className="mt-5 flex flex-wrap items-center justify-center gap-1 text-sm text-[#737373]">
           <span>Don&apos;t have an account?</span>
           <Link className="font-semibold text-[#775ADA] hover:text-[#5F48C2]" href="/sign-up">
