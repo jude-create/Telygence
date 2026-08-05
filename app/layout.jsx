@@ -11,7 +11,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className="antialiased min-w-0">
-        <ClerkProvider>
+        <ClerkProvider clerkJSVariant="headless">
           <SidebarWrapper>{children}</SidebarWrapper>
         </ClerkProvider>
       </body>

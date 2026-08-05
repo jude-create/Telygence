@@ -110,7 +110,7 @@ export default function RecentTemplates({ templates = [], isLoading = false, del
       ) : (
         <div className="flex flex-col items-center justify-center gap-5 py-14">
           <p className="text-base text-[#AAAAAA]">You have no recent templates yet</p>
-          <Image src="/images/floating.png" alt="No templates" height={200} width={200} />
+          <Image src="/images/floating.png" alt="No templates" height={200} width={200} className="h-60 w-80" />
         </div>
       )}
 

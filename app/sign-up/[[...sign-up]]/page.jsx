@@ -5,6 +5,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import AuthShell from "@/app/components/auth/AuthShell";
+import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
+import Image from "next/image";
 
 function getErrorMessage(error, fallback = "Something went wrong. Please try again.") {
   return error?.errors?.[0]?.longMessage || error?.errors?.[0]?.message || error?.message || fallback;
@@ -21,6 +23,9 @@ export default function SignUpPage() {
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [confirmPassword, setConfirmPassword] = useState("");
+const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   useEffect(() => {
     if (authLoaded && isSignedIn) router.replace("/");
@@ -39,6 +44,11 @@ export default function SignUpPage() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (!signUp || isSubmitting || fetchStatus === "fetching") return;
+
+    if (password !== confirmPassword) {
+    setError("Passwords do not match.");
+    return;
+  }
 
     try {
       setIsSubmitting(true);
@@ -110,9 +120,9 @@ export default function SignUpPage() {
               disabled={!signUp || isGoogleLoading || isSubmitting}
               className="mb-4 flex h-11 w-full items-center justify-center gap-3 rounded-lg border border-[#D8D4E6] bg-white text-sm font-semibold text-[#1E1636] transition-colors hover:bg-[#F5F4FA] disabled:cursor-not-allowed disabled:opacity-60"
             >
-              <span className="grid h-6 w-6 place-items-center rounded-full border border-[#E7E4F0] text-sm font-bold text-[#4285F4]">
-                G
-              </span>
+              <span className="grid h-6 w-6 place-items-center text-sm   font-bold text-[#4285F4]">
+                          <Image src="/images/google.png" alt="Google" width={16} height={16} />
+               </span>
               {isGoogleLoading ? "Opening Google..." : "Continue with Google"}
             </button>
 
@@ -166,18 +176,54 @@ export default function SignUpPage() {
                 <label className="mb-1.5 block text-sm font-medium text-[#1E1636]" htmlFor="password">
                   Password
                 </label>
+                <div className="relative">
                 <input
                   id="password"
                   value={password}
                   onChange={(event) => setPassword(event.target.value)}
-                  className="h-11 w-full rounded-lg border border-[#D8D4E6] px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#775ADA]"
-                  type="password"
+                  className="h-11 w-full rounded-lg border border-[#D8D4E6] px-3 pr-10 text-sm focus:outline-none focus:ring-2 focus:ring-[#775ADA]"
+                   type={showPassword ? "text" : "password"}
                   placeholder="Create a strong password"
                   autoComplete="new-password"
                   required
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute inset-y-0 right-0 flex items-center pr-3 text-sm font-medium text-[#775ADA] hover:text-[#5F48C2]"
+                >
+                  {showPassword ? <EyeSlashIcon className="h-5 w-5" /> : <EyeIcon className="h-5 w-5" />}
+                </button>
               </div>
-              <div id="clerk-captcha" />
+              </div>
+
+              <div>
+  <label className="mb-1.5 block text-sm font-medium text-[#1E1636]" htmlFor="confirmPassword">
+    Confirm password
+  </label>
+  <div className="relative">
+    <input
+      id="confirmPassword"
+      value={confirmPassword}
+      onChange={(event) => setConfirmPassword(event.target.value)}
+      className="h-11 w-full rounded-lg border border-[#D8D4E6] px-3 pr-10 text-sm focus:outline-none focus:ring-2 focus:ring-[#775ADA]"
+      type={showPassword ? "text" : "password"}
+      placeholder="Re-enter your password"
+      autoComplete="new-password"
+      required
+    />
+    <button
+      type="button"
+      onClick={() => setShowPassword(!showPassword)}
+      className="absolute right-3 top-1/2 -translate-y-1/2 text-[#8093A8] hover:text-[#1E1636]"
+      tabIndex={-1}
+      aria-label={showConfirmPassword ? "Hide password" : "Show password"}
+    >
+     {showPassword ? <EyeSlashIcon className="h-5 w-5" /> : <EyeIcon className="h-5 w-5" />}
+    </button>
+  </div>
+</div>
+              
             </>
           )}
 

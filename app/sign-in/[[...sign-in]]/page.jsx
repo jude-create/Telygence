@@ -6,6 +6,8 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import AuthShell from "@/app/components/auth/AuthShell";
 import Image from "next/image";
+import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
+
 
 function getErrorMessage(error, fallback = "Something went wrong. Please try again.") {
   return error?.errors?.[0]?.longMessage || error?.errors?.[0]?.message || error?.message || fallback;
@@ -22,6 +24,7 @@ export default function SignInPage() {
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
     if (authLoaded && isSignedIn) router.replace("/");
@@ -167,16 +170,25 @@ export default function SignInPage() {
                 <label className="mb-1.5 block text-sm font-medium text-[#1E1636]" htmlFor="password">
                   Password
                 </label>
+                <div className="relative">
                 <input
                   id="password"
                   value={password}
                   onChange={(event) => setPassword(event.target.value)}
-                  className="h-11 w-full rounded-lg border border-[#D8D4E6] px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#775ADA]"
-                  type="password"
+                  className="h-11 w-full rounded-lg border border-[#D8D4E6] px-3 pr-10 text-sm focus:outline-none focus:ring-2 focus:ring-[#775ADA]"
+                   type={showPassword ? "text" : "password"}
                   placeholder="Enter your password"
                   autoComplete="current-password"
                   required
                 />
+                 <button
+                   type="button"
+                   onClick={() => setShowPassword(!showPassword)}
+                   className="absolute inset-y-0 right-0 flex items-center pr-3 text-sm font-medium text-[#775ADA] hover:text-[#5F48C2]"
+                  >
+                  {showPassword ? <EyeSlashIcon className="h-5 w-5" /> : <EyeIcon className="h-5 w-5" />}
+                   </button>
+              </div>
               </div>
             </>
           )}
